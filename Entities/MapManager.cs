@@ -19,6 +19,9 @@ namespace Basic_Wars_V2.Entities
 
         public List<Tile> tempTiles = new List<Tile>();
 
+        private const int WINDOW_WIDTH = 1920;
+        private const int WINDOW_HEIGHT = 1080;
+
         public int MapWidth { get; set; }
         public int MapHeight { get; set; }
 
@@ -34,13 +37,13 @@ namespace Basic_Wars_V2.Entities
 
         private int StructureSparsity { get; set; }
 
-        public MapManager(Texture2D texture, Vector2 position, int mapWidth, int mapHeight)
+        public MapManager(Texture2D texture, int mapWidth, int mapHeight)
         {
             MapWidth = mapWidth;
             MapHeight = mapHeight;
-            Position = position;
             Texture = texture;
 
+            Position = new Vector2(WINDOW_WIDTH / 2 - (MapWidth * TILE_DIMENSIONS / 2), WINDOW_HEIGHT / 2 - (MapHeight * TILE_DIMENSIONS / 2));
             MapSize = new Vector2(mapWidth * TILE_DIMENSIONS, mapHeight * TILE_DIMENSIONS);
 
             map = new Tile[MapWidth, MapHeight];
@@ -163,14 +166,14 @@ namespace Basic_Wars_V2.Entities
                         firstStructureFound = true;
                         //Debug
                         Console.WriteLine("_______________________________________________________________________");
-                        Console.WriteLine($"\nFirst City Grid Pos: {firstStructureGridPos.X}, {firstStructureGridPos.Y}");
+                        Console.WriteLine($"\nFirst Structure Grid Pos: {firstStructureGridPos.X}, {firstStructureGridPos.Y}");
 
                     }
                     else if (map[x, y].Type == TileType.City || map[x, y].Type == TileType.Factory)
                     {
                         nextStructureGridPos = new Vector2(x, y);
                         //Debug
-                        Console.WriteLine($"Next City Grid Pos: {nextStructureGridPos.X}, {nextStructureGridPos.Y}");
+                        Console.WriteLine($"Next Structure Grid Pos: {nextStructureGridPos.X}, {nextStructureGridPos.Y}");
 
                         xStart = x;
                         yStart = y;
@@ -193,14 +196,14 @@ namespace Basic_Wars_V2.Entities
                         firstStructureFound = true;
                         //Debug
                         Console.WriteLine("_______________________________________________________________________");
-                        Console.WriteLine($"\nFirst City Grid Pos: {firstStructureGridPos.X}, {firstStructureGridPos.Y}");
+                        Console.WriteLine($"\nFirst Structure Grid Pos: {firstStructureGridPos.X}, {firstStructureGridPos.Y}");
 
                     }
                     else if (map[x, y].Type == TileType.City || map[x, y].Type == TileType.Factory)
                     {
                         nextStructureGridPos = new Vector2(x, y);
                         //Debug
-                        Console.WriteLine($"Next City Grid Pos: {nextStructureGridPos.X}, {nextStructureGridPos.Y}");
+                        Console.WriteLine($"Next Structure Grid Pos: {nextStructureGridPos.X}, {nextStructureGridPos.Y}");
 
                         xStart = x;
                         yStart = y;
