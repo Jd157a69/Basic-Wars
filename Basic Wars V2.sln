@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basic Wars V2", "Basic Wars V2.csproj", "{57342A0C-3D14-449A-9BB2-C2AD42276C9A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{57342A0C-3D14-449A-9BB2-C2AD42276C9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57342A0C-3D14-449A-9BB2-C2AD42276C9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57342A0C-3D14-449A-9BB2-C2AD42276C9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57342A0C-3D14-449A-9BB2-C2AD42276C9A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D080AFDF-78DE-45BF-BD51-BA9506121CCA}
+	EndGlobalSection
+EndGlobal
