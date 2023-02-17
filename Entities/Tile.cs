@@ -27,14 +27,15 @@ namespace Basic_Wars_V2.Entities
         public Sprite TileSprite;
 
         public int DrawOrder { get; set; }
-
         public Unit Unit { get; set; }
+
+        public int DefenseBonus { get; set; }
 
         public Tile(Vector2 position, Texture2D texture, Unit unit = null)
         {
-            this.Position = position;
-            this.Unit = unit;
-            this.Texture = texture;
+            Position = position;
+            Unit = unit;
+            Texture = texture;
 
             State = TileState.None;
         }
@@ -45,6 +46,8 @@ namespace Basic_Wars_V2.Entities
             TileColumn = TileColumn * TILE_HEIGHT;
             TileRow = TileRow * TILE_HEIGHT;
             TileSprite = new Sprite(Texture, X_SPRITE_SHEET_START_POS + RandomTile + TileColumn, Y_SPRITE_SHEET_START_POS + TileRow, TILE_WIDTH, TILE_HEIGHT);
+
+            SetTileAttributes();
         }
 
         public Rectangle Collider
@@ -55,21 +58,38 @@ namespace Basic_Wars_V2.Entities
             }
         }
 
-        public void CheckState()
+        public void SetTileAttributes()
         {
-            switch (State)
+            switch (Type)
             {
-                case TileState.None:
+                case TileType.Plains:
+                    DefenseBonus = 10;
                     break;
-                case TileState.Selected:
-                    State = TileState.None;            
+
+                case TileType.Forest:
+                    DefenseBonus = 20;
+                    break;
+
+                case TileType.Mountain:
+                    DefenseBonus = 40;
+                    break;
+
+                case TileType.Road:
+                    DefenseBonus = 0;
+                    break;
+
+                case TileType.City:
+                    DefenseBonus = 20;
+                    break;
+
+                case TileType.Factory:
+                    DefenseBonus= 20;
+                    break;
+
+                case TileType.HQ:
+                    DefenseBonus = 20;
                     break;
             }
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            CheckState();
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -77,5 +97,8 @@ namespace Basic_Wars_V2.Entities
             TileSprite.Draw(spriteBatch, Position);
         }
 
+        public void Update(GameTime gameTime)
+        {
+        }
     }
 }
