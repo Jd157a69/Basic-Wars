@@ -8,7 +8,6 @@ namespace Basic_Wars_V2.Enums
 {
     public enum UnitType
     {
-        None,
         Infantry,
         Mech,
         Tank,
