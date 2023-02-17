@@ -3,6 +3,7 @@ using Basic_Wars_V2.Graphics;
 using Basic_Wars_V2.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace Basic_Wars_V2.Entities
 {
     public class GameUI : IGameEntity
     {
-        Tile Selected;
+        private Tile Selected_UI;
+        private bool UnitSelected = false;
+        private bool TileSelected = false;
 
-        Unit SelectedUnit;
-        Tile SelectedTile;
+        private Unit SelectedUnit;
+        private Tile SelectedTile;
 
         public Texture2D texture;
         public InputController _inputController;
@@ -35,6 +38,7 @@ namespace Basic_Wars_V2.Entities
             _buttonManager = new ButtonManager();
             _inputController = new InputController(_unitManager, _buttonManager, _gameMap);
 
+            //      TESTING
             /*Button TitleButton = new Button(texture, font, new Vector2(1080/2, 50), "Basic Wars", "Menu");
             Button NewGame = new Button(texture, font, new Vector2(1080/2, 270), "New Game", "Menu");
             Button LoadGame = new Button(texture, font, new Vector2(1080/2, 420), "Load Game", "Menu");
@@ -47,53 +51,89 @@ namespace Basic_Wars_V2.Entities
             _buttonManager.AddButton(Quit);
             */
             
-            Selected = new Tile(new Vector2(0, 0), texture);
-            Selected.CreateTile(0, 0, 1);
+            Selected_UI = new Tile(new Vector2(0, 0), texture);
+            Selected_UI.CreateTile(0, 0, 1);
 
+        }
+
+        public void GetSelected()
+        {
+            SelectedUnit = _inputController.GetSelectedUnit();
+            SelectedTile = _inputController.GetSelectedTile();
+
+            if (SelectedUnit != null)
+            {
+                Selected_UI.Position= SelectedUnit.Position;
+                UnitSelected = true;
+            }
+            else if (SelectedTile != null)
+            {
+                Selected_UI.Position= SelectedTile.Position;
+                TileSelected = true;
+            }
+        }
+
+        public void MoveUnit()
+        {
+            while (UnitSelected)
+            { 
+                Unit SelectedUnit = _inputController.GetSelectedUnit();
+                _inputController.UpdateMouseState();
+                foreach (Tile tile in _gameMap.map)
+                {
+                    if (_inputController.MouseCollider.Intersects(tile.Collider) 
+                        && _inputController.currentMouseState.LeftButton == ButtonState.Pressed 
+                        && _inputController.previousMouseState.LeftButton == ButtonState.Released)
+                    {
+                        SelectedUnit.Position = tile.Position;
+                        SelectedUnit.State = UnitState.Idle;
+                        UnitSelected = false;
+                    }
+                }
+            }
+        }
+
+        public void CheckForUnitGeneration()
+        {
+            int currentTeam = 1;
+
+            if (TileSelected)
+            {
+                if (SelectedTile.Type == TileType.Factory)  //Add team check as well later
+                {
+                    // Using console for now
+                    // UI implmentation after frame is done
+
+                    Console.WriteLine("Enter unit to be produced:\n1. Infantry\n2. Mech\n3. Tank\n4. APC");
+                    int unitType = Convert.ToInt32(Console.ReadLine());
+
+                    Unit newUnit = new Unit(texture, SelectedTile.Position, unitType, currentTeam); //Add current team turn
+                    _unitManager.AddUnit(newUnit);
+                }
+                TileSelected = false;
+            }
         }
 
         public void UpdateUI()
         {
+            GetSelected();
 
-            if (!((SelectedUnit = _unitManager.GetSelectedUnit()) == null))
-            {
-                Selected.Position = SelectedUnit.Position;
-            }
-
-            if (!((SelectedTile = _gameMap.GetSelectedTile()) == null))
-            {
-                Selected.Position = SelectedTile.Position;
-            }
+            //Display movement tiles
         }
 
+        
 
         public void Update(GameTime gameTime)
         {
             _inputController.ProcessControls(gameTime);
-            _buttonManager.Update(gameTime);
+            MoveUnit();
+            //CheckForUnitGeneration();
             UpdateUI();
         }
 
         public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
         {
-            Selected.Draw(_spriteBatch, gameTime);
-
-            foreach (Unit unit in _unitManager.units)
-            {
-                switch (unit.State)
-                {
-                    case UnitState.Moving:
-                        //foreach (Tile tile in Overlay)
-                        //{
-                        //    tile.Draw(_spriteBatch, gameTime);
-                        //}
-                        break;
-                }
-
-
-            }
-
-            _buttonManager.Draw(_spriteBatch, gameTime);
+            Selected_UI.Draw(_spriteBatch, gameTime);
         }
 
 
