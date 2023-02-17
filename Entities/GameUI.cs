@@ -69,6 +69,7 @@ namespace Basic_Wars_V2.Entities
             else if (SelectedTile != null)
             {
                 Selected_UI.Position= SelectedTile.Position;
+                SelectedTile.State = TileState.None;
                 TileSelected = true;
             }
         }
