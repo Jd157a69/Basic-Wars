@@ -40,12 +40,11 @@ namespace Basic_Wars_V2.Entities
             State = TileState.None;
         }
 
-        public void CreateTile(int RandomTile = 0, int TileColumn = 0, int TileRow = 0)
+        public void CreateTile(int TileColumn = 0, int TileRow = 0)
         {
-            RandomTile = RandomTile * TILE_WIDTH;
-            TileColumn = TileColumn * TILE_HEIGHT;
+            TileColumn = TileColumn * TILE_WIDTH;
             TileRow = TileRow * TILE_HEIGHT;
-            TileSprite = new Sprite(Texture, X_SPRITE_SHEET_START_POS + RandomTile + TileColumn, Y_SPRITE_SHEET_START_POS + TileRow, TILE_WIDTH, TILE_HEIGHT);
+            TileSprite = new Sprite(Texture, X_SPRITE_SHEET_START_POS + TileColumn, Y_SPRITE_SHEET_START_POS + TileRow, TILE_WIDTH, TILE_HEIGHT);
 
             SetTileAttributes();
         }
