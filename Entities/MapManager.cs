@@ -136,7 +136,7 @@ namespace Basic_Wars_V2.Entities
                     structureCoordinates.Add(new Vector2(newGridX, newGridY));
                     map[newGridX, newGridY] = newStructure;
                     map[newGridX, newGridY].Type = Type;
-                    map[newGridX, newGridY].CreateTile(0, StructureColumnShift, StructureRowShift);
+                    map[newGridX, newGridY].CreateTile(StructureColumnShift, StructureRowShift);
                 }
 
                 //Debug
@@ -212,7 +212,7 @@ namespace Basic_Wars_V2.Entities
             {
                 map[x, y] = roadTile;
                 map[x, y].Type = TileType.Road;
-                map[x, y].CreateTile(0, direction);
+                map[x, y].CreateTile(direction);
                 //Debug
                 //Console.WriteLine($"Tile Created at: {x}, {y}");
             }
@@ -226,18 +226,6 @@ namespace Basic_Wars_V2.Entities
         private void GenerateMapCollider()
         {
             MapCollider = new Rectangle((int)Position.X, (int)Position.Y, MapWidth*56, MapHeight*56);
-        }
-
-        public Tile GetSelectedTile()
-        {
-            foreach (Tile tile in map)
-            {
-                if (tile.State == TileState.Selected)
-                {
-                    return tile;
-                }
-            }
-            return null;
         }
 
         public void DrawMap(SpriteBatch spriteBatch, GameTime gameTime)
