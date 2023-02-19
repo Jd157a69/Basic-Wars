@@ -13,45 +13,24 @@ namespace Basic_Wars_V2.Entities
     {
         public List<Unit> units = new List<Unit>();
         public List<Unit> unitsToRemove = new List<Unit>();
+        public List<Unit> unitsToAdd = new List<Unit>();
 
         private int ID = 0;
         private int TotalUnitsCreated = 0;
 
-        public int DrawOrder { get; set; }
-
-
+        public int DrawOrder {get; set;}
 
         public void AddUnit(Unit unit)
         {
-            units.Add(unit);
+            unitsToAdd.Add(unit);
             ID++;
             TotalUnitsCreated++;
             units[TotalUnitsCreated - 1].ID = ID;       // TODO: Potential: TotalUnitsCreated could end up out of bounds due to unit removals
         }
 
-        public void ToRemove(Unit unit)
+        public void RemoveUnit(Unit unit)
         {
             unitsToRemove.Add(unit);
-        }
-
-        public void RemoveUnits()
-        {
-            foreach (Unit unit in unitsToRemove)
-            {
-                units.Remove(unit);
-            }
-        }
-
-        public Unit GetSelectedUnit()
-        {
-            foreach (Unit unit in units) 
-            {
-                if (unit.State == UnitState.Selected)
-                {
-                    return unit;
-                }
-            }
-            return null;
         }
 
         public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
@@ -67,6 +46,16 @@ namespace Basic_Wars_V2.Entities
             foreach (Unit unit in units)
             {
                 unit.Update(gameTime);
+            }
+
+            foreach (Unit unit in unitsToRemove)
+            {
+                units.Remove(unit);
+            }
+
+            foreach (Unit unit in unitsToAdd)
+            {
+                units.Add(unit);
             }
         }
     }
