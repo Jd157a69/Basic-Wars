@@ -27,14 +27,14 @@ namespace Basic_Wars_V2.Entities
 
         private const int TILE_DIMENSIONS = 56;
         public Vector2 MapSize { get; set; }
-
         public Vector2 Position { get; set; }
         public Texture2D Texture { get; set; }
-
-        public List<Vector2> points = new List<Vector2>();
-
         public Rectangle MapCollider { get; set; }
 
+
+        public List<Vector2> structurePoints = new List<Vector2>();
+
+        public List<Vector2> structureCoordinates = new List<Vector2>();
         private int StructureSparsity { get; set; }
 
         public MapManager(Texture2D texture, int mapWidth, int mapHeight)
@@ -47,7 +47,7 @@ namespace Basic_Wars_V2.Entities
             MapSize = new Vector2(mapWidth * TILE_DIMENSIONS, mapHeight * TILE_DIMENSIONS);
 
             map = new Tile[MapWidth, MapHeight];
-            StructureSparsity = (MapWidth / 5) * TILE_DIMENSIONS;
+            StructureSparsity = (MapWidth / 6) * TILE_DIMENSIONS;
 
             GenerateMap();
             GenerateMapCollider();
@@ -57,7 +57,6 @@ namespace Basic_Wars_V2.Entities
         {
             GenerateBaseMap();
             AddStructures("City");
-            AddRoads();
             AddStructures("Factory");
             AddRoads();
         }
@@ -69,10 +68,10 @@ namespace Basic_Wars_V2.Entities
             int randomTile;
             Vector2 tempPosition = new Vector2(x, y);
 
-            for (int i = 0; i < MapWidth; i++)
+            for (int i = 0; i < MapHeight; i++)
             {
                 x = Position.X;
-                for (int j = 0; j < MapHeight; j++)
+                for (int j = 0; j < MapWidth; j++)
                 {
                     randomTile = RandomTile();
                     tempPosition = new Vector2(x, y);
@@ -107,8 +106,8 @@ namespace Basic_Wars_V2.Entities
 
             if (StructureType == "City")
             {
-                StructureColumnShift = -6;
                 Type = TileType.City;
+                StructureColumnShift = -6;
             }
             else if (StructureType == "Factory")
             {
@@ -121,7 +120,7 @@ namespace Basic_Wars_V2.Entities
             points = PoissonDiscSampling.GetPoints(StructureSparsity, MapSize);
 
             //Debug
-            Console.WriteLine($"{StructureType} Grid Positions:");
+            //Console.WriteLine($"{StructureType} Grid Positions:");
 
             foreach (Vector2 point in points)
             {
@@ -134,100 +133,42 @@ namespace Basic_Wars_V2.Entities
 
                 if (!(map[newGridX, newGridY].Type == TileType.City))
                 {
+                    structureCoordinates.Add(new Vector2(newGridX, newGridY));
                     map[newGridX, newGridY] = newStructure;
                     map[newGridX, newGridY].Type = Type;
                     map[newGridX, newGridY].CreateTile(0, StructureColumnShift, StructureRowShift);
                 }
 
                 //Debug
-                Console.WriteLine($"[{newGridX}, {newGridY}]");
+                //Console.WriteLine($"[{newGridX}, {newGridY}]");
             }
         }
 
         private void AddRoads()
         {
-            int xStart = 0;
-            int yStart = 0;
-
             Vector2 firstStructureGridPos = new Vector2(0, 0);
-            bool firstStructureFound = false;
-
             Vector2 nextStructureGridPos = new Vector2(0, 0);
 
-            //Vertical Search
-            for (int x = xStart; x < MapWidth - 1; x++)
+            for (int i = 0; i < structureCoordinates.Count - 1; i += 2)
             {
-                yStart = 0;
-                for (int y = 0; y < MapHeight - 1; y += 2)
-                {
-                    if ((map[x, y].Type == TileType.City || map[x,y].Type == TileType.Factory) && !firstStructureFound)
-                    {
-                        firstStructureGridPos = new Vector2(x, y);
-                        firstStructureFound = true;
-                        //Debug
-                        Console.WriteLine("_______________________________________________________________________");
-                        Console.WriteLine($"\nFirst Structure Grid Pos: {firstStructureGridPos.X}, {firstStructureGridPos.Y}");
+                firstStructureGridPos = structureCoordinates[i];
+                nextStructureGridPos = structureCoordinates[i + 1];
 
-                    }
-                    else if (map[x, y].Type == TileType.City || map[x, y].Type == TileType.Factory)
-                    {
-                        nextStructureGridPos = new Vector2(x, y);
-                        //Debug
-                        Console.WriteLine($"Next Structure Grid Pos: {nextStructureGridPos.X}, {nextStructureGridPos.Y}");
-
-                        xStart = x;
-                        yStart = y;
-
-                        BuildRoad(firstStructureGridPos, nextStructureGridPos);
-                        firstStructureFound = false;
-                    }
-                }
-            }
-
-            //Horizontal Search
-            for (int y = yStart; y < MapHeight - 1; y += 2)
-            {
-                yStart = 0;
-                for (int x = 0; x < MapWidth - 1; x++)
-                {
-                    if ((map[x, y].Type == TileType.City || map[x, y].Type == TileType.Factory) && !firstStructureFound)
-                    {
-                        firstStructureGridPos = new Vector2(x, y);
-                        firstStructureFound = true;
-                        //Debug
-                        Console.WriteLine("_______________________________________________________________________");
-                        Console.WriteLine($"\nFirst Structure Grid Pos: {firstStructureGridPos.X}, {firstStructureGridPos.Y}");
-
-                    }
-                    else if (map[x, y].Type == TileType.City || map[x, y].Type == TileType.Factory)
-                    {
-                        nextStructureGridPos = new Vector2(x, y);
-                        //Debug
-                        Console.WriteLine($"Next Structure Grid Pos: {nextStructureGridPos.X}, {nextStructureGridPos.Y}");
-
-                        xStart = x;
-                        yStart = y;
-
-                        BuildRoad(firstStructureGridPos, nextStructureGridPos);
-                        firstStructureFound = false;
-                    }
-                }
+                BuildRoad(firstStructureGridPos, nextStructureGridPos);
             }
         }
 
-        private void BuildRoad(Vector2 firstCityGridPos, Vector2 nextCityGridPos)
+        private void BuildRoad(Vector2 firstStrcuturePos, Vector2 nextStructurePos)
         {
-            int x0 = (int)firstCityGridPos.X;
-            int y0 = (int)firstCityGridPos.Y;
-            int x1 = (int)nextCityGridPos.X;
-            int y1 = (int)nextCityGridPos.Y;
+            int x0 = (int)firstStrcuturePos.X;
+            int y0 = (int)firstStrcuturePos.Y;
+            int x1 = (int)nextStructurePos.X;
+            int y1 = (int)nextStructurePos.Y;
 
             //Debug
-            Console.WriteLine($"\nInitial x0 -> x1: {x0} -> {x1}");
-            Console.WriteLine($"Initial y0 -> y1: {y0} -> {y1}\n");
-
-
-            Console.WriteLine("Adjusting X:");
+            //Console.WriteLine($"\nInitial x0 -> x1: {x0} -> {x1}");
+            //Console.WriteLine($"Initial y0 -> y1: {y0} -> {y1}\n");
+            //Console.WriteLine("Adjusting X:");
 
             while (x0 != x1)
             {
@@ -244,18 +185,19 @@ namespace Basic_Wars_V2.Entities
             }
 
             //Debug
-            Console.WriteLine("Adjusting Y:");
+            //Console.WriteLine("Adjusting Y:");
+
             while (y0 != y1)
             {
                 if (y0 > y1)
                 {
                     y0--;
-                    CreateRoadTile(x0, y0, 5);
+                    CreateRoadTile(x0, y0, 4);
                 }
                 else if (y0 < y1)
                 {
                     y0++;
-                    CreateRoadTile(x0, y0, 5);
+                    CreateRoadTile(x0, y0, 4);
                 }
             }
 
@@ -272,12 +214,12 @@ namespace Basic_Wars_V2.Entities
                 map[x, y].Type = TileType.Road;
                 map[x, y].CreateTile(0, direction);
                 //Debug
-                Console.WriteLine($"Tile Created at: {x}, {y}");
+                //Console.WriteLine($"Tile Created at: {x}, {y}");
             }
             else
             {
                 //Debug
-                Console.WriteLine($"Tile not created due to obstruction at {x}, {y}");
+                //Console.WriteLine($"Tile not created due to obstruction at {x}, {y}");
             }
         }
 
