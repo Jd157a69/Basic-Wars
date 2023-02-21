@@ -13,7 +13,6 @@ namespace Basic_Wars_V2.Entities
     {
         public List<Unit> units = new List<Unit>();
         public List<Unit> unitsToRemove = new List<Unit>();
-        public List<Unit> unitsToAdd = new List<Unit>();
 
         private int ID = 0;
         private int TotalUnitsCreated = 0;
