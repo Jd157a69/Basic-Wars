@@ -22,7 +22,7 @@ namespace Basic_Wars_V2.Entities
 
         public void AddUnit(Unit unit)
         {
-            unitsToAdd.Add(unit);
+            units.Add(unit);
             ID++;
             TotalUnitsCreated++;
             units[TotalUnitsCreated - 1].ID = ID;       // TODO: Potential: TotalUnitsCreated could end up out of bounds due to unit removals
@@ -51,11 +51,6 @@ namespace Basic_Wars_V2.Entities
             foreach (Unit unit in unitsToRemove)
             {
                 units.Remove(unit);
-            }
-
-            foreach (Unit unit in unitsToAdd)
-            {
-                units.Add(unit);
             }
         }
     }
