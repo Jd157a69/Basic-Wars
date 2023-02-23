@@ -21,23 +21,28 @@ namespace Basic_Wars_V2.Entities
 
         public TileType Type { get; set; }
         public TileState State { get; set; }
+        public int Team { get; set; }
 
         public Vector2 Position { get; set; }
+        public Vector2 MapGridPos { get; set; }
+
+        public int TotalCost { get; set; }
+        public Tile Parent { get; set; }
+
         public Texture2D Texture { get; set; }
         public Sprite TileSprite;
 
         public int DrawOrder { get; set; }
-        public Unit Unit { get; set; }
 
         public int DefenseBonus { get; set; }
 
-        public Tile(Vector2 position, Texture2D texture, Unit unit = null)
+        public Tile(Vector2 position, Texture2D texture)
         {
             Position = position;
-            Unit = unit;
             Texture = texture;
 
             State = TileState.None;
+            Team = 0;   
         }
 
         public void CreateTile(int TileColumn = 0, int TileRow = 0)
