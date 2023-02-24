@@ -15,12 +15,13 @@ namespace Basic_Wars_V2.Entities
     public class GameUI : IGameEntity
     {
         private Tile Selected_UI;
-        private bool UnitSelected = false;
-        private bool TileSelected = false;
+        private bool UnitSelected;
+        private bool TileSelected;
 
         private Unit SelectedUnit;
         private Tile SelectedTile;
 
+        private List<Tile> reachableTiles = new List<Tile>();
         private List<Tile> reachableOverlay = new List<Tile>();
 
         public Texture2D Texture;
@@ -85,13 +86,14 @@ namespace Basic_Wars_V2.Entities
         private void MoveUnit()
         {
             while (UnitSelected)
-            { 
+            {
                 _inputController.UpdateMouseState();
                 foreach (Tile tile in _gameMap.map)
                 {
                     if (_inputController.MouseCollider.Intersects(tile.Collider)
                         && _inputController.currentMouseState.LeftButton == ButtonState.Pressed
-                        && _inputController.previousMouseState.LeftButton == ButtonState.Released)
+                        && _inputController.previousMouseState.LeftButton == ButtonState.Released
+                        && reachableTiles.Contains(tile))
                     {
                         SelectedUnit.Position = tile.Position;
                         SelectedUnit.State = UnitState.Idle;
@@ -117,7 +119,7 @@ namespace Basic_Wars_V2.Entities
                     }
                 }
                 
-                List<Tile> reachableTiles = _pathFinder.FindReachableTiles(startingTile, SelectedUnit);
+                reachableTiles = _pathFinder.FindReachableTiles(startingTile, SelectedUnit);
 
                 foreach (Tile tile in reachableTiles)
                 {
@@ -133,6 +135,24 @@ namespace Basic_Wars_V2.Entities
                 }
             }
         }
+
+        //private void DisplayAttributes()
+        //{
+        //    if (UnitSelected)
+        //    {
+        //        Unit previousUnit = SelectedUnit;
+        //        Console.WriteLine($"Type: {previousUnit.Type}");
+        //        Console.WriteLine($"Health: {previousUnit.Health}");
+        //        Console.WriteLine($"Ammo: {previousUnit.Ammo}");
+        //        Console.WriteLine($"Movement Range: {previousUnit.MovementPoints}");
+        //    }
+        //    if (TileSelected)
+        //    {
+        //        Tile previousTile = SelectedTile;
+        //        Console.WriteLine($"Type: {previousTile.Type}");
+        //        Console.WriteLine($"Defence Bonus: {previousTile.DefenceBonus}");
+        //    }
+        //}
 
         private void CheckForUnitGeneration()
         {
@@ -159,6 +179,7 @@ namespace Basic_Wars_V2.Entities
         private void UpdateUI()
         {
             GetSelected();
+            //DisplayAttributes();
             ReachableTiles();
         }
 
@@ -181,6 +202,7 @@ namespace Basic_Wars_V2.Entities
             {
                 Selected_UI.Draw(_spriteBatch, gameTime);
             }
+
             if (UnitSelected)
             {
                 foreach (Tile tile in reachableOverlay)
