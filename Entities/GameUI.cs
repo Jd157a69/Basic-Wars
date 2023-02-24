@@ -21,22 +21,30 @@ namespace Basic_Wars_V2.Entities
         private Unit SelectedUnit;
         private Tile SelectedTile;
 
-        public Texture2D texture;
-        public InputController _inputController;
-        public ButtonManager _buttonManager;
-        public MapManager _gameMap;
-        public UnitManager _unitManager;
+        private List<Tile> reachableOverlay = new List<Tile>();
+
+        public Texture2D Texture;
+        public SpriteFont Font;
+
+        private InputController _inputController;
+        private ButtonManager _buttonManager;
+        private MapManager _gameMap;
+        private UnitManager _unitManager;
+        private Dijkstra _pathFinder;
 
         public int DrawOrder { get; set; }
 
         public GameUI(Texture2D SpriteSheet, SpriteFont font, MapManager map, UnitManager unitManager)
         {
-            texture = SpriteSheet;
+            Texture = SpriteSheet;
+            Font = font;
             _gameMap = map;
             _unitManager = unitManager;
 
             _buttonManager = new ButtonManager();
             _inputController = new InputController(_unitManager, _buttonManager, _gameMap);
+            _pathFinder = new Dijkstra(_gameMap);
+
 
             //      TESTING
             /*Button TitleButton = new Button(texture, font, new Vector2(1080/2, 50), "Basic Wars", "Menu");
@@ -50,13 +58,13 @@ namespace Basic_Wars_V2.Entities
             _buttonManager.AddButton(LoadGame);
             _buttonManager.AddButton(Quit);
             */
-            
-            Selected_UI = new Tile(new Vector2(0, 0), texture);
-            Selected_UI.CreateTile(0, 0, 1);
+
+            Selected_UI = new Tile(new Vector2(0, 0), Texture);
+            Selected_UI.CreateTile(0, 1);
 
         }
 
-        public void GetSelected()
+        private void GetSelected()
         {
             SelectedUnit = _inputController.GetSelectedUnit();
             SelectedTile = _inputController.GetSelectedTile();
@@ -74,16 +82,15 @@ namespace Basic_Wars_V2.Entities
             }
         }
 
-        public void MoveUnit()
+        private void MoveUnit()
         {
             while (UnitSelected)
             { 
-                Unit SelectedUnit = _inputController.GetSelectedUnit();
                 _inputController.UpdateMouseState();
                 foreach (Tile tile in _gameMap.map)
                 {
-                    if (_inputController.MouseCollider.Intersects(tile.Collider) 
-                        && _inputController.currentMouseState.LeftButton == ButtonState.Pressed 
+                    if (_inputController.MouseCollider.Intersects(tile.Collider)
+                        && _inputController.currentMouseState.LeftButton == ButtonState.Pressed
                         && _inputController.previousMouseState.LeftButton == ButtonState.Released)
                     {
                         SelectedUnit.Position = tile.Position;
@@ -94,47 +101,93 @@ namespace Basic_Wars_V2.Entities
             }
         }
 
-        public void CheckForUnitGeneration()
+        private void ReachableTiles()
+        {
+            if (UnitSelected)
+            {
+                reachableOverlay.Clear();
+
+                Tile startingTile = null;
+
+                foreach (Tile tile in _gameMap.map)
+                {
+                    if (SelectedUnit.Position == tile.Position)
+                    {
+                        startingTile = tile;
+                    }
+                }
+                
+                List<Tile> reachableTiles = _pathFinder.FindReachableTiles(startingTile, SelectedUnit);
+
+                foreach (Tile tile in reachableTiles)
+                {
+                    if (tile.Position != SelectedUnit.Position)
+                    {
+                        if (!(tile.Type == TileType.Mountain && SelectedUnit.Type == UnitType.Tank) && !(tile.Type == TileType.Mountain && SelectedUnit.Type == UnitType.APC))
+                        {
+                            Tile overlayTile = new Tile(tile.Position, Texture);
+                            overlayTile.CreateTile(2, 1);
+                            reachableOverlay.Add(overlayTile);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void CheckForUnitGeneration()
         {
             int currentTeam = 1;
 
             if (TileSelected)
             {
+                TileSelected = false;
                 if (SelectedTile.Type == TileType.Factory)  //Add team check as well later
                 {
                     // Using console for now
                     // UI implmentation after frame is done
 
                     Console.WriteLine("Enter unit to be produced:\n1. Infantry\n2. Mech\n3. Tank\n4. APC");
-                    int unitType = Convert.ToInt32(Console.ReadLine());
+                    //int unitType = Convert.ToInt32(Console.ReadLine());
+                    int unitType = 1;
 
-                    Unit newUnit = new Unit(texture, SelectedTile.Position, unitType, currentTeam); //Add current team turn
+                    Unit newUnit = new Unit(Texture, SelectedTile.Position, unitType, currentTeam); //Add current team turn
                     _unitManager.AddUnit(newUnit);
                 }
-                TileSelected = false;
             }
         }
 
-        public void UpdateUI()
+        private void UpdateUI()
         {
             GetSelected();
-
-            //Display movement tiles
+            ReachableTiles();
         }
 
-        
 
         public void Update(GameTime gameTime)
         {
             _inputController.ProcessControls(gameTime);
+
             MoveUnit();
+
+            //Checking for unit generation gets stuck: when a unit is generated and you move the unit: the tile is registered as being clicked again
             //CheckForUnitGeneration();
+
             UpdateUI();
         }
 
         public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
         {
-            Selected_UI.Draw(_spriteBatch, gameTime);
+            if (UnitSelected || TileSelected)
+            {
+                Selected_UI.Draw(_spriteBatch, gameTime);
+            }
+            if (UnitSelected)
+            {
+                foreach (Tile tile in reachableOverlay)
+                {
+                    tile.Draw(_spriteBatch, gameTime);
+                }
+            }
         }
 
 
