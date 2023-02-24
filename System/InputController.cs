@@ -26,7 +26,6 @@ namespace Basic_Wars_V2.System
         public MouseState currentMouseState;
         public MouseState previousMouseState;
 
-
         public Rectangle MouseCollider { get; private set; }
 
 
@@ -46,6 +45,8 @@ namespace Basic_Wars_V2.System
 
         public void ProcessControls(GameTime gameTime)
         {
+            bool UnitSelected = false;
+
             UpdateMouseState();
 
             foreach (Unit unit in _unitManager.units)
@@ -54,17 +55,21 @@ namespace Basic_Wars_V2.System
                     && currentMouseState.LeftButton == ButtonState.Pressed 
                     && previousMouseState.LeftButton == ButtonState.Released)
                 {
+                    UnitSelected = true;
                     unit.State = UnitState.Selected;     
                 }
             }
 
-            foreach (Tile tile in _gameMap.map)
+            if (!UnitSelected)
             {
-                if (MouseCollider.Intersects(tile.Collider) 
-                    && currentMouseState.LeftButton == ButtonState.Pressed 
-                    && previousMouseState.LeftButton == ButtonState.Released)
+                foreach (Tile tile in _gameMap.map)
                 {
-                    tile.State = TileState.Selected;
+                    if (MouseCollider.Intersects(tile.Collider)
+                        && currentMouseState.LeftButton == ButtonState.Pressed
+                        && previousMouseState.LeftButton == ButtonState.Released)
+                    {
+                        tile.State = TileState.Selected;
+                    }
                 }
             }
         }
