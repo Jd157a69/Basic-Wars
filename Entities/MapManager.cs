@@ -74,23 +74,27 @@ namespace Basic_Wars_V2.Entities
                 for (int j = 0; j < MapWidth; j++)
                 {
                     randomTile = RandomTile();
+
                     tempPosition = new Vector2(x, y);
                     Tile newTile = new Tile(tempPosition, Texture);
                     newTile.MapGridPos = new Vector2(j, i);
-                    map[j, i] = newTile;
-                    map[j, i].CreateTile(randomTile);
+
                     switch (randomTile)
                     {
                         case 0:
-                            map[j, i].Type = TileType.Plains;
+                            newTile.Type = TileType.Plains;
                             break;
                         case 1:
-                            map[j, i].Type = TileType.Forest;
+                            newTile.Type = TileType.Forest;
                             break;
                         case 2:
-                            map[j, i].Type = TileType.Mountain;
+                            newTile.Type = TileType.Mountain;
                             break;
                     }
+
+                    
+                    map[j, i] = newTile;
+                    map[j, i].CreateTile(randomTile);
                     x += 56;
                 }
                 y += 56;
@@ -302,8 +306,8 @@ namespace Basic_Wars_V2.Entities
             }
 
             return terrainCost;
-        }
 
+        }
         public void DrawMap(SpriteBatch spriteBatch, GameTime gameTime)
         {
             foreach (Tile tile in map)
