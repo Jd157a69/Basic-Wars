@@ -53,7 +53,7 @@ namespace Basic_Wars_V2.Entities
             GenerateMapCollider();
         }
 
-        public void GenerateMap()
+        private void GenerateMap()
         {
             GenerateBaseMap();
             AddStructures("City");
@@ -75,7 +75,9 @@ namespace Basic_Wars_V2.Entities
                 {
                     randomTile = RandomTile();
                     tempPosition = new Vector2(x, y);
-                    map[j, i] = new Tile(tempPosition, Texture);
+                    Tile newTile = new Tile(tempPosition, Texture);
+                    newTile.MapGridPos = new Vector2(j, i);
+                    map[j, i] = newTile;
                     map[j, i].CreateTile(randomTile);
                     switch (randomTile)
                     {
@@ -129,14 +131,16 @@ namespace Basic_Wars_V2.Entities
 
                 Vector2 newGridPos = new Vector2(map[newGridX, newGridY].Position.X, map[newGridX, newGridY].Position.Y);
 
-                Structure newStructure = new Structure(newGridPos, Texture);
+                Tile newStructure = new Tile(newGridPos, Texture);
 
                 if (!(map[newGridX, newGridY].Type == TileType.City))
                 {
-                    structureCoordinates.Add(new Vector2(newGridX, newGridY));
+                    newStructure.MapGridPos = new Vector2(newGridX, newGridY);
                     map[newGridX, newGridY] = newStructure;
                     map[newGridX, newGridY].Type = Type;
                     map[newGridX, newGridY].CreateTile(StructureColumnShift, StructureRowShift);
+
+                    structureCoordinates.Add(new Vector2(newGridX, newGridY));
                 }
 
                 //Debug
@@ -206,12 +210,15 @@ namespace Basic_Wars_V2.Entities
 
         private void CreateRoadTile(int x, int y, int direction)
         {
-            Tile roadTile = new Tile(map[x, y].Position, Texture);
+
 
             if (map[x, y].Type != TileType.City && map[x, y].Type != TileType.Factory && map[x, y].Type != TileType.Mountain)
             {
+                Tile roadTile = new Tile(map[x, y].Position, Texture);
+                roadTile.Type = TileType.Road;
+                roadTile.MapGridPos = new Vector2(x, y);
+
                 map[x, y] = roadTile;
-                map[x, y].Type = TileType.Road;
                 map[x, y].CreateTile(direction);
                 //Debug
                 //Console.WriteLine($"Tile Created at: {x}, {y}");
@@ -226,22 +233,6 @@ namespace Basic_Wars_V2.Entities
         private void GenerateMapCollider()
         {
             MapCollider = new Rectangle((int)Position.X, (int)Position.Y, MapWidth*56, MapHeight*56);
-        }
-
-        public void DrawMap(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            foreach (Tile tile in map)
-            {
-                tile.Draw(spriteBatch, gameTime);
-            }
-        }
-
-        public void UpdateMap(GameTime gameTime)
-        {
-            foreach (Tile tile in map)
-            {
-                tile.Update(gameTime);
-            }
         }
 
         private int RandomTile()
@@ -260,6 +251,72 @@ namespace Basic_Wars_V2.Entities
                     return 2;
                 default:
                     return 0;
+            }
+        }
+
+        public int GetCost(Tile tile, Unit unit)
+        {
+            int terrainCost = 0;
+
+            if (unit.Type == UnitType.Infantry || unit.Type == UnitType.Mech)
+            {
+                switch (tile.Type)
+                {
+                    case TileType.Plains:
+                    case TileType.Forest:
+                    case TileType.Road:
+                        terrainCost = 1;
+                        break;
+
+                    case TileType.Mountain:
+                    case TileType.City:
+                    case TileType.Factory:
+                    case TileType.HQ:
+                        terrainCost = 2;
+                        break;
+                }
+            }
+            if (unit.Type == UnitType.Tank || unit.Type == UnitType.APC)
+            {
+                switch (tile.Type)
+                {
+                    case TileType.Road:
+                        terrainCost = 1;
+                        break;
+
+                    case TileType.Plains:
+                    case TileType.Forest:
+                        terrainCost = 2;
+                        break;
+
+                    case TileType.City:
+                    case TileType.Factory:
+                    case TileType.HQ:
+                        terrainCost = 3;
+                        break;
+
+                    case TileType.Mountain:
+                        terrainCost = 6;
+                        break;
+                }
+            }
+
+            return terrainCost;
+        }
+
+        public void DrawMap(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            foreach (Tile tile in map)
+            {
+                tile.Draw(spriteBatch, gameTime);
+            }
+        }
+
+        public void UpdateMap(GameTime gameTime)
+        {
+            foreach (Tile tile in map)
+            {
+                tile.Update(gameTime);
             }
         }
     }
