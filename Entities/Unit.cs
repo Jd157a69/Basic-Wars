@@ -32,16 +32,17 @@ namespace Basic_Wars_V2.Entities
         public UnitState State { get; set; }
       
         public int Team { get; set; }
-        public UnitType Type { get; set; }
+        public UnitType Type { get; private set; }
 
         public int Health { get; set; }
-        public int MovementPoints { get; set; }
-        public int CostToProduce { get; set; }
+        public int Ammo { get; set; }
+        public int Fuel { get; set; }
+        public int MovementPoints { get; private set; }
+        public int CostToProduce { get; private set; }
 
         
         public int ID { get; set; }
         public int DrawOrder { get; set; }
-        public Color UnitUsed = Color.White * 0.5f;
 
         public Unit(Texture2D texture, Vector2 position, int unitType, int team)
         {
@@ -81,34 +82,50 @@ namespace Basic_Wars_V2.Entities
             switch (unitType - 1)
             {
                 case 0:
-                    Type = UnitType.Infantry;
+                    Type = UnitType.Infantry;                   
+                    Ammo = 100;
+                    Fuel = 100;
                     CostToProduce = 1000;
                     MovementPoints = 3;
                     break;
 
                 case 1:
                     Type = UnitType.Mech;
+                    Ammo = 3;
+                    Fuel = 70;
                     CostToProduce = 3000;
                     MovementPoints = 2;
                     break;
 
                 case 2:
                     Type = UnitType.Tank;
+                    Ammo = 9;
+                    Fuel = 70;
                     CostToProduce = 7000;
                     MovementPoints = 6;
                     break;
 
                 case 3:
                     Type = UnitType.APC;
+                    Ammo = 0;
+                    Fuel = 60;
                     CostToProduce = 5000;
                     MovementPoints = 6;
                     break;
             }
         }
 
+        private void CheckHealth()
+        {
+            if (Health <= 0) 
+            {
+                State = UnitState.Dead;
+            }
+        }
+
         public void Update(GameTime gameTime)
         {
-
+            CheckHealth();
         }
 
     }
