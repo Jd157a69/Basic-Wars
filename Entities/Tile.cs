@@ -34,7 +34,7 @@ namespace Basic_Wars_V2.Entities
 
         public int DrawOrder { get; set; }
 
-        public int DefenseBonus { get; set; }
+        public int DefenceBonus { get; set; }
 
         public Tile(Vector2 position, Texture2D texture)
         {
@@ -67,31 +67,31 @@ namespace Basic_Wars_V2.Entities
             switch (Type)
             {
                 case TileType.Plains:
-                    DefenseBonus = 10;
+                    DefenceBonus = 10;
                     break;
 
                 case TileType.Forest:
-                    DefenseBonus = 20;
+                    DefenceBonus = 20;
                     break;
 
                 case TileType.Mountain:
-                    DefenseBonus = 40;
+                    DefenceBonus = 40;
                     break;
 
                 case TileType.Road:
-                    DefenseBonus = 0;
+                    DefenceBonus = 0;
                     break;
 
                 case TileType.City:
-                    DefenseBonus = 20;
+                    DefenceBonus = 20;
                     break;
 
                 case TileType.Factory:
-                    DefenseBonus= 20;
+                    DefenceBonus= 20;
                     break;
 
                 case TileType.HQ:
-                    DefenseBonus = 20;
+                    DefenceBonus = 20;
                     break;
             }
         }
