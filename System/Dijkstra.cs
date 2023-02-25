@@ -33,7 +33,7 @@ namespace Basic_Wars_V2.System
                 Tile currentTile = openSet.Dequeue();
                 reachableTiles.Add(currentTile);
 
-                foreach (Tile neighbor in GetNeighbors(currentTile))
+                foreach (Tile neighbor in mapManager.GetNeighbors(currentTile))
                 {
                     int cost = currentTile.TotalCost + mapManager.GetCost(currentTile, unit);
 
@@ -48,34 +48,6 @@ namespace Basic_Wars_V2.System
             }
 
             return reachableTiles;
-        }
-
-        private List<Tile> GetNeighbors(Tile tile)
-        {
-            List<Tile> neighbors = new List<Tile>();
-
-            int X = (int)tile.MapGridPos.X;
-            int Y = (int)tile.MapGridPos.Y;
-
-            if (X > 0)
-            {
-                neighbors.Add(gameMap[X - 1, Y]);
-            }
-            if (X < gameMap.GetLength(0) - 1)
-            {
-                neighbors.Add(gameMap[X + 1, Y]);
-            }
-                
-            if (Y > 0)
-            {
-                neighbors.Add(gameMap[X, Y - 1]);
-            }
-            if (Y < gameMap.GetLength(1) - 1)
-            {
-                neighbors.Add(gameMap[X, Y + 1]);
-            }
-                
-            return neighbors;
         }
     }
 
