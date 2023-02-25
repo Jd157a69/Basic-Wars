@@ -2,6 +2,7 @@
 using Basic_Wars_V2.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -308,6 +309,35 @@ namespace Basic_Wars_V2.Entities
             return terrainCost;
 
         }
+
+        public List<Tile> GetNeighbors(Tile tile)
+        {
+            List<Tile> neighbors = new List<Tile>();
+
+            int X = (int)tile.MapGridPos.X;
+            int Y = (int)tile.MapGridPos.Y;
+
+            if (X > 0)
+            {
+                neighbors.Add(map[X - 1, Y]);
+            }
+            if (X < map.GetLength(0) - 1)
+            {
+                neighbors.Add(map[X + 1, Y]);
+            }
+
+            if (Y > 0)
+            {
+                neighbors.Add(map[X, Y - 1]);
+            }
+            if (Y < map.GetLength(1) - 1)
+            {
+                neighbors.Add(map[X, Y + 1]);
+            }
+
+            return neighbors;
+        }
+
         public void DrawMap(SpriteBatch spriteBatch, GameTime gameTime)
         {
             foreach (Tile tile in map)
