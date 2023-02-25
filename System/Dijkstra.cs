@@ -33,7 +33,7 @@ namespace Basic_Wars_V2.System
                 Tile currentTile = openSet.Dequeue();
                 reachableTiles.Add(currentTile);
 
-                foreach (Tile neighbor in mapManager.GetNeighbors(currentTile))
+                foreach (Tile neighbor in mapManager.GetNeighbours(currentTile))
                 {
                     int cost = currentTile.TotalCost + mapManager.GetCost(currentTile, unit);
 

@@ -310,7 +310,7 @@ namespace Basic_Wars_V2.Entities
 
         }
 
-        public List<Tile> GetNeighbors(Tile tile)
+        public List<Tile> GetNeighbours(Tile tile)
         {
             List<Tile> neighbors = new List<Tile>();
 
