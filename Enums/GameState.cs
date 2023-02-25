@@ -9,6 +9,8 @@ namespace Basic_Wars_V2.Enums
     public enum GameState
     {
         Initial,
+        NewGame,
+        LoadGame,
         PlayerSelect,
         PlayerMoveUnit,
         PlayerAttackUnit,
