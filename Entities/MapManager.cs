@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.Entities
 {
-    public class MapManager
+    public class MapManager : IGameEntity
     {
         public Tile[,] map;
 
@@ -32,6 +32,7 @@ namespace Basic_Wars_V2.Entities
         public Texture2D Texture { get; set; }
         public Rectangle MapCollider { get; set; }
 
+        public int DrawOrder => 0;
 
         public List<Vector2> structurePoints = new List<Vector2>();
 
@@ -338,7 +339,7 @@ namespace Basic_Wars_V2.Entities
             return neighbors;
         }
 
-        public void DrawMap(SpriteBatch spriteBatch, GameTime gameTime)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             foreach (Tile tile in map)
             {
@@ -346,7 +347,7 @@ namespace Basic_Wars_V2.Entities
             }
         }
 
-        public void UpdateMap(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             foreach (Tile tile in map)
             {
