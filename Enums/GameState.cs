@@ -16,5 +16,6 @@ namespace Basic_Wars_V2.Enums
         PlayerAttackUnit,
         EnemyTurn,
         GameOver,
+        Quit,
     }
 }
