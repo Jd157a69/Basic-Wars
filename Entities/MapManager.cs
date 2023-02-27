@@ -18,13 +18,14 @@ namespace Basic_Wars_V2.Entities
     {
         public Tile[,] map;
 
-        public List<Tile> tempTiles = new List<Tile>();
+        private List<Tile> tempTiles = new List<Tile>();
 
         private const int WINDOW_WIDTH = 1920;
         private const int WINDOW_HEIGHT = 1080;
 
-        public int MapWidth { get; set; }
-        public int MapHeight { get; set; }
+        private int MapWidth { get; set; }
+        private int MapHeight { get; set; }
+        private int NumOfPlayers { get; set; }
 
         private const int TILE_DIMENSIONS = 56;
         public Vector2 MapSize { get; set; }
@@ -39,11 +40,12 @@ namespace Basic_Wars_V2.Entities
         public List<Vector2> structureCoordinates = new List<Vector2>();
         private int StructureSparsity { get; set; }
 
-        public MapManager(Texture2D texture, int mapWidth, int mapHeight)
+        public MapManager(Texture2D texture, int mapWidth, int mapHeight, int numOfPlayers = 2)
         {
             MapWidth = mapWidth;
             MapHeight = mapHeight;
             Texture = texture;
+            NumOfPlayers= numOfPlayers;
 
             Position = new Vector2(WINDOW_WIDTH / 2 - (MapWidth * TILE_DIMENSIONS / 2), WINDOW_HEIGHT / 2 - (MapHeight * TILE_DIMENSIONS / 2));
             MapSize = new Vector2(mapWidth * TILE_DIMENSIONS, mapHeight * TILE_DIMENSIONS);
@@ -58,9 +60,10 @@ namespace Basic_Wars_V2.Entities
         private void GenerateMap()
         {
             GenerateBaseMap();
-            AddStructures("City");
-            AddStructures("Factory");
-            AddRoads();
+            GenerateStructure("City");
+            GenerateStructure("Factory");
+            GenerateRoads();
+            GenerateHQs();
         }
 
         private void GenerateBaseMap()
@@ -103,7 +106,7 @@ namespace Basic_Wars_V2.Entities
             }
         }
 
-        private void AddStructures(string StructureType)
+        private void GenerateStructure(string StructureType)
         {
             int StructureColumnShift = 0;
             int StructureRowShift = 0;
@@ -127,9 +130,6 @@ namespace Basic_Wars_V2.Entities
 
             points = PoissonDiscSampling.GetPoints(StructureSparsity, MapSize);
 
-            //Debug
-            //Console.WriteLine($"{StructureType} Grid Positions:");
-
             foreach (Vector2 point in points)
             {
                 int newGridX = (int)(point.X) / TILE_DIMENSIONS;
@@ -149,12 +149,10 @@ namespace Basic_Wars_V2.Entities
                     structureCoordinates.Add(new Vector2(newGridX, newGridY));
                 }
 
-                //Debug
-                //Console.WriteLine($"[{newGridX}, {newGridY}]");
             }
         }
 
-        private void AddRoads()
+        private void GenerateRoads()
         {
             Vector2 firstStructureGridPos = new Vector2(0, 0);
             Vector2 nextStructureGridPos = new Vector2(0, 0);
@@ -175,11 +173,6 @@ namespace Basic_Wars_V2.Entities
             int x1 = (int)nextStructurePos.X;
             int y1 = (int)nextStructurePos.Y;
 
-            //Debug
-            //Console.WriteLine($"\nInitial x0 -> x1: {x0} -> {x1}");
-            //Console.WriteLine($"Initial y0 -> y1: {y0} -> {y1}\n");
-            //Console.WriteLine("Adjusting X:");
-
             while (x0 != x1)
             {
                 if (x0 > x1)
@@ -193,9 +186,6 @@ namespace Basic_Wars_V2.Entities
                     CreateRoadTile(x0, y0, 3);
                 }
             }
-
-            //Debug
-            //Console.WriteLine("Adjusting Y:");
 
             while (y0 != y1)
             {
@@ -214,26 +204,54 @@ namespace Basic_Wars_V2.Entities
             
         }
 
-        private void CreateRoadTile(int x, int y, int direction)
+        private void CreateRoadTile(int X, int Y, int direction)
         {
-
-
-            if (map[x, y].Type != TileType.City && map[x, y].Type != TileType.Factory && map[x, y].Type != TileType.Mountain)
+            if (map[X, Y].Type != TileType.City && map[X, Y].Type != TileType.Factory && map[X, Y].Type != TileType.Mountain)
             {
-                Tile roadTile = new Tile(map[x, y].Position, Texture);
+                Tile roadTile = new Tile(map[X, Y].Position, Texture);
                 roadTile.Type = TileType.Road;
-                roadTile.MapGridPos = new Vector2(x, y);
+                roadTile.MapGridPos = new Vector2(X, Y);
 
-                map[x, y] = roadTile;
-                map[x, y].CreateTile(direction);
-                //Debug
-                //Console.WriteLine($"Tile Created at: {x}, {y}");
+                map[X, Y] = roadTile;
+                map[X, Y].CreateTile(direction);
             }
-            else
+        }
+
+        public void GenerateHQs()
+        {
+            int mapWidth = MapWidth - 1;
+            int mapHeight = MapHeight - 1;  
+
+            switch (NumOfPlayers)
             {
-                //Debug
-                //Console.WriteLine($"Tile not created due to obstruction at {x}, {y}");
+                case 2:
+                    CreateHQTile(0, 0);
+                    CreateHQTile(mapWidth, mapHeight);
+                    break;
+
+                case 3:
+                    CreateHQTile(0, 0);
+                    CreateHQTile(mapWidth, mapHeight);
+                    CreateHQTile(mapWidth, 0);
+                    break;
+
+                case 4:
+                    CreateHQTile(0, 0);
+                    CreateHQTile(mapWidth, mapHeight);
+                    CreateHQTile(mapWidth, 0);
+                    CreateHQTile(0, mapHeight);
+                    break;
             }
+        }
+
+        private void CreateHQTile(int X, int Y)
+        {
+            Tile HQTile = new Tile(map[X, Y].Position, Texture);
+            HQTile.Type = TileType.HQ;
+            HQTile.MapGridPos = new Vector2(X, Y);
+
+            map[X, Y] = HQTile;
+            map[X, Y].CreateTile(-6, 2);
         }
 
         private void GenerateMapCollider()
