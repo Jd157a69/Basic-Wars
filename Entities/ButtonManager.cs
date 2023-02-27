@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Basic_Wars_V2.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,12 @@ namespace Basic_Wars_V2.Entities
             buttons.Add(button);
             button.ID = ID;
             ID++;
+        }
+
+        public void ClearButtons()
+        {
+            buttons.Clear();
+            ID = 0;
         }
         
         public void Update(GameTime gameTime)
