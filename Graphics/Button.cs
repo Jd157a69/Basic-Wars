@@ -36,6 +36,8 @@ namespace Basic_Wars_V2.Graphics
         private int ButtonShiftX { get; set; }
         private int ButtonShiftY { get; set; }
 
+        public bool Pressed { get; set; }
+
         public Button(Texture2D texture, SpriteFont font, Vector2 position, string Text, string buttonType)
         {
             ButtonPosition = position;
@@ -48,6 +50,8 @@ namespace Basic_Wars_V2.Graphics
 
             text = new Font(font, Text);
             CentreText();
+
+            Pressed = false;
         }
 
         public void CentreText()
