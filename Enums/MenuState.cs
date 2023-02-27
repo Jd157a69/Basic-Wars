@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.Enums
 {
-    public enum GameState
+    public enum MenuState
     {
-        PlayerSelect,
-        PlayerMoveUnit,
-        PlayerAttackUnit,
-        EnemyTurn,
-        GameOver,
+        Initial,
+        NewGame,
+        LoadGame,
+        QuitGame,
     }
 }
