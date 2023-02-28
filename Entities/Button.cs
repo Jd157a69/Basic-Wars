@@ -102,6 +102,7 @@ namespace Basic_Wars_V2.Entities
 
         public void UpdateButtonText(string displayedText)
         {
+            CentreText();
             text = new Font(spriteFont, displayedText);
         }
 

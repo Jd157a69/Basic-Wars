@@ -1,5 +1,4 @@
-﻿using Basic_Wars_V2.Graphics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -16,15 +15,6 @@ namespace Basic_Wars_V2.Entities
 
         public int DrawOrder { get; set; }
 
-
-        public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
-        {
-            foreach (Button button in buttons)
-            {
-                button.Draw(_spriteBatch, gameTime);
-            }
-        }
-
         public void AddButton(Button button)
         {
             buttons.Add(button);
@@ -37,10 +27,29 @@ namespace Basic_Wars_V2.Entities
             buttons.Clear();
             ID = 0;
         }
-        
+
+        public void UpdateButtonText(Button ButtonToChange, string Text)
+        {
+            foreach (Button button in buttons)
+            {
+                if (button == ButtonToChange)
+                {
+                    button.UpdateButtonText(Text);
+                }
+            }
+        }
+
         public void Update(GameTime gameTime)
         {
 
+        }
+
+        public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
+        {
+            foreach (Button button in buttons)
+            {
+                button.Draw(_spriteBatch, gameTime);
+            }
         }
     }
 }
