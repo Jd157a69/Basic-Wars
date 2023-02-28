@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.Entities
 {
-    public class MapManager : IGameEntity
+    public class MapManager : IGameEntity, ICollideable
     {
         public Tile[,] map;
 
@@ -54,7 +54,6 @@ namespace Basic_Wars_V2.Entities
             StructureSparsity = (MapWidth / 6) * TILE_DIMENSIONS;
 
             GenerateMap();
-            GenerateMapCollider();
         }
 
         private void GenerateMap()
@@ -254,9 +253,12 @@ namespace Basic_Wars_V2.Entities
             map[X, Y].CreateTile(-6, 2);
         }
 
-        private void GenerateMapCollider()
+        public Rectangle Collider
         {
-            MapCollider = new Rectangle((int)Position.X, (int)Position.Y, MapWidth*56, MapHeight*56);
+            get
+            {
+                return new Rectangle((int)Position.X, (int)Position.Y, MapWidth * TILE_DIMENSIONS, MapHeight * TILE_DIMENSIONS);
+            }
         }
 
         private int RandomTile()
