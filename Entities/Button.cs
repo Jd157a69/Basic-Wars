@@ -1,5 +1,5 @@
 ﻿using Basic_Wars.Graphics;
-using Basic_Wars_V2.Entities;
+using Basic_Wars_V2.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace Basic_Wars_V2.Graphics
+namespace Basic_Wars_V2.Entities
 {
     public class Button : IGameEntity, ICollideable
     {
@@ -24,6 +24,7 @@ namespace Basic_Wars_V2.Graphics
         public Texture2D Texture;
         public Vector2 ButtonPosition;
         public Vector2 TextPosition;
+        public SpriteFont spriteFont;
         public Font text;
 
         public int Width { get; set; }
@@ -43,13 +44,13 @@ namespace Basic_Wars_V2.Graphics
             ButtonPosition = position;
             TextPosition = position;
             Texture = texture;
+            spriteFont = font;
 
             ButtonType = buttonType;
 
             CreateButtonSprite();
 
-            text = new Font(font, Text);
-            CentreText();
+            UpdateButtonText(Text);
 
             Pressed = false;
         }
@@ -97,6 +98,11 @@ namespace Basic_Wars_V2.Graphics
             {
                 return new Rectangle((int)ButtonPosition.X, (int)ButtonPosition.Y, Width, Height);
             }
+        }
+
+        public void UpdateButtonText(string displayedText)
+        {
+            text = new Font(spriteFont, displayedText);
         }
 
         public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
