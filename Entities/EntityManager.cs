@@ -32,12 +32,12 @@ namespace Basic_Wars_V2.Entities
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime, float Scale = 1.0f)
         {
             foreach (IGameEntity entity in entities.OrderBy(e => e.DrawOrder))
             {
 
-                entity.Draw(spriteBatch, gameTime);
+                entity.Draw(spriteBatch, gameTime, Scale);
 
             }
         }
