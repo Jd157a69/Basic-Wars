@@ -9,8 +9,8 @@ namespace Basic_Wars_V2.Enums
     public enum GameState
     {
         PlayerSelect,
-        PlayerMoveUnit,
-        PlayerAttackUnit,
+        PlayerMove,
+        PlayerAttack,
         EnemyTurn,
         GameOver,
     }
