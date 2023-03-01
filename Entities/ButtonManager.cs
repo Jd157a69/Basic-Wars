@@ -44,11 +44,11 @@ namespace Basic_Wars_V2.Entities
 
         }
 
-        public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
+        public void Draw(SpriteBatch _spriteBatch, GameTime gameTime, float Scale = 1.0f)
         {
             foreach (Button button in buttons)
             {
-                button.Draw(_spriteBatch, gameTime);
+                button.Draw(_spriteBatch, gameTime, Scale);
             }
         }
     }
