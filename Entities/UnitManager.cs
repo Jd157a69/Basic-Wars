@@ -17,14 +17,14 @@ namespace Basic_Wars_V2.Entities
         private int ID = 0;
         private int TotalUnitsCreated = 0;
 
-        public int DrawOrder {get; set;}
+        public int DrawOrder => 1;
 
         public void AddUnit(Unit unit)
         {
             units.Add(unit);
             ID++;
             TotalUnitsCreated++;
-            units[TotalUnitsCreated - 1].ID = ID;       // TODO: Potential: TotalUnitsCreated could end up out of bounds due to unit removals
+            units[TotalUnitsCreated - 1].ID = ID;
         }
 
         public void RemoveUnit(Unit unit)
@@ -32,11 +32,11 @@ namespace Basic_Wars_V2.Entities
             unitsToRemove.Add(unit);
         }
 
-        public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
+        public void Draw(SpriteBatch _spriteBatch, GameTime gameTime, float Scale)
         {
             foreach (Unit unit in units)
             {
-                unit.Draw(_spriteBatch, gameTime);
+                unit.Draw(_spriteBatch, gameTime, Scale);
             }
         }
 

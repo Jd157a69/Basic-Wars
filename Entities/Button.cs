@@ -106,10 +106,10 @@ namespace Basic_Wars_V2.Entities
             text = new Font(spriteFont, displayedText);
         }
 
-        public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
+        public void Draw(SpriteBatch _spriteBatch, GameTime gameTime, float Scale = 1.0f)
         {
-            buttonSprite.Draw(_spriteBatch, ButtonPosition);
-            text.WriteText(_spriteBatch, TextPosition);
+            buttonSprite.Draw(_spriteBatch, ButtonPosition, Scale);
+            text.WriteText(_spriteBatch, TextPosition, Scale);
         }
 
         public void Update(GameTime gameTime)
