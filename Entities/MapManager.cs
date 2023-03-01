@@ -27,17 +27,19 @@ namespace Basic_Wars_V2.Entities
         private int MapHeight { get; set; }
         private int NumOfPlayers { get; set; }
 
+        public bool DrawMap { get; set; }
+
         private const int TILE_DIMENSIONS = 56;
         public Vector2 MapSize { get; set; }
         public Vector2 Position { get; set; }
-        public Texture2D Texture { get; set; }
+        private Texture2D Texture { get; set; }
         public Rectangle MapCollider { get; set; }
 
         public int DrawOrder => 0;
 
-        public List<Vector2> structurePoints = new List<Vector2>();
+        private List<Vector2> structurePoints = new List<Vector2>();
 
-        public List<Vector2> structureCoordinates = new List<Vector2>();
+        private List<Vector2> structureCoordinates = new List<Vector2>();
         private int StructureSparsity { get; set; }
 
         public MapManager(Texture2D texture, int mapWidth, int mapHeight, int numOfPlayers = 2)
@@ -52,6 +54,8 @@ namespace Basic_Wars_V2.Entities
 
             map = new Tile[MapWidth, MapHeight];
             StructureSparsity = (MapWidth / 6) * TILE_DIMENSIONS;
+
+            DrawMap = false;
 
             GenerateMap();
         }
@@ -361,9 +365,12 @@ namespace Basic_Wars_V2.Entities
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime, float Scale)
         {
-            foreach (Tile tile in map)
+            if (DrawMap)
             {
-                tile.Draw(spriteBatch, gameTime, Scale);
+                foreach (Tile tile in map)
+                {
+                    tile.Draw(spriteBatch, gameTime, Scale);
+                }
             }
         }
 

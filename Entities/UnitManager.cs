@@ -17,7 +17,14 @@ namespace Basic_Wars_V2.Entities
         private int ID = 0;
         private int TotalUnitsCreated = 0;
 
+        public bool DrawUnits { get; set; }
+
         public int DrawOrder => 1;
+
+        public UnitManager()
+        {
+            DrawUnits = false;
+        }
 
         public void AddUnit(Unit unit)
         {
@@ -34,9 +41,12 @@ namespace Basic_Wars_V2.Entities
 
         public void Draw(SpriteBatch _spriteBatch, GameTime gameTime, float Scale)
         {
-            foreach (Unit unit in units)
+            if (DrawUnits)
             {
-                unit.Draw(_spriteBatch, gameTime, Scale);
+                foreach (Unit unit in units)
+                {
+                    unit.Draw(_spriteBatch, gameTime, Scale);
+                }
             }
         }
 
