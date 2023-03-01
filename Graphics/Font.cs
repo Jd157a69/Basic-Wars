@@ -26,9 +26,9 @@ namespace Basic_Wars_V2.Graphics
             textMiddlePoint = font.MeasureString(text) / 2;
         }
 
-        public void WriteText(SpriteBatch _spriteBatch, Vector2 Position)
+        public void WriteText(SpriteBatch _spriteBatch, Vector2 Position, float Scale = 1.0f)
         {
-            _spriteBatch.DrawString(font, Text, Position, TintColour, 0, textMiddlePoint, 1.0f, SpriteEffects.None, 0.5f);
+            _spriteBatch.DrawString(font, Text, Position, TintColour, 0, textMiddlePoint, Scale, SpriteEffects.None, 0.5f);
         }
     }
 }

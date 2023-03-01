@@ -29,7 +29,7 @@ namespace Basic_Wars.Graphics
             TintColour = Color.White;
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 Position, float Scale = 1f)
+        public void Draw(SpriteBatch spriteBatch, Vector2 Position, float Scale = 1.0f)
         {
             spriteBatch.Draw(Texture, Position, new Rectangle(X, Y, Width, Height), TintColour, 0f, Vector2.Zero, Scale, SpriteEffects.None, 0f);
         }
