@@ -10,9 +10,9 @@ namespace Basic_Wars_V2.Entities
 {
     internal class EntityManager
     {
-        public List<IGameEntity> entities = new List<IGameEntity>();
-        public List<IGameEntity> entitiesToRemove = new List<IGameEntity>();
-        public List<IGameEntity> entitiesToAdd = new List<IGameEntity>();
+        private List<IGameEntity> entities = new List<IGameEntity>();
+        private List<IGameEntity> entitiesToRemove = new List<IGameEntity>();
+        private List<IGameEntity> entitiesToAdd = new List<IGameEntity>();
 
         public void Update(GameTime gameTime)
         {
