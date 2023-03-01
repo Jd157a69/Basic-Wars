@@ -11,6 +11,7 @@ namespace Basic_Wars_V2.Enums
         Initial,
         NewGame,
         LoadGame,
+        RefreshMap,
         PlayingGame,
         QuitGame,
     }
