@@ -22,10 +22,19 @@ namespace Basic_Wars_V2.Entities
             ID++;
         }
 
-        public void ClearButtons()
+        public void DrawButtonIDs(int initialID = 0, int finalID = 0)
         {
-            buttons.Clear();
-            ID = 0;
+            foreach (Button button in buttons)
+            {
+                if (button.ID >= initialID && button.ID <= finalID)
+                {
+                    button.DrawButton = true;
+                }
+                else
+                {
+                    button.DrawButton = false;  
+                }
+            }
         }
 
         public void UpdateButtonText(Button ButtonToChange, string Text)
@@ -48,7 +57,10 @@ namespace Basic_Wars_V2.Entities
         {
             foreach (Button button in buttons)
             {
-                button.Draw(_spriteBatch, gameTime, Scale);
+                if (button.DrawButton)
+                {
+                    button.Draw(_spriteBatch, gameTime, Scale);
+                }
             }
         }
     }

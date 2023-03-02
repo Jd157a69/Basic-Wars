@@ -14,37 +14,39 @@ namespace Basic_Wars_V2.Entities
 {
     public class Button : IGameEntity, ICollideable
     {
-        public const int X_SPRITE_SHEET_START_POS = 0;
-        public const int Y_SPRITE_SHEET_START_POS = 392;
+        private const int X_SPRITE_SHEET_START_POS = 0;
+        private const int Y_SPRITE_SHEET_START_POS = 392;
 
         public int DrawOrder { get; set; }
 
-        public Sprite buttonSprite;
+        private Sprite buttonSprite;
 
-        public Texture2D Texture;
-        public Vector2 ButtonPosition;
-        public Vector2 TextPosition;
-        public SpriteFont spriteFont;
-        public Font text;
+        private Texture2D Texture;
+        private Vector2 ButtonPosition;
+        private Vector2 TextPosition;
+        private SpriteFont spriteFont;
+        private Font text;
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        private int Width;
+        private int Height;
 
         public int ID { get; set; }
 
-        public string ButtonType { get; set; }
+        private string ButtonType { get; set; }
 
         private int ButtonShiftX { get; set; }
         private int ButtonShiftY { get; set; }
 
         public bool Pressed { get; set; }
+        public bool DrawButton { get; set;}
 
-        public Button(Texture2D texture, SpriteFont font, Vector2 position, string Text, string buttonType)
+        public Button(Texture2D texture, SpriteFont font, Vector2 position, string buttonType, string Text = "")
         {
             ButtonPosition = position;
             TextPosition = position;
             Texture = texture;
             spriteFont = font;
+            DrawButton = false;
 
             ButtonType = buttonType;
 
@@ -58,6 +60,12 @@ namespace Basic_Wars_V2.Entities
         public void CentreText()
         {
             TextPosition = new Vector2(TextPosition.X + Width / 2, TextPosition.Y + Height / 2);
+        }
+
+        public void CreateButtonSprite()
+        {
+            GetButtonType();
+            buttonSprite = new Sprite(Texture, X_SPRITE_SHEET_START_POS + ButtonShiftX, Y_SPRITE_SHEET_START_POS + ButtonShiftY, Width, Height);
         }
 
         public void GetButtonType()
@@ -82,14 +90,14 @@ namespace Basic_Wars_V2.Entities
                     Width = 320;
                     Height = 127;
                     break;
+                default:
+                    ButtonShiftX = 500;
+                    ButtonShiftY = 500;
+                    Width = 320;
+                    Height = 127;
+                    break;
             }
 
-        }
-
-        public void CreateButtonSprite()
-        {
-            GetButtonType();
-            buttonSprite = new Sprite(Texture, X_SPRITE_SHEET_START_POS + ButtonShiftX, Y_SPRITE_SHEET_START_POS + ButtonShiftY, Width, Height);
         }
 
         public Rectangle Collider
@@ -102,8 +110,8 @@ namespace Basic_Wars_V2.Entities
 
         public void UpdateButtonText(string displayedText)
         {
-            CentreText();
             text = new Font(spriteFont, displayedText);
+            CentreText();
         }
 
         public void Draw(SpriteBatch _spriteBatch, GameTime gameTime, float Scale = 1.0f)
