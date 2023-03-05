@@ -37,10 +37,12 @@ namespace Basic_Wars_V2.Entities
         public int Health { get; set; }
         public int Ammo { get; set; }
         public int Fuel { get; set; }
+        public float Defence { get; set; }
         public int MovementPoints { get; private set; }
         public int CostToProduce { get; private set; }
 
-        
+        public bool Selected { get; set; }
+
         public int ID { get; set; }
         public int DrawOrder { get; set; }
 
@@ -76,8 +78,9 @@ namespace Basic_Wars_V2.Entities
 
         public void SetUnitAttributes(int unitType)
         {
+            Selected = false;
             Health = 100;
-            State = UnitState.Idle;
+            State = UnitState.None;
 
             switch (unitType - 1)
             {
