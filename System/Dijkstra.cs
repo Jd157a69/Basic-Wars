@@ -23,14 +23,14 @@ namespace Basic_Wars_V2.System
         public List<Tile> FindReachableTiles(Tile startingTile, Unit unit)
         {
             List<Tile> reachableTiles = new List<Tile>();
-            PriorityQueue<Tile, int> openSet = new PriorityQueue<Tile, int>();
+            PriorityQueue<Tile, int> queue = new PriorityQueue<Tile, int>();
 
             startingTile.TotalCost = 0;
-            openSet.Enqueue(startingTile, 0);
+            queue.Enqueue(startingTile, 0);
 
-            while (openSet.Count > 0)
+            while (queue.Count > 0)
             {
-                Tile currentTile = openSet.Dequeue();
+                Tile currentTile = queue.Dequeue();
                 reachableTiles.Add(currentTile);
 
                 foreach (Tile neighbor in mapManager.GetNeighbours(currentTile))
@@ -42,7 +42,7 @@ namespace Basic_Wars_V2.System
                         neighbor.TotalCost = cost;
                         neighbor.Parent = currentTile;
 
-                        openSet.Enqueue(neighbor, cost);
+                        queue.Enqueue(neighbor, cost);
                     }
                 }
             }

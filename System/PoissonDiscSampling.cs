@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,50 +11,49 @@ namespace Basic_Wars_V2.System
 {
     public static class PoissonDiscSampling
     {
-        public static List<Vector2> GetPoints (double radius, Vector2 regionsSize, int k = 30)
+        public static List<Vector2> GetPoints (double radius, Vector2 mapSize, int k = 30)
         {
             Random random = new Random();
-            int numOfDimensions = 2;
 
-            double cellSize = radius / Math.Sqrt(numOfDimensions);
+            double cellSize = radius / Math.Sqrt(2);
 
-            int nCellsWidth = (int)(regionsSize.X / cellSize) + 1;
-            int nCellsHeight = (int)(regionsSize.Y / cellSize) + 1;
+            int Width = (int)(mapSize.X / cellSize) + 1;
+            int Height = (int)(mapSize.Y / cellSize) + 1;
 
-            int[,] grid = new int[nCellsWidth, nCellsHeight];
+            int[,] grid = new int[Width, Height];
 
             List<Vector2> points = new List<Vector2>();
-            List<Vector2> spawnPoints = new List<Vector2>();
+            List<Vector2> startPoints = new List<Vector2>();
 
-            Vector2 initialPoint = new Vector2(random.Next((int)regionsSize.X), random.Next((int)regionsSize.Y));
+            Vector2 initialPoint = new Vector2(random.Next((int)mapSize.X), random.Next((int)mapSize.Y));
 
-            spawnPoints.Add(initialPoint);
+            startPoints.Add(initialPoint);
 
-            while (spawnPoints.Count > 0)
+            while (startPoints.Count > 0)
             {
-                int spawnIndex = random.Next(spawnPoints.Count);
-                Vector2 spawnPoint = spawnPoints[spawnIndex];
+                int randomIndex = random.Next(startPoints.Count);
+                Vector2 startPoint = startPoints[randomIndex];
 
-                bool candidateFound = false;
+                bool potentialPointFound = false;
                 for (int tries = 0; tries < k; tries++)
                 {
                     double angle = random.NextDouble() * 2 * Math.PI;
                     Vector2 direction = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
-                    Vector2 candidatePoint = spawnPoint + direction * random.Next((int)radius, (int)radius * 2);
+                    Vector2 candidatePoint = startPoint + direction * random.Next((int)radius, (int)radius * 2);
 
-                    if (isValid(candidatePoint, regionsSize, cellSize, points, grid, radius))
+                    if (isValid(candidatePoint, mapSize, cellSize, points, grid, radius))
                     {
                         points.Add(candidatePoint);
-                        spawnPoints.Add(candidatePoint);
+                        startPoints.Add(candidatePoint);
                         grid[(int)(candidatePoint.X / cellSize), (int)(candidatePoint.Y / cellSize)] = points.Count;
-                        candidateFound = true;
+                        potentialPointFound = true;
                         break;
                     }
                 }
 
-                if (!candidateFound)
+                if (!potentialPointFound)
                 {
-                    spawnPoints.RemoveAt(spawnIndex);
+                    startPoints.RemoveAt(randomIndex);
                     break;
                 }
 
@@ -62,25 +62,24 @@ namespace Basic_Wars_V2.System
             return points;
         }
 
-        static bool isValid(Vector2 candidatePoint, Vector2 regionSize, double cellSize, List<Vector2> points, int[,] grid, double radius)
+        static bool isValid(Vector2 potentialPoint, Vector2 mapSize, double cellSize, List<Vector2> points, int[,] grid, double radius)
         {
-            if (candidatePoint.X >= 0 && candidatePoint.X < regionSize.X && candidatePoint.Y >= 0 && candidatePoint.Y < regionSize.Y) 
+            if (potentialPoint.X >= 0 && potentialPoint.X < mapSize.X && potentialPoint.Y >= 0 && potentialPoint.Y < mapSize.Y) 
             {
-                int cellX = (int)(candidatePoint.X / cellSize);
-                int cellY = (int)(candidatePoint.Y / cellSize);
-                int searchStartX = Math.Max(0, cellX - 2);
-                int searchEndX = Math.Min(cellX + 2, grid.GetLength(0) - 1);
-                int searchStartY = Math.Max(0, cellY - 2);
-                int searchEndY = Math.Min(cellY + 2, grid.GetLength(1) - 1);
+                Vector2 cell = new Vector2((float)(potentialPoint.X / cellSize), (float)(potentialPoint.Y / cellSize));
+                int startX = Math.Max(0, (int)cell.X - 2);
+                int endX = Math.Min((int)cell.X + 2, grid.GetLength(0) - 1);
+                int startY = Math.Max(0, (int)cell.Y - 2);
+                int endY = Math.Min((int)cell.Y + 2, grid.GetLength(1) - 1);
 
-                for (int x = searchStartX; x <= searchEndX; x++)
+                for (int x = startX; x <= endX; x++)
                 {
-                    for (int y = searchStartY; y <= searchEndY; y++)
+                    for (int y = startY; y <= endY; y++)
                     {
                         int pointIndex = grid[x, y] - 1;
                         if (pointIndex != -1)
                         {
-                            double squrdDistance = (Vector2.DistanceSquared(candidatePoint, points[pointIndex]));
+                            double squrdDistance = (SquaredDistance(potentialPoint, points[pointIndex]));
                             if (squrdDistance < radius * radius)
                             {
                                 return false;
@@ -91,6 +90,13 @@ namespace Basic_Wars_V2.System
                 return true;
             }
             return false;
+        }
+
+        static double SquaredDistance(Vector2 start, Vector2 end)
+        {
+            double x = start.X - end.X;
+            double y = start.Y - end.Y;
+            return x * x + y * y;
         }
     }
 }
