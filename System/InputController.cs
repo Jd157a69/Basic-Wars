@@ -57,7 +57,7 @@ namespace Basic_Wars_V2.System
                    )
                 {
                     UnitSelected = true;
-                    unit.State = UnitState.Selected;     
+                    unit.Selected = true;    
                 }
             }
 
@@ -93,7 +93,7 @@ namespace Basic_Wars_V2.System
         {
             foreach (Unit unit in _unitManager.units)
             {
-                if (unit.State == UnitState.Selected)
+                if (unit.Selected)
                 {
                     return unit;
                 }
