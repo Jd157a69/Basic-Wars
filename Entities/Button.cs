@@ -43,7 +43,7 @@ namespace Basic_Wars_V2.Entities
         public Button(Texture2D texture, SpriteFont font, Vector2 position, string buttonType, string Text = "")
         {
             ButtonPosition = position;
-            TextPosition = position;
+
             Texture = texture;
             spriteFont = font;
             DrawButton = false;
@@ -59,7 +59,7 @@ namespace Basic_Wars_V2.Entities
 
         public void CentreText()
         {
-            TextPosition = new Vector2(TextPosition.X + Width / 2, TextPosition.Y + Height / 2);
+            TextPosition = new Vector2(ButtonPosition.X + Width / 2, ButtonPosition.Y + Height / 2);
         }
 
         public void CreateButtonSprite()
@@ -111,7 +111,7 @@ namespace Basic_Wars_V2.Entities
         public void UpdateButtonText(string displayedText)
         {
             text = new Font(spriteFont, displayedText);
-            CentreText();
+            CentreText();   //Should only centre text once, currently doing it every update
         }
 
         public void Draw(SpriteBatch _spriteBatch, GameTime gameTime, float Scale = 1.0f)
