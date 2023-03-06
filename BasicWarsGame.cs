@@ -53,6 +53,7 @@ namespace Basic_Wars_V2
         private bool NextPlayer;
 
         private InputController _inputController;
+
         private GameUI _gameUI;
         private EntityManager _entityManager;
         private UnitManager _unitManager;

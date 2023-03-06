@@ -90,6 +90,12 @@ namespace Basic_Wars_V2.Entities
                     Width = 289;
                     Height = 127;
                     break;
+                case "Tile":
+                    ButtonShiftX = 500;
+                    ButtonShiftY = 500;
+                    Width = 56;
+                    Height = 56;
+                    break;
                 default:
                     ButtonShiftX = 500;
                     ButtonShiftY = 500;
@@ -97,7 +103,6 @@ namespace Basic_Wars_V2.Entities
                     Height = 127;
                     break;
             }
-
         }
 
         public Rectangle Collider
