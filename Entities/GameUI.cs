@@ -227,7 +227,7 @@ namespace Basic_Wars_V2.Entities
             return reachableTiles;
         }
 
-        public List<Tile> GetAttackableTiles(Unit Unit, Tile StartingTile)
+        public List<Tile> GetAttackableTiles(Unit attackingUnit, Tile StartingTile)
         {
             attackableTiles.Clear();
 
@@ -235,12 +235,12 @@ namespace Basic_Wars_V2.Entities
 
             foreach (Tile tile in adjacentTiles)
             {
-                foreach (Unit unit in _unitManager.units)
+                foreach (Unit defendingUnit in _unitManager.units)
                 {
                     if (
-                        unit.Position == tile.Position
-                        && unit.Team != Unit.Team
-                        && Unit.Type != UnitType.APC
+                        defendingUnit.Position == tile.Position
+                        && defendingUnit.Team != attackingUnit.Team
+                        && attackingUnit.Type != UnitType.APC
                        )
                     {
                         Tile attackingTile = new Tile(tile.Position, Texture);
@@ -392,7 +392,7 @@ namespace Basic_Wars_V2.Entities
                 switch (PressedButton.ID)
                 {
                     case 15:
-                        return GameState.PlayerSelect;
+                        return GameState.SelectAction;
 
                     case 16:
                         DrawReachable = true;
