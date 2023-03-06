@@ -16,11 +16,13 @@ namespace Basic_Wars_V2.Entities
 {
     public class GameUI : IGameEntity
     {
+        //Init
         private Button BasicWarsTitle;
         private Button NewGameButton;
         private Button LoadGameButton;
         private Button QuitGameButton;
 
+        //NewGame
         private Button NumOfPlayersInfo;
         private Button Players2Button;
         private Button Players3Button;
@@ -29,17 +31,20 @@ namespace Basic_Wars_V2.Entities
         private Button StartGameButton;
         private Button Menu;
 
+        //Turn
         private Button TurnNumberInfo;
         private Button CurrentPlayerTeamInfo;
         private Button CurrentPlayerFundsInfo;
         private Button EndTurnButton;
 
+        //DisplayActions
         private Button PlayerIdleButton;
         private Button PlayerMoveButton;
         private Button PlayerAttackButton;
         private Button ReturnButton;
         private Button CaptureButton;
 
+        //DisplayAttributes
         private Button AttributeDisplayInfo;
         //private Button TypeInfo;
         private Button HealthInfo;
@@ -47,6 +52,11 @@ namespace Basic_Wars_V2.Entities
         private Button FuelInfo;
         private Button DefenceInfo;
 
+        //DisplayProductionChoices
+        private Button UnitInfantryButton;
+        private Button UnitMechButton;
+        private Button UnitTankButton;
+        private Button UnitAPCButton;
 
         private Tile SelectedUI;
         public bool DrawSelectedUI { get; set; }
@@ -416,6 +426,8 @@ namespace Basic_Wars_V2.Entities
 
         public void DisplayAttributes(Unit unit = null, Tile tile = null)
         {
+            _buttonManager.DrawButtonIDs(11, 14, 20, 24);
+
             CurrentUnit = unit;
             CurrentTile = tile;
 
@@ -426,6 +438,11 @@ namespace Basic_Wars_V2.Entities
                 _buttonManager.UpdateButtonText(FuelInfo, $"{CurrentUnit.Fuel}");
                 _buttonManager.UpdateButtonText(DefenceInfo, $"{CurrentUnit.Defence}");
             }
+        }
+
+        public void DisplayProductionChoices()
+        {
+
         }
     }
 }

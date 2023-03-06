@@ -53,6 +53,7 @@ namespace Basic_Wars_V2
         private bool NextPlayer;
 
         private InputController _inputController;
+        private bool ProcessButtonsOnly;
 
         private GameUI _gameUI;
         private EntityManager _entityManager;
@@ -139,6 +140,7 @@ namespace Basic_Wars_V2
 
             _gameUI = new GameUI(InGameAssets, Font, _gameMap, _unitManager, _buttonManager);
             _inputController = new InputController(_unitManager, _buttonManager, _gameMap);
+            ProcessButtonsOnly = false;
 
             _entityManager.AddEntity(_gameMap);
             _entityManager.AddEntity(_unitManager);
@@ -158,7 +160,7 @@ namespace Basic_Wars_V2
         {
             base.Update(gameTime);
 
-            _inputController.ProcessControls(gameTime);
+            _inputController.ProcessControls(gameTime, ProcessButtonsOnly);
             Button PressedButton = _inputController.GetButtonPressed();
 
             if (menuState != MenuState.PlayingGame)
@@ -223,8 +225,8 @@ namespace Basic_Wars_V2
                 switch (gameState)
                 {
                     case GameState.PlayerSelect:
-                        gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);
-                        PlayerSelect(gameTime);     //Stop registering other actions that are not related to PlayerSelectAction
+                        gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);       //Cancels out the displaying of unit attributes
+                        PlayerSelect(gameTime);
                         break;
 
                     case GameState.SelectAction:
@@ -299,6 +301,8 @@ namespace Basic_Wars_V2
 
         private void PlayerSelect(GameTime gameTime)
         {
+            ProcessButtonsOnly = false;
+            
             if (SelectedUnit != null)
             {
                 SelectedUnit.State = UnitState.None;
@@ -338,6 +342,8 @@ namespace Basic_Wars_V2
 
         private void PlayerSelectAction(GameTime gameTime, Button PressedButton)
         {
+            ProcessButtonsOnly = true;
+            _gameUI.DisplayAttributes(SelectedUnit);
             reachableTiles = _gameUI.GetReachableTiles(SelectedUnit, _inputController.GetUnitPositions(), _inputController.GetUnitTile(SelectedUnit));
             attackableTiles = _gameUI.GetAttackableTiles(SelectedUnit, _inputController.GetUnitTile(SelectedUnit));
             gameState = _gameUI.DisplayPlayerActions(gameTime, PressedButton);
@@ -408,7 +414,7 @@ namespace Basic_Wars_V2
             {
                 Console.WriteLine($"Defending unit health before: {defendingUnit.Health}");
                 attackingUnit.Ammo--;
-                defendingUnit.Health -= DamageCalculation(attackingUnit, defendingUnit);
+                defendingUnit.Health -= CalculateDamage(attackingUnit, defendingUnit);
                 Console.WriteLine($"Defending unit health after: {defendingUnit.Health}");
 
                 attackingUnit.State = UnitState.None;
@@ -417,7 +423,7 @@ namespace Basic_Wars_V2
             }
         }
 
-        private int DamageCalculation(Unit attackingUnit, Unit defendingUnit)
+        private int CalculateDamage(Unit attackingUnit, Unit defendingUnit)
         {
             int damage = 0;
 
