@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,17 +38,25 @@ namespace Basic_Wars_V2.Entities
         private Button PlayerMoveButton;
         private Button PlayerAttackButton;
         private Button ReturnButton;
+        private Button CaptureButton;
 
         private Button AttributeDisplayInfo;
+        //private Button TypeInfo;
         private Button HealthInfo;
+        private Button AmmoInfo;
+        private Button FuelInfo;
+        private Button DefenceInfo;
+
 
         private Tile SelectedUI;
         public bool DrawSelectedUI { get; set; }
 
         private List<Tile> reachableTiles = new List<Tile>();
         private List<Tile> moveableOverlay = new List<Tile>();
+        private bool DrawReachable = false;
 
         private List<Tile> attackableTiles = new List<Tile>();
+        private bool DrawAttackable = false;
 
         private List<Tile> tilesToBeRemoved = new List<Tile>();
 
@@ -64,7 +73,6 @@ namespace Basic_Wars_V2.Entities
 
         private int CentreButtonX = (1920 - 672) / 2;
 
-        private int TurnNumber = 0;
         private Player CurrentPlayer;
         private Unit CurrentUnit;
         private Tile CurrentTile;
@@ -100,15 +108,15 @@ namespace Basic_Wars_V2.Entities
 
             NumOfPlayersInfo = new Button(Texture, Font, new Vector2(CentreButtonX + 615, 0), "Menu", $"Number of Players: {numOfplayers}");
             Players2Button = new Button(Texture, Font, new Vector2(0, 180), "AltMenu", "2");
-            Players3Button = new Button(Texture, Font, new Vector2(0, 360), "AltMenu", "3");
-            Players4Button = new Button(Texture, Font, new Vector2(0, 540), "AltMenu", "4");
+            Players3Button = new Button(Texture, Font, new Vector2(0, 304), "AltMenu", "3");
+            Players4Button = new Button(Texture, Font, new Vector2(0, 428), "AltMenu", "4");
             RefreshMapButton = new Button(Texture, Font, new Vector2(0, 720), "AltMenu", "Refresh Map");
             StartGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 900), "Menu", "Start Game");
             Menu = new Button(Texture, Font, new Vector2(0, 0), "AltMenu", "Main Menu");
 
             EndTurnButton = new Button(Texture, Font, new Vector2(1600, 925), "AltMenu", $"End Turn");
 
-            TurnNumberInfo = new Button(Texture, Font, new Vector2(1600, 0), "AltMenu", $"Turn: {TurnNumber}");
+            TurnNumberInfo = new Button(Texture, Font, new Vector2(1600, 0), "AltMenu", $"Turn: 0");
             CurrentPlayerTeamInfo = new Button(Texture, Font, new Vector2(0, 0), "AltMenu", $"Player: {CurrentPlayer.Team}");
             CurrentPlayerFundsInfo = new Button(Texture, Font, new Vector2(0, 126), "AltMenu", $"{CurrentPlayer.Funds}");
 
@@ -116,9 +124,14 @@ namespace Basic_Wars_V2.Entities
             PlayerMoveButton = new Button(Texture, Font, new Vector2(0, 425), "AltMenu", "Move");
             PlayerAttackButton = new Button(Texture, Font, new Vector2(0, 550), "AltMenu", "Attack");
             ReturnButton = new Button(Texture, Font, new Vector2(0, 675), "AltMenu", "Return");
+            CaptureButton = new Button(Texture, Font, new Vector2(0, 125), "AltMenu", "Capture");
 
-            AttributeDisplayInfo = new Button(Texture, Font, new Vector2(1600, 180), "AttributeDisplay");
-            HealthInfo = new Button(Texture, Font, new Vector2(0, 180), "None");
+            AttributeDisplayInfo = new Button(Texture, Font, new Vector2(1600, 180), "Attribute");
+            //TypeInfo = new Button(Texture, Font, new Vector2(1600, 180), "None");
+            HealthInfo = new Button(Texture, Font, new Vector2(1625, 274.5f - 110), "None");
+            AmmoInfo = new Button(Texture, Font, new Vector2(1625, 369 - 110), "None");
+            FuelInfo = new Button(Texture, Font, new Vector2(1625, 463.5f - 110), "None");
+            DefenceInfo = new Button(Texture, Font, new Vector2(1625, 558 - 110), "None");
 
             _buttonManager.AddButton(BasicWarsTitle);
             _buttonManager.AddButton(NewGameButton);
@@ -142,9 +155,14 @@ namespace Basic_Wars_V2.Entities
             _buttonManager.AddButton(PlayerMoveButton);
             _buttonManager.AddButton(PlayerAttackButton);
             _buttonManager.AddButton(ReturnButton);
+            _buttonManager.AddButton(CaptureButton);
 
-            //_buttonManager.AddButton(AttributeDisplayInfo);
-            //_buttonManager.AddButton(HealthInfo);
+            _buttonManager.AddButton(AttributeDisplayInfo);
+            //_buttonManager.AddButton(TypeInfo);
+            _buttonManager.AddButton(HealthInfo);
+            _buttonManager.AddButton(AmmoInfo);
+            _buttonManager.AddButton(FuelInfo);
+            _buttonManager.AddButton(DefenceInfo);
         }
 
         public void ChangeSelectedPosition(Vector2 position)
@@ -154,60 +172,6 @@ namespace Basic_Wars_V2.Entities
 
         public List<Tile> GetReachableTiles(Unit unit, List<Vector2> UnitPositions, Tile StartingTile)
         {
-            //if (UnitSelected)
-            //{
-            //    Tile startingTile = GetCurrentUnitTile(SelectedUnit);
-
-            //    reachableTiles = _pathFinder.FindReachableTiles(startingTile, SelectedUnit);
-
-            //    //Blocking movement onto tiles already containing another unit
-            //    foreach (Unit unit in _unitManager.units)
-            //    {
-            //        foreach (Tile tile in reachableTiles)
-            //        {
-            //            if (unit.Position == tile.Position && SelectedUnit != unit)
-            //            {
-            //                tilesToBeRemoved.Add(tile);
-            //            }
-            //        }
-            //    }
-            //    foreach (Tile tile in tilesToBeRemoved)
-            //    {
-            //        reachableTiles.Remove(tile);
-            //    }
-            //    tilesToBeRemoved.Clear();
-
-
-            //    foreach (Tile tile in reachableTiles)
-            //    {
-            //        if (tile.Position != SelectedUnit.Position)
-            //        {
-            //            if (
-            //                !(tile.Type == TileType.Mountain 
-            //                && SelectedUnit.Type == UnitType.Tank) 
-            //                && !(tile.Type == TileType.Mountain 
-            //                && SelectedUnit.Type == UnitType.APC)
-            //               )
-            //            {
-            //                Tile overlayTile = new Tile(tile.Position, Texture);
-            //                overlayTile.CreateTile(2, 1);
-            //                moveableOverlay.Add(overlayTile);
-            //            }
-            //            else
-            //            {
-            //                tilesToBeRemoved.Add(tile);
-            //            }
-            //        }
-            //    }
-
-            //    //Blocking display of mountain tiles for vehicles
-            //    foreach (Tile tile in tilesToBeRemoved)
-            //    {
-            //        moveableOverlay.Remove(tile);
-            //    }
-            //    tilesToBeRemoved.Clear();
-            //}
-
             reachableTiles.Clear();
             moveableOverlay.Clear();
 
@@ -289,36 +253,6 @@ namespace Basic_Wars_V2.Entities
             return attackableTiles;
         }
 
-        //public void DisplayAttributes(Unit unit = null, Tile tile = null)
-        //{
-        //    if (UnitSelected)
-        //    {
-        //        Unit previousUnit = SelectedUnit;
-        //        Console.WriteLine($"Type: {previousUnit.Type}");
-        //        Console.WriteLine($"Health: {previousUnit.Health}");
-        //        Console.WriteLine($"Ammo: {previousUnit.Ammo}");
-        //        Console.WriteLine($"Movement Range: {previousUnit.MovementPoints}");
-        //    }
-        //    if (TileSelected)
-        //    {
-        //        Tile previousTile = SelectedTile;
-        //        Console.WriteLine($"Type: {previousTile.Type}");
-        //        Console.WriteLine($"Defence Bonus: {previousTile.DefenceBonus}");
-        //    }
-
-        //    Button AttributeInfo = new Button(Texture, Font, new Vector2(0, 0), "", "Attribute");
-        //    _buttonManager.AddButton(AttributeInfo);
-
-        //    if (unit != null)
-        //    {
-        ////        Display Unit attributes
-        //    }
-        //    else
-        //    {
-        ////        Display Tile attributes
-        //    }
-        //}
-
         public void ChangeMap(MapManager gameMap)
         {
             _gameMap = gameMap;
@@ -337,19 +271,22 @@ namespace Basic_Wars_V2.Entities
                 SelectedUI.Draw(_spriteBatch, gameTime);
             }
 
-
-            foreach (Tile tile in moveableOverlay)
+            if (DrawReachable)
             {
-                tile.Draw(_spriteBatch, gameTime);
+                foreach (Tile tile in moveableOverlay)
+                {
+                    tile.Draw(_spriteBatch, gameTime);
+                }
             }
 
-
-            foreach (Tile tile in attackableTiles)
+            if (DrawAttackable)
             {
-                tile.Draw(_spriteBatch, gameTime);
+                foreach (Tile tile in attackableTiles)
+                {
+                    tile.Draw(_spriteBatch, gameTime);
+                }
             }
-
-
+            
             _buttonManager.Draw(_spriteBatch, gameTime);
         }
 
@@ -386,17 +323,17 @@ namespace Basic_Wars_V2.Entities
                     case 5:
                         numOfplayers = 2;
                         _buttonManager.UpdateButtonText(NumOfPlayersInfo, $"Number of Players: {numOfplayers}");
-                        break;
+                        return MenuState.RefreshMap;
 
                     case 6:
                         numOfplayers = 3;
                         _buttonManager.UpdateButtonText(NumOfPlayersInfo, $"Number of Players: {numOfplayers}");
-                        break;
+                        return MenuState.RefreshMap;
 
                     case 7:
                         numOfplayers = 4;
                         _buttonManager.UpdateButtonText(NumOfPlayersInfo, $"Number of Players: {numOfplayers}");
-                        break;
+                        return MenuState.RefreshMap;
 
                     case 8:
                         return MenuState.RefreshMap;
@@ -425,15 +362,15 @@ namespace Basic_Wars_V2.Entities
             return Players;
         }
 
-        public GameState StartTurn(GameTime gameTime, Player currentPlayer, int turnNumber, Button PressedButton)
+        public GameState Turn(GameTime gameTime, Player currentPlayer, int turnNumber, Button PressedButton)
         {
             _buttonManager.DrawButtonIDs(11, 14);
 
-            _buttonManager.UpdateButtonText(CurrentPlayerTeamInfo, $"{currentPlayer.Team}");
-            _buttonManager.UpdateButtonText(CurrentPlayerFundsInfo, $"{currentPlayer.Funds}");
-
-            TurnNumber = turnNumber;
             CurrentPlayer = currentPlayer;
+
+            _buttonManager.UpdateButtonText(CurrentPlayerTeamInfo, $"Team: {currentPlayer.Team + 1}");
+            _buttonManager.UpdateButtonText(CurrentPlayerFundsInfo, $"Funds: {currentPlayer.Funds}");
+            _buttonManager.UpdateButtonText(TurnNumberInfo, $"Turn: {turnNumber}");
 
             if (PressedButton != null)
             {
@@ -448,26 +385,32 @@ namespace Basic_Wars_V2.Entities
 
         public GameState DisplayPlayerActions(GameTime gameTime, Button PressedButton)
         {
-            _buttonManager.DrawButtonIDs(11, 18);
+            _buttonManager.DrawButtonIDs(11, 18, 20, 24);       //Need to be able to display both actions and attributes but how?
 
             if (PressedButton != null)
             {
                 switch (PressedButton.ID)
                 {
                     case 15:
-                        return GameState.PlayerSelect; //Should set unit to non usable
+                        return GameState.PlayerSelect;
 
                     case 16:
+                        DrawReachable = true;
                         return GameState.PlayerMove;
 
                     case 17:
+                        DrawAttackable = true;
                         return GameState.PlayerAttack;
 
                     case 18:
+                        DrawReachable = false;
+                        DrawAttackable = false;
                         return GameState.PlayerSelect;
                 }
             }
 
+            DrawReachable = false;
+            DrawAttackable = false;
             return GameState.SelectAction;
         }
 
@@ -476,7 +419,13 @@ namespace Basic_Wars_V2.Entities
             CurrentUnit = unit;
             CurrentTile = tile;
 
-            //Change depending on unit and tile
+            if (CurrentUnit != null)
+            {
+                _buttonManager.UpdateButtonText(HealthInfo, $"{CurrentUnit.Health}");
+                _buttonManager.UpdateButtonText(AmmoInfo, $"{CurrentUnit.Ammo}");
+                _buttonManager.UpdateButtonText(FuelInfo, $"{CurrentUnit.Fuel}");
+                _buttonManager.UpdateButtonText(DefenceInfo, $"{CurrentUnit.Defence}");
+            }
         }
     }
 }
