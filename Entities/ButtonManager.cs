@@ -22,11 +22,11 @@ namespace Basic_Wars_V2.Entities
             ID++;
         }
 
-        public void DrawButtonIDs(int initialID = 0, int finalID = 0)
+        public void DrawButtonIDs(int initialID = -1, int finalID = -1, int initial2ID = -1, int final2ID = -1)
         {
             foreach (Button button in buttons)
             {
-                if (button.ID >= initialID && button.ID <= finalID)
+                if ((button.ID >= initialID && button.ID <= finalID) || (button.ID >= initial2ID && button.ID <= final2ID)) //Does not work as intended
                 {
                     button.DrawButton = true;
                 }
