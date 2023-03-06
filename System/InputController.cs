@@ -42,40 +42,43 @@ namespace Basic_Wars_V2.System
             MouseCollider = new Rectangle(currentMouseState.X, currentMouseState.Y, 1, 1);
         }
 
-        public void ProcessControls(GameTime gameTime)
+        public void ProcessControls(GameTime gameTime, bool ProcessButtonsOnly)
         {
             bool UnitSelected = false;
 
             UpdateMouseState();
 
-            foreach (Unit unit in _unitManager.units)
+            if (!ProcessButtonsOnly)
             {
-                if (
-                    MouseCollider.Intersects(unit.Collider) 
-                    && currentMouseState.LeftButton == ButtonState.Pressed 
-                    && previousMouseState.LeftButton == ButtonState.Released
-                   )
-                {
-                    UnitSelected = true;
-                    unit.Selected = true;    
-                }
-            }
-
-            if (!UnitSelected)
-            {
-                foreach (Tile tile in _gameMap.map)
+                foreach (Unit unit in _unitManager.units)
                 {
                     if (
-                        MouseCollider.Intersects(tile.Collider)
+                        MouseCollider.Intersects(unit.Collider)
                         && currentMouseState.LeftButton == ButtonState.Pressed
                         && previousMouseState.LeftButton == ButtonState.Released
                        )
                     {
-                        tile.State = TileState.Selected;
+                        UnitSelected = true;
+                        unit.Selected = true;
+                    }
+                }
+
+                if (!UnitSelected)
+                {
+                    foreach (Tile tile in _gameMap.map)
+                    {
+                        if (
+                            MouseCollider.Intersects(tile.Collider)
+                            && currentMouseState.LeftButton == ButtonState.Pressed
+                            && previousMouseState.LeftButton == ButtonState.Released
+                           )
+                        {
+                            tile.State = TileState.Selected;
+                        }
                     }
                 }
             }
-
+            
             foreach (Button button in _buttonManager.buttons)
             {
                 if (
