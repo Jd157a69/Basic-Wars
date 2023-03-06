@@ -87,13 +87,13 @@ namespace Basic_Wars_V2.Entities
                 case "AltMenu":
                     ButtonShiftX = 252;
                     ButtonShiftY = 127;
-                    Width = 300;
+                    Width = 289;
                     Height = 127;
                     break;
                 default:
                     ButtonShiftX = 500;
                     ButtonShiftY = 500;
-                    Width = 320;
+                    Width = 289;
                     Height = 127;
                     break;
             }
