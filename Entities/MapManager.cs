@@ -16,13 +16,13 @@ namespace Basic_Wars_V2.Entities
 {
     public class MapManager : IGameEntity, ICollideable
     {
-        public Tile[,] map;
+        private const int WINDOW_WIDTH = 1920;
+        private const int WINDOW_HEIGHT = 1080;
+
+        public Tile[,] map { get; private set; }
         public List<Structure> structures {get; private set; } = new List<Structure>();
 
         private List<Tile> tempTiles = new List<Tile>();
-        
-        private const int WINDOW_WIDTH = 1920;
-        private const int WINDOW_HEIGHT = 1080;
 
         private int MapWidth { get; set; }
         private int MapHeight { get; set; }
