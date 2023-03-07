@@ -21,7 +21,6 @@ namespace Basic_Wars_V2.Entities
 
         public TileType Type { get; set; }
         public TileState State { get; set; }
-        public int Team { get; set; }
 
         public Vector2 Position { get; set; }
         public Vector2 MapGridPos { get; set; }
@@ -42,7 +41,6 @@ namespace Basic_Wars_V2.Entities
             Texture = texture;
 
             State = TileState.None;
-            Team = 0;   
         }
 
         public void CreateTile(int TileColumn = 0, int TileRow = 0)
