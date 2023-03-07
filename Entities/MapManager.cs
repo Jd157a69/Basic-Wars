@@ -17,9 +17,10 @@ namespace Basic_Wars_V2.Entities
     public class MapManager : IGameEntity, ICollideable
     {
         public Tile[,] map;
+        public List<Structure> structures {get; private set; } = new List<Structure>();
 
         private List<Tile> tempTiles = new List<Tile>();
-
+        
         private const int WINDOW_WIDTH = 1920;
         private const int WINDOW_HEIGHT = 1080;
 
@@ -37,9 +38,6 @@ namespace Basic_Wars_V2.Entities
 
         public int DrawOrder => 0;
 
-        private List<Vector2> structurePoints = new List<Vector2>();
-
-        private List<Vector2> structureCoordinates = new List<Vector2>();
         private int StructureSparsity { get; set; }
 
         public MapManager(Texture2D texture, int mapWidth, int mapHeight, int numOfPlayers = 2)
@@ -100,7 +98,6 @@ namespace Basic_Wars_V2.Entities
                             break;
                     }
 
-                    
                     map[j, i] = newTile;
                     map[j, i].CreateTile(randomTile);
                     x += 56;
@@ -140,7 +137,7 @@ namespace Basic_Wars_V2.Entities
 
                 Vector2 newGridPos = new Vector2(map[newGridX, newGridY].Position.X, map[newGridX, newGridY].Position.Y);
 
-                Tile newStructure = new Tile(newGridPos, Texture);
+                Structure newStructure = new Structure(newGridPos, Texture, 0);
 
                 if (!(map[newGridX, newGridY].Type == TileType.City))
                 {
@@ -149,7 +146,7 @@ namespace Basic_Wars_V2.Entities
                     map[newGridX, newGridY].Type = Type;
                     map[newGridX, newGridY].CreateTile(StructureColumnShift, StructureRowShift);
 
-                    structureCoordinates.Add(new Vector2(newGridX, newGridY));
+                    structures.Add(newStructure);
                 }
 
             }
@@ -160,10 +157,10 @@ namespace Basic_Wars_V2.Entities
             Vector2 firstStructureGridPos = new Vector2(0, 0);
             Vector2 nextStructureGridPos = new Vector2(0, 0);
 
-            for (int i = 0; i < structureCoordinates.Count - 1; i += 2)
+            for (int i = 0; i < structures.Count - 1; i += 2)
             {
-                firstStructureGridPos = structureCoordinates[i];
-                nextStructureGridPos = structureCoordinates[i + 1];
+                firstStructureGridPos = structures[i].MapGridPos;
+                nextStructureGridPos = structures[i + 1].MapGridPos;
 
                 BuildRoad(firstStructureGridPos, nextStructureGridPos);
             }
@@ -228,33 +225,36 @@ namespace Basic_Wars_V2.Entities
             switch (NumOfPlayers)
             {
                 case 2:
-                    CreateHQTile(0, 0);
-                    CreateHQTile(mapWidth, mapHeight);
+                    CreateHQTile(0, 0, 1);
+                    CreateHQTile(mapWidth, mapHeight, 2);
                     break;
 
                 case 3:
-                    CreateHQTile(0, 0);
-                    CreateHQTile(mapWidth, mapHeight);
-                    CreateHQTile(mapWidth, 0);
+                    CreateHQTile(0, 0, 1);
+                    CreateHQTile(mapWidth, mapHeight, 2);
+                    CreateHQTile(mapWidth, 0, 3);
                     break;
 
                 case 4:
-                    CreateHQTile(0, 0);
-                    CreateHQTile(mapWidth, mapHeight);
-                    CreateHQTile(mapWidth, 0);
-                    CreateHQTile(0, mapHeight);
+                    CreateHQTile(0, 0, 1);
+                    CreateHQTile(mapWidth, mapHeight, 2);
+                    CreateHQTile(mapWidth, 0, 3);
+                    CreateHQTile(0, mapHeight, 4);
                     break;
             }
         }
 
-        private void CreateHQTile(int X, int Y)
+        private void CreateHQTile(int X, int Y, int team)
         {
-            Tile HQTile = new Tile(map[X, Y].Position, Texture);
+            Structure HQTile = new Structure(map[X, Y].Position, Texture, team);
+
             HQTile.Type = TileType.HQ;
             HQTile.MapGridPos = new Vector2(X, Y);
 
             map[X, Y] = HQTile;
             map[X, Y].CreateTile(-6, 2);
+
+            structures.Add(HQTile);
         }
 
         public Rectangle Collider
