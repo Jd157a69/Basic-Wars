@@ -215,6 +215,9 @@ namespace Basic_Wars_V2
                     }
 
                     CurrentPlayer = Players[PlayerIndex];
+                    Income(CurrentPlayer);
+
+                    gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);
 
                     //DEBUG
                     Console.WriteLine("\nNew Turn");
@@ -398,7 +401,7 @@ namespace Basic_Wars_V2
                 }
             }
         }
-         
+        
         private void MoveUnit(Unit movingUnit, Tile unitDestination, List<Tile> reachableTiles)
         {
             movingUnit.Position = unitDestination.Position;
@@ -478,6 +481,17 @@ namespace Basic_Wars_V2
             foreach (Unit unit in _unitManager.units)
             {
                 unit.Defence = _inputController.GetUnitTile(unit).DefenceBonus;
+            }
+        }
+
+        public void Income(Player player)
+        {
+            foreach (Structure structure in _gameMap.structures)
+            {
+                if (structure.Team == player.Team + 1)
+                {
+                    player.Funds += 1000;
+                }
             }
         }
     }
