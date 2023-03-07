@@ -79,14 +79,14 @@ namespace Basic_Wars_V2
          *  
          *  DONE: Implementation of the movement point system for each unit type and displaying it with GameUI
          *  
-         *  TODO: Ability to distinguish what team a unit is on and only allowing the current player to select units on their team
+         *  DONE: Ability to distinguish what team a unit is on and only allowing the current player to select units on their team
          *  
          *  TODO: Ability for units to attack each other 
          *  
-         *  TODO: Attributes for both units and tiles should be displayed
+         *  PARTIAL: Attributes for both units and tiles should be displayed
          *      - Use console for now and implement UI version in the future
          *      
-         *  TODO: User should eneter the number of players in the game (Max 4) 
+         *  DONE: User should eneter the number of players in the game (Max 4) 
          *      - Use console for this and implement the UI version in future
          *  
          *  TODO: Code A* for use with the AI
@@ -140,7 +140,7 @@ namespace Basic_Wars_V2
 
             _gameUI = new GameUI(InGameAssets, Font, _gameMap, _unitManager, _buttonManager);
             _inputController = new InputController(_unitManager, _buttonManager, _gameMap);
-            ProcessButtonsOnly = false;
+            ProcessButtonsOnly = true;
 
             _entityManager.AddEntity(_gameMap);
             _entityManager.AddEntity(_unitManager);
@@ -199,8 +199,9 @@ namespace Basic_Wars_V2
                     PlayerIndex = 0;
                 }
 
-                if (NextPlayer) //Change turn number after Players.Count number of players has passed
-                {
+                if (NextPlayer)
+                {  
+                    _gameUI.DrawSelectedUI = false;
                     NextPlayer = false;
 
                     if (PlayerIndex + 1 > Players.Count)
@@ -212,20 +213,19 @@ namespace Basic_Wars_V2
                     {
                         PlayerIndex = 0;
                     }
-                    
+
                     CurrentPlayer = Players[PlayerIndex];
-                    
-                    gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);
 
                     //DEBUG
-                    Console.WriteLine($"\nPlayer: {CurrentPlayer.Team}");
+                    Console.WriteLine("\nNew Turn");
+                    Console.WriteLine($"Player: {CurrentPlayer.Team + 1}");
                     Console.WriteLine($"Turn: {TurnNumber}");
                 }
 
                 switch (gameState)
                 {
                     case GameState.PlayerSelect:
-                        gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);       //Cancels out the displaying of unit attributes
+                        gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);
                         PlayerSelect(gameTime);
                         break;
 
@@ -302,7 +302,8 @@ namespace Basic_Wars_V2
         private void PlayerSelect(GameTime gameTime)
         {
             ProcessButtonsOnly = false;
-            
+            UpdateUnitStats();
+
             if (SelectedUnit != null)
             {
                 SelectedUnit.State = UnitState.None;
@@ -337,6 +338,8 @@ namespace Basic_Wars_V2
                 _gameUI.ChangeSelectedPosition(SelectedTile.Position);
                 _gameUI.DrawSelectedUI = true;
                 SelectedTile.State = TileState.None;
+
+                _gameUI.DisplayAttributes(null, SelectedTile);
             }
         }
 
@@ -353,7 +356,7 @@ namespace Basic_Wars_V2
         {
             SelectedUnit.State = UnitState.Moving;
 
-            while (SelectedUnit.State == UnitState.Moving)    //while loop stops the ability to draw and causes draw after it has run, reachable tiles must be run first and displayed
+            while (SelectedUnit.State == UnitState.Moving)
             {
                 _inputController.UpdateMouseState();
 
@@ -435,7 +438,7 @@ namespace Basic_Wars_V2
             return damage;
         }
 
-        public Unit CheckForUnitGeneration(Tile tile, int unitType, int currentTeam)
+        public Unit CheckForUnitGeneration(GameTime gameTime, Button PressedButton, int currentTeam)
         {
             //int currentTeam = 1;
 
@@ -456,13 +459,26 @@ namespace Basic_Wars_V2
             //        _unitManager.AddUnit(newUnit);
             //    }
             //}
+            int unitType = _gameUI.ProcessUnitProduction(gameTime, PressedButton);
 
-            if (tile.Type == TileType.Factory)
+            if (SelectedTile != null)
             {
-                Unit newUnit = new Unit(InGameAssets, tile.Position, unitType, currentTeam);
-                return newUnit;
+                if (SelectedTile.Type == TileType.Factory)
+                {
+                    Unit newUnit = new Unit(InGameAssets, SelectedTile.Position, unitType, currentTeam);
+                    return newUnit;
+                }
             }
+            
             return null; // Temporary
+        }
+
+        public void UpdateUnitStats()
+        {
+            foreach (Unit unit in _unitManager.units)
+            {
+                unit.Defence = _inputController.GetUnitTile(unit).DefenceBonus;
+            }
         }
     }
 }

@@ -374,7 +374,14 @@ namespace Basic_Wars_V2.Entities
 
         public GameState Turn(GameTime gameTime, Player currentPlayer, int turnNumber, Button PressedButton)
         {
-            _buttonManager.DrawButtonIDs(11, 14);
+            if (CurrentUnit != null || CurrentTile != null)
+            {
+                _buttonManager.DrawButtonIDs(11, 14, 20, 24);
+            }
+            else
+            {
+                _buttonManager.DrawButtonIDs(11, 14);
+            }
 
             CurrentPlayer = currentPlayer;
 
@@ -426,23 +433,39 @@ namespace Basic_Wars_V2.Entities
 
         public void DisplayAttributes(Unit unit = null, Tile tile = null)
         {
-            _buttonManager.DrawButtonIDs(11, 14, 20, 24);
+            _buttonManager.UpdateButtonText(HealthInfo, "");
+            _buttonManager.UpdateButtonText(AmmoInfo, "");
+            _buttonManager.UpdateButtonText(FuelInfo, "");
+            _buttonManager.UpdateButtonText(DefenceInfo, "");
 
             CurrentUnit = unit;
             CurrentTile = tile;
 
             if (CurrentUnit != null)
             {
+                _buttonManager.DrawButtonIDs(11, 14, 20, 24);
                 _buttonManager.UpdateButtonText(HealthInfo, $"{CurrentUnit.Health}");
                 _buttonManager.UpdateButtonText(AmmoInfo, $"{CurrentUnit.Ammo}");
                 _buttonManager.UpdateButtonText(FuelInfo, $"{CurrentUnit.Fuel}");
-                _buttonManager.UpdateButtonText(DefenceInfo, $"{CurrentUnit.Defence}");
+                _buttonManager.UpdateButtonText(DefenceInfo, $"{CurrentUnit.Defence}%");
+            }
+            if (CurrentTile != null)
+            {
+                _buttonManager.DrawButtonIDs(11, 14, 23, 24);
+                _buttonManager.UpdateButtonText(DefenceInfo, $"{CurrentTile.DefenceBonus}%");
             }
         }
 
-        public void DisplayProductionChoices()
+        public int ProcessUnitProduction(GameTime gameTime, Button PressedButton)
         {
 
+            switch (PressedButton.ID) 
+            {
+                case 0:
+                    break;
+            }
+
+            return -1;
         }
     }
 }
