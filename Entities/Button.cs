@@ -32,7 +32,7 @@ namespace Basic_Wars_V2.Entities
 
         public int ID { get; set; }
 
-        private string ButtonType { get; set; }
+        private int ButtonType { get; set; }
 
         private int ButtonShiftX { get; set; }
         private int ButtonShiftY { get; set; }
@@ -40,7 +40,7 @@ namespace Basic_Wars_V2.Entities
         public bool Pressed { get; set; }
         public bool DrawButton { get; set;}
 
-        public Button(Texture2D texture, SpriteFont font, Vector2 position, string buttonType, string Text = "")
+        public Button(Texture2D texture, SpriteFont font, Vector2 position, int buttonType = -1, string Text = "")
         {
             ButtonPosition = position;
 
@@ -72,25 +72,29 @@ namespace Basic_Wars_V2.Entities
         {
             switch (ButtonType)
             {
-                case "Menu":
+                case 0:
+                    //Menu
                     ButtonShiftX = 0;
                     ButtonShiftY = 0;
                     Width = 672;
                     Height = 127;
                     break;
-                case "Attribute":
-                    ButtonShiftX = 0;
-                    ButtonShiftY = 127;
-                    Width = 252;
-                    Height = 378;
-                    break;
-                case "AltMenu":
+                case 1:
+                    //AltMenu
                     ButtonShiftX = 252;
                     ButtonShiftY = 127;
                     Width = 289;
                     Height = 127;
                     break;
-                case "Tile":
+                case 2:
+                    //Attribute
+                    ButtonShiftX = 0;
+                    ButtonShiftY = 127;
+                    Width = 252;
+                    Height = 378;
+                    break;
+                case 3:
+                    //Tile
                     ButtonShiftX = 500;
                     ButtonShiftY = 500;
                     Width = 56;
