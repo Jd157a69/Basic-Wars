@@ -46,7 +46,7 @@ namespace Basic_Wars_V2.Entities
 
         //DisplayAttributes
         private Button AttributeDisplayInfo;
-        //private Button TypeInfo;
+        private Button TypeInfo;
         private Button HealthInfo;
         private Button AmmoInfo;
         private Button FuelInfo;
@@ -111,37 +111,42 @@ namespace Basic_Wars_V2.Entities
 
         public void InitialiseButtons()
         {
-            BasicWarsTitle = new Button(Texture, Font, new Vector2(CentreButtonX, 90), "Menu", "Basic Wars");
-            NewGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 360), "Menu", "New Game");
-            LoadGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 540), "Menu", "Load Game");
-            QuitGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 720), "Menu", "Quit");
+            BasicWarsTitle = new Button(Texture, Font, new Vector2(CentreButtonX, 90), 0, "Basic Wars");
+            NewGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 360), 0, "New Game");
+            LoadGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 540), 0, "Load Game");
+            QuitGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 720), 0, "Quit");
 
-            NumOfPlayersInfo = new Button(Texture, Font, new Vector2(CentreButtonX + 615, 0), "Menu", $"Number of Players: {numOfplayers}");
-            Players2Button = new Button(Texture, Font, new Vector2(0, 180), "AltMenu", "2");
-            Players3Button = new Button(Texture, Font, new Vector2(0, 304), "AltMenu", "3");
-            Players4Button = new Button(Texture, Font, new Vector2(0, 428), "AltMenu", "4");
-            RefreshMapButton = new Button(Texture, Font, new Vector2(0, 720), "AltMenu", "Refresh Map");
-            StartGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 900), "Menu", "Start Game");
-            Menu = new Button(Texture, Font, new Vector2(0, 0), "AltMenu", "Main Menu");
+            NumOfPlayersInfo = new Button(Texture, Font, new Vector2(CentreButtonX + 615, 0), 0, $"Number of Players: {numOfplayers}");
+            Players2Button = new Button(Texture, Font, new Vector2(1600, 180), 1, "2");
+            Players3Button = new Button(Texture, Font, new Vector2(1600, 304), 1, "3");
+            Players4Button = new Button(Texture, Font, new Vector2(1600, 428), 1, "4");
+            RefreshMapButton = new Button(Texture, Font, new Vector2(0, 720), 1, "Refresh Map");
+            StartGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 900), 0, "Start Game");
+            Menu = new Button(Texture, Font, new Vector2(0, 0), 1, "Main Menu");
 
-            EndTurnButton = new Button(Texture, Font, new Vector2(1600, 925), "AltMenu", $"End Turn");
+            EndTurnButton = new Button(Texture, Font, new Vector2(1600, 925), 1, $"End Turn");
 
-            TurnNumberInfo = new Button(Texture, Font, new Vector2(1600, 0), "AltMenu", $"Turn: 0");
-            CurrentPlayerTeamInfo = new Button(Texture, Font, new Vector2(0, 0), "AltMenu", $"Player: {CurrentPlayer.Team}");
-            CurrentPlayerFundsInfo = new Button(Texture, Font, new Vector2(0, 126), "AltMenu", $"{CurrentPlayer.Funds}");
+            TurnNumberInfo = new Button(Texture, Font, new Vector2(1600, 0), 1, $"Turn: 0");
+            CurrentPlayerTeamInfo = new Button(Texture, Font, new Vector2(0, 0), 1, $"Player: {CurrentPlayer.Team}");
+            CurrentPlayerFundsInfo = new Button(Texture, Font, new Vector2(0, 126), 1, $"{CurrentPlayer.Funds}");
 
-            PlayerIdleButton = new Button(Texture, Font, new Vector2(0, 300), "AltMenu", "Idle");
-            PlayerMoveButton = new Button(Texture, Font, new Vector2(0, 425), "AltMenu", "Move");
-            PlayerAttackButton = new Button(Texture, Font, new Vector2(0, 550), "AltMenu", "Attack");
-            ReturnButton = new Button(Texture, Font, new Vector2(0, 675), "AltMenu", "Return");
-            CaptureButton = new Button(Texture, Font, new Vector2(0, 125), "AltMenu", "Capture");
+            PlayerIdleButton = new Button(Texture, Font, new Vector2(0, 300), 1, "Idle");
+            PlayerMoveButton = new Button(Texture, Font, new Vector2(0, 425), 1, "Move");
+            PlayerAttackButton = new Button(Texture, Font, new Vector2(0, 550), 1, "Attack");
+            ReturnButton = new Button(Texture, Font, new Vector2(0, 675), 1, "Return");
+            CaptureButton = new Button(Texture, Font, new Vector2(0, 125), 1, "Capture");
 
-            AttributeDisplayInfo = new Button(Texture, Font, new Vector2(1600, 180), "Attribute");
-            //TypeInfo = new Button(Texture, Font, new Vector2(1600, 180), "None");
-            HealthInfo = new Button(Texture, Font, new Vector2(1625, 274.5f - 110), "None");
-            AmmoInfo = new Button(Texture, Font, new Vector2(1625, 369 - 110), "None");
-            FuelInfo = new Button(Texture, Font, new Vector2(1625, 463.5f - 110), "None");
-            DefenceInfo = new Button(Texture, Font, new Vector2(1625, 558 - 110), "None");
+            AttributeDisplayInfo = new Button(Texture, Font, new Vector2(1600, 180), 2);
+            TypeInfo = new Button(Texture, Font, new Vector2(1600, 550), 1);
+            HealthInfo = new Button(Texture, Font, new Vector2(1625, 274.5f - 110));
+            AmmoInfo = new Button(Texture, Font, new Vector2(1625, 369 - 110));
+            FuelInfo = new Button(Texture, Font, new Vector2(1625, 463.5f - 110));
+            DefenceInfo = new Button(Texture, Font, new Vector2(1625, 558 - 110));
+
+            UnitInfantryButton = new Button(Texture, Font, new Vector2(0, 175), 1, "Infantry");
+            UnitMechButton = new Button(Texture, Font, new Vector2(0, 300), 1, "Mech");
+            UnitTankButton = new Button(Texture, Font, new Vector2(0, 425), 1, "Tank");
+            UnitAPCButton = new Button(Texture, Font, new Vector2(0, 550), 1, "APC");
 
             _buttonManager.AddButton(BasicWarsTitle);
             _buttonManager.AddButton(NewGameButton);
@@ -168,11 +173,16 @@ namespace Basic_Wars_V2.Entities
             _buttonManager.AddButton(CaptureButton);
 
             _buttonManager.AddButton(AttributeDisplayInfo);
-            //_buttonManager.AddButton(TypeInfo);
             _buttonManager.AddButton(HealthInfo);
             _buttonManager.AddButton(AmmoInfo);
             _buttonManager.AddButton(FuelInfo);
             _buttonManager.AddButton(DefenceInfo);
+            _buttonManager.AddButton(TypeInfo);
+
+            _buttonManager.AddButton(UnitInfantryButton);
+            _buttonManager.AddButton(UnitMechButton);
+            _buttonManager.AddButton(UnitTankButton);
+            _buttonManager.AddButton(UnitAPCButton);
         }
 
         public void ChangeSelectedPosition(Vector2 position)
@@ -365,7 +375,7 @@ namespace Basic_Wars_V2.Entities
 
             for (int i = 0; i < numOfplayers; i++)
             {
-                Player player = new Player(i, 1000);
+                Player player = new Player(i, 0);
                 Players.Add(player);
             }
 
@@ -376,7 +386,7 @@ namespace Basic_Wars_V2.Entities
         {
             if (CurrentUnit != null || CurrentTile != null)
             {
-                _buttonManager.DrawButtonIDs(11, 14, 20, 24);
+                _buttonManager.DrawButtonIDs(11, 14, 20, 25);
             }
             else
             {
@@ -402,7 +412,7 @@ namespace Basic_Wars_V2.Entities
 
         public GameState DisplayPlayerActions(GameTime gameTime, Button PressedButton)
         {
-            _buttonManager.DrawButtonIDs(11, 18, 20, 24);       //Need to be able to display both actions and attributes but how?
+            _buttonManager.DrawButtonIDs(11, 18, 20, 25);       //Need to be able to display both actions and attributes but how?
 
             if (PressedButton != null)
             {
@@ -433,6 +443,7 @@ namespace Basic_Wars_V2.Entities
 
         public void DisplayAttributes(Unit unit = null, Tile tile = null)
         {
+            _buttonManager.UpdateButtonText(TypeInfo, "");
             _buttonManager.UpdateButtonText(HealthInfo, "");
             _buttonManager.UpdateButtonText(AmmoInfo, "");
             _buttonManager.UpdateButtonText(FuelInfo, "");
@@ -441,18 +452,23 @@ namespace Basic_Wars_V2.Entities
             CurrentUnit = unit;
             CurrentTile = tile;
 
-            if (CurrentUnit != null)
+            if (CurrentUnit != null || CurrentTile != null)
             {
-                _buttonManager.DrawButtonIDs(11, 14, 20, 24);
-                _buttonManager.UpdateButtonText(HealthInfo, $"{CurrentUnit.Health}");
-                _buttonManager.UpdateButtonText(AmmoInfo, $"{CurrentUnit.Ammo}");
-                _buttonManager.UpdateButtonText(FuelInfo, $"{CurrentUnit.Fuel}");
-                _buttonManager.UpdateButtonText(DefenceInfo, $"{CurrentUnit.Defence}%");
-            }
-            if (CurrentTile != null)
-            {
-                _buttonManager.DrawButtonIDs(11, 14, 23, 24);
-                _buttonManager.UpdateButtonText(DefenceInfo, $"{CurrentTile.DefenceBonus}%");
+                _buttonManager.DrawButtonIDs(11, 14, 23, 25);
+
+                if (CurrentUnit != null)
+                {
+                    _buttonManager.UpdateButtonText(TypeInfo, $"{CurrentUnit.Type}");
+                    _buttonManager.UpdateButtonText(HealthInfo, $"{CurrentUnit.Health}");
+                    _buttonManager.UpdateButtonText(AmmoInfo, $"{CurrentUnit.Ammo}");
+                    _buttonManager.UpdateButtonText(FuelInfo, $"{CurrentUnit.Fuel}");
+                    _buttonManager.UpdateButtonText(DefenceInfo, $"{CurrentUnit.Defence}%");
+                }
+                if (CurrentTile != null)
+                {
+                    _buttonManager.UpdateButtonText(TypeInfo, $"{CurrentTile.Type}");
+                    _buttonManager.UpdateButtonText(DefenceInfo, $"{CurrentTile.DefenceBonus}%");
+                }
             }
         }
 
