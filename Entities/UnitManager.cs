@@ -39,6 +39,18 @@ namespace Basic_Wars_V2.Entities
             unitsToRemove.Add(unit);
         }
 
+        public List<Vector2> GetUnitPositions()
+        {
+            List<Vector2> positions = new List<Vector2>();
+
+            foreach (Unit unit in units)
+            {
+                positions.Add(unit.Position);
+            }
+
+            return positions;
+        }
+
         public void Draw(SpriteBatch _spriteBatch, GameTime gameTime, float Scale)
         {
             if (DrawUnits)
