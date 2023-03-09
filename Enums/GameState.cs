@@ -13,7 +13,9 @@ namespace Basic_Wars_V2.Enums
         PlayerMove,
         PlayerAttack,
         PlayerCapture,
+        PlayerProduceUnit,
         EnemyTurn,
+        PauseGame,
         GameOver,
     }
 }
