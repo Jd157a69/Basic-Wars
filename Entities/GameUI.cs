@@ -441,6 +441,7 @@ namespace Basic_Wars_V2.Entities
                         DrawReachable = false;
                         DrawAttackable = false;
                         return GameState.PlayerSelect;
+
                     case 19:
                         return GameState.PlayerCapture;
                 }

@@ -26,7 +26,7 @@ namespace Basic_Wars_V2.Entities
         {
             foreach (Button button in buttons)
             {
-                if ((button.ID >= initialID && button.ID <= finalID) || (button.ID >= initial2ID && button.ID <= final2ID)) //Does not work as intended
+                if ((button.ID >= initialID && button.ID <= finalID) || (button.ID >= initial2ID && button.ID <= final2ID))
                 {
                     button.DrawButton = true;
                 }
