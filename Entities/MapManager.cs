@@ -20,7 +20,7 @@ namespace Basic_Wars_V2.Entities
         private const int WINDOW_HEIGHT = 1080;
 
         public Tile[,] map { get; private set; }
-        public List<Structure> structures {get; private set; } = new List<Structure>();
+        public List<Tile> structures {get; private set; } = new List<Tile>();
 
         private List<Tile> tempTiles = new List<Tile>();
 
@@ -137,7 +137,7 @@ namespace Basic_Wars_V2.Entities
 
                 Vector2 newGridPos = new Vector2(map[newGridX, newGridY].Position.X, map[newGridX, newGridY].Position.Y);
 
-                Structure newStructure = new Structure(newGridPos, Texture, 0);
+                Tile newStructure = new Tile(newGridPos, Texture);
 
                 if (!(map[newGridX, newGridY].Type == TileType.City))
                 {
@@ -246,7 +246,7 @@ namespace Basic_Wars_V2.Entities
 
         private void CreateHQTile(int X, int Y, int team)
         {
-            Structure HQTile = new Structure(map[X, Y].Position, Texture, team);
+            Tile HQTile = new Tile(map[X, Y].Position, Texture);
 
             HQTile.Type = TileType.HQ;
             HQTile.MapGridPos = new Vector2(X, Y);
