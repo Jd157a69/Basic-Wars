@@ -12,6 +12,7 @@ namespace Basic_Wars_V2.Enums
         SelectAction,
         PlayerMove,
         PlayerAttack,
+        PlayerCapture,
         EnemyTurn,
         GameOver,
     }
