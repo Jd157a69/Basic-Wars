@@ -42,6 +42,18 @@ namespace Basic_Wars_V2.System
             MouseCollider = new Rectangle(currentMouseState.X, currentMouseState.Y, 1, 1);
         }
 
+        public bool LeftMouseClicked()
+        {
+            if (previousMouseState.LeftButton == ButtonState.Released
+                && currentMouseState.LeftButton == ButtonState.Pressed
+               )
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public void ProcessControls(GameTime gameTime, bool ProcessButtonsOnly)
         {
             bool UnitSelected = false;
@@ -129,18 +141,6 @@ namespace Basic_Wars_V2.System
             return null;
         }
 
-        public List<Vector2> GetUnitPositions()
-        {
-            List<Vector2> unitPositions = new List<Vector2>();
-
-            foreach (Unit unit in _unitManager.units)
-            {
-                unitPositions.Add(unit.Position);
-            }
-
-            return unitPositions;
-        }
-
         public Tile GetUnitTile(Unit unit)
         {
             foreach (Tile tile in _gameMap.map)
@@ -148,6 +148,18 @@ namespace Basic_Wars_V2.System
                 if (unit.Position == tile.Position)
                 {
                     return tile;
+                }
+            }
+            return null;
+        }
+
+        public Unit GetTileUnit(Tile tile)
+        {
+            foreach (Unit unit in _unitManager.units)
+            {
+                if (tile.Position == tile.Position)
+                {
+                    return unit;
                 }
             }
             return null;
