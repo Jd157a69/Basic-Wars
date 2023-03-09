@@ -31,14 +31,18 @@ namespace Basic_Wars_V2.Entities
         public Texture2D Texture { get; set; }
         public Sprite TileSprite;
 
+        public int Team { get; set; }
+
         public int DrawOrder { get; set; }
 
         public int DefenceBonus { get; set; }
 
-        public Tile(Vector2 position, Texture2D texture)
+        public Tile(Vector2 position, Texture2D texture, int team = -1)
         {
             Position = position;
             Texture = texture;
+
+            Team = team;
 
             State = TileState.None;
         }
