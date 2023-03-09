@@ -10,9 +10,7 @@ namespace Basic_Wars_V2.Enums
     {
         None,
         Idle,
-        Selected,
-        Moving,
-        Attacking,
+        Moved,
         Used,
         Dead,
     }
