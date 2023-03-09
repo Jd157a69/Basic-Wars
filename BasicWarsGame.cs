@@ -9,7 +9,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Basic_Wars_V2
@@ -66,8 +65,6 @@ namespace Basic_Wars_V2
         private List<Tile> reachableTiles;
         private List<Tile> attackableTiles;
 
-        private bool DrawRan;
-
         private Tile SelectedTile;
 
         private int TurnNumber;
@@ -86,7 +83,7 @@ namespace Basic_Wars_V2
          *  
          *  TODO: Ability for units to attack each other 
          *  
-         *  DONE: Attributes for both units and tiles should be displayed
+         *  PARTIAL: Attributes for both units and tiles should be displayed
          *      - Use console for now and implement UI version in the future
          *      
          *  DONE: User should eneter the number of players in the game (Max 4) 
@@ -166,31 +163,95 @@ namespace Basic_Wars_V2
             _inputController.ProcessControls(gameTime, ProcessButtonsOnly);
             Button PressedButton = _inputController.GetButtonPressed();
 
-            switch (menuState)
+            if (menuState != MenuState.PlayingGame)
             {
-                case MenuState.Initial:
-                    menuState = _gameUI.Init(gameTime, PressedButton);
-                    break;
+                switch (menuState)
+                {
+                    case MenuState.Initial:
+                        Init(gameTime, PressedButton);
+                        break;
 
-                case MenuState.NewGame:
-                    menuState = _gameUI.NewGame(gameTime, PressedButton);
-                    Players = _gameUI.GetPlayers();
-                    break;
+                    case MenuState.NewGame:
+                        NewGame(gameTime, PressedButton);
+                        break;
 
-                case MenuState.PlayingGame:
-                    PlayingGame(gameTime, PressedButton);
-                    break;
+                    case MenuState.RefreshMap:
+                        RefreshMap();
+                        break;
 
-                case MenuState.RefreshMap:
-                    RefreshMap();
-                    break;
+                    case MenuState.LoadGame:
+                        break;
 
-                case MenuState.LoadGame:
-                    break;
+                    case MenuState.QuitGame:
+                        Exit();
+                        break;
+                }
+            }
+            
 
-                case MenuState.QuitGame:
-                    Exit();
-                    break;
+            if (menuState == MenuState.PlayingGame)
+            {
+
+                if (TurnNumber == 0)
+                {
+                    TurnNumber++;
+                    StartGame(gameTime);
+                    PlayerIndex = 0;
+                }
+
+                if (NextPlayer)
+                {  
+                    _gameUI.DrawSelectedUI = false;
+                    NextPlayer = false;
+
+                    if (PlayerIndex + 1 > Players.Count)
+                    {
+                        TurnNumber++;
+                    }
+
+                    if (PlayerIndex > Players.Count - 1)
+                    {
+                        PlayerIndex = 0;
+                    }
+
+                    CurrentPlayer = Players[PlayerIndex];
+                    Income(CurrentPlayer);
+
+                    gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);
+
+                    //DEBUG
+                    Console.WriteLine("\nNew Turn");
+                    Console.WriteLine($"Player: {CurrentPlayer.Team + 1}");
+                    Console.WriteLine($"Turn: {TurnNumber}");
+                }
+
+                switch (gameState)
+                {
+                    case GameState.PlayerSelect:
+                        gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);
+                        PlayerSelect(gameTime);
+                        break;
+
+                    case GameState.SelectAction:
+                        PlayerSelectAction(gameTime, PressedButton);
+                        break;
+
+                    case GameState.PlayerMove:
+                        PlayerMove(gameTime);
+                        break;
+
+                    case GameState.PlayerAttack:
+                        PlayerAttack(gameTime);
+                        break;
+
+                    case GameState.EnemyTurn:
+                        NextPlayer = true;
+                        PlayerIndex++;
+                        break;
+
+                    case GameState.GameOver:
+                        break;
+                }
             }
 
             _entityManager.Update(gameTime);
@@ -204,79 +265,19 @@ namespace Basic_Wars_V2
             _entityManager.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
 
-            DrawRan = true;
-
             base.Draw(gameTime);
         }
 
 
-        private void PlayingGame(GameTime gameTime, Button PressedButton)
+        private void Init(GameTime gameTime, Button PressedButton)
         {
-            if (TurnNumber == 0)
-            {
-                TurnNumber++;
-                StartGame(gameTime);
-                PlayerIndex = 0;
-            }
+            menuState = _gameUI.Init(gameTime, PressedButton);
+        }
 
-            if (NextPlayer)
-            {
-                _gameUI.DrawSelectedUI = false;
-                NextPlayer = false;
-
-                if (PlayerIndex + 1 > Players.Count)
-                {
-                    TurnNumber++;
-                }
-
-                if (PlayerIndex > Players.Count - 1)
-                {
-                    PlayerIndex = 0;
-                }
-
-                CurrentPlayer = Players[PlayerIndex];
-                Income(CurrentPlayer);
-
-                //Need to sort out this method, refresh everything at start of turn
-                gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);       
-
-                //DEBUG
-                Console.WriteLine("\nNew Turn");
-                Console.WriteLine($"Player: {CurrentPlayer.Team + 1}");
-                Console.WriteLine($"Turn: {TurnNumber}");
-            }
-
-            switch (gameState)
-            {
-                case GameState.PlayerSelect:
-                    gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);
-                    PlayerSelect(gameTime);
-                    break;
-
-                case GameState.SelectAction:
-                    PlayerSelectAction(gameTime, PressedButton);
-                    break;
-
-                case GameState.PlayerMove:
-                    PlayerMove(gameTime);
-                    break;
-
-                case GameState.PlayerAttack:
-                    PlayerAttack(gameTime);
-                    break;
-
-                case GameState.PlayerCapture:
-                    PlayerCapture();
-                    break;
-
-                case GameState.EnemyTurn:
-                    NextPlayer = true;
-                    PlayerIndex++;
-                    break;
-
-                case GameState.GameOver:
-                    break;
-            }
+        private void NewGame(GameTime gameTime, Button PressedButton) 
+        {
+            menuState = _gameUI.NewGame(gameTime, PressedButton);
+            Players = _gameUI.GetPlayers();
         }
 
         private void RefreshMap(int Width = 16, int Height = 16)
@@ -306,7 +307,7 @@ namespace Basic_Wars_V2
             ProcessButtonsOnly = false;
             UpdateUnitStats();
 
-            if (SelectedUnit != null)           //Issue here with UnitState
+            if (SelectedUnit != null)
             {
                 SelectedUnit.State = UnitState.None;
                 SelectedUnit.Selected = false;
@@ -323,7 +324,7 @@ namespace Basic_Wars_V2
 
                 _gameUI.DisplayAttributes(SelectedUnit);
 
-                if (SelectedUnit.Team == CurrentPlayer.Team + 1 && SelectedUnit.State != UnitState.Idle)
+                if (SelectedUnit.Team == CurrentPlayer.Team + 1)        
                 {
                     Console.WriteLine($"Player Team: {CurrentPlayer.Team + 1}");
                     Console.WriteLine($"Unit team: {SelectedUnit.Team}");
@@ -335,7 +336,6 @@ namespace Basic_Wars_V2
                     SelectedUnit.Selected = false;
                 }
             }
-
             if (SelectedTile != null)
             {
                 _gameUI.ChangeSelectedPosition(SelectedTile.Position);
@@ -350,49 +350,30 @@ namespace Basic_Wars_V2
         {
             ProcessButtonsOnly = true;
             _gameUI.DisplayAttributes(SelectedUnit);
-
-            reachableTiles = _gameUI.GetReachableTiles(SelectedUnit, _unitManager.GetUnitPositions(), _inputController.GetUnitTile(SelectedUnit));
-
+            reachableTiles = _gameUI.GetReachableTiles(SelectedUnit, _inputController.GetUnitPositions(), _inputController.GetUnitTile(SelectedUnit));
             attackableTiles = _gameUI.GetAttackableTiles(SelectedUnit, _inputController.GetUnitTile(SelectedUnit));
-
-            DrawRan = false;
-
-            bool displayCapture = false;
-            Tile unitTile = _inputController.GetUnitTile(SelectedUnit);
-
-            if ((unitTile.Type == TileType.City
-                || unitTile.Type == TileType.Factory
-                || unitTile.Type == TileType.HQ)
-                && SelectedUnit.Team != unitTile.Team
-                )
-            {
-                displayCapture = true;
-            }
-
-            gameState = _gameUI.DisplayPlayerActions(gameTime, PressedButton, displayCapture);
+            gameState = _gameUI.DisplayPlayerActions(gameTime, PressedButton);
         }
-
+        
         private void PlayerMove(GameTime gameTime)
         {
-            while (gameState == GameState.PlayerMove && DrawRan)
+            SelectedUnit.State = UnitState.Moving;
+
+            while (SelectedUnit.State == UnitState.Moving)
             {
                 _inputController.UpdateMouseState();
 
-                foreach (Tile tile in reachableTiles)
+                foreach (Tile tile in _gameMap.map)
                 {
                     if (
                         _inputController.MouseCollider.Intersects(tile.Collider)
-                        && _inputController.LeftMouseClicked()
+                        && _inputController.currentMouseState.LeftButton == ButtonState.Pressed
+                        && _inputController.previousMouseState.LeftButton == ButtonState.Released
+                        && reachableTiles.Contains(tile)
                         && SelectedUnit.Fuel > 0
                        )
                     {
-                        SelectedUnit.Position = tile.Position;
-                        SelectedUnit.Fuel--;
-                        SelectedUnit.State = UnitState.Moved;
-
-                        _gameUI.ChangeSelectedPosition(SelectedUnit.Position);
-
-                        gameState = GameState.SelectAction;
+                        MoveUnit(SelectedUnit, tile, reachableTiles);
                     }
                 }
             }
@@ -400,41 +381,52 @@ namespace Basic_Wars_V2
 
         private void PlayerAttack(GameTime gameTime)
         {
-            if (SelectedUnit.Type != UnitType.APC)
-            {
-                while (gameState == GameState.PlayerAttack && DrawRan)
-                {
-                    _inputController.UpdateMouseState();
+            SelectedUnit.State = UnitState.Attacking;
 
-                    foreach (Tile tile in attackableTiles)
+            while (SelectedUnit.State == UnitState.Attacking)
+            {
+                _inputController.UpdateMouseState();
+
+                foreach (Unit unit in _unitManager.units)
+                {
+                    if (
+                        _inputController.MouseCollider.Intersects(unit.Collider)
+                        && _inputController.currentMouseState.LeftButton == ButtonState.Pressed
+                        && _inputController.previousMouseState.LeftButton == ButtonState.Released   
+                        && attackableTiles.Contains(_inputController.GetUnitTile(unit)) //Something wrong with attackable tiles here
+                       )
                     {
-                        if (
-                            _inputController.MouseCollider.Intersects(tile.Collider)        //I think the there's something wrong with the logic here
-                            && _inputController.LeftMouseClicked()
-                            && SelectedUnit.Ammo > 0
-                           )
-                        {
-                            AttackUnit(SelectedUnit, _inputController.GetTileUnit(tile));       //Wrong unit is taking damage
-                        }
+                        AttackUnit(SelectedUnit, unit);
                     }
                 }
             }
-            else
-            {
-                gameState = GameState.SelectAction;
-            }
-            
         }
         
+        private void MoveUnit(Unit movingUnit, Tile unitDestination, List<Tile> reachableTiles)
+        {
+            movingUnit.Position = unitDestination.Position;
+            movingUnit.Fuel--;
+
+            movingUnit.State = UnitState.None;
+
+            _gameUI.ChangeSelectedPosition(SelectedUnit.Position);
+            
+            gameState = GameState.SelectAction;
+        }
 
         private void AttackUnit(Unit attackingUnit, Unit defendingUnit)
         {
-            attackingUnit.Ammo--;
-            attackingUnit.State = UnitState.Idle;
+            if (attackingUnit.Ammo > 0)
+            {
+                Console.WriteLine($"Defending unit health before: {defendingUnit.Health}");
+                attackingUnit.Ammo--;
+                defendingUnit.Health -= CalculateDamage(attackingUnit, defendingUnit);
+                Console.WriteLine($"Defending unit health after: {defendingUnit.Health}");
 
-            defendingUnit.Health -= CalculateDamage(attackingUnit, defendingUnit); 
+                attackingUnit.State = UnitState.None;
 
-            gameState = GameState.SelectAction;
+                gameState = GameState.SelectAction;
+            }
         }
 
         private int CalculateDamage(Unit attackingUnit, Unit defendingUnit)
@@ -449,29 +441,42 @@ namespace Basic_Wars_V2
             return damage;
         }
 
-        private void PlayerCapture()
+        public Unit CheckForUnitGeneration(GameTime gameTime, Button PressedButton, int currentTeam)
         {
-            Tile unitTile = _inputController.GetUnitTile(SelectedUnit);
+            //int currentTeam = 1;
 
+            //if (TileSelected)
+            //{
+            //    TileSelected = false;
+            //    if (SelectedTile.Type == TileType.Factory)
+            //    {
+            //        // Using console for now
+            //        // UI implmentation after frame is done
+            //        //Add team check as well later
 
-        }
+            //        Console.WriteLine("Enter unit to be produced:\n1. Infantry\n2. Mech\n3. Tank\n4. APC");
+            //        //int unitType = Convert.ToInt32(Console.ReadLine());
+            //        int unitType = 1;
 
-        private void CheckForUnitGeneration(GameTime gameTime, Button PressedButton, Player CurrentPlayer)
-        {
+            //        Unit newUnit = new Unit(Texture, SelectedTile.Position, unitType, currentTeam); //Add current team turn
+            //        _unitManager.AddUnit(newUnit);
+            //    }
+            //}
+            int unitType = _gameUI.ProcessUnitProduction(gameTime, PressedButton);
+
             if (SelectedTile != null)
             {
-                if (SelectedTile.Type == TileType.Factory
-                    && SelectedTile.Team == CurrentPlayer.Team)
+                if (SelectedTile.Type == TileType.Factory)
                 {
-                    int unitType = _gameUI.ProcessUnitProduction(gameTime, PressedButton);
-
-                    Unit newUnit = new Unit(InGameAssets, SelectedTile.Position, unitType, CurrentPlayer.Team);
-                    _unitManager.AddUnit(newUnit);
+                    Unit newUnit = new Unit(InGameAssets, SelectedTile.Position, unitType, currentTeam);
+                    return newUnit;
                 }
             }
+            
+            return null; // Temporary
         }
 
-        private void UpdateUnitStats()
+        public void UpdateUnitStats()
         {
             foreach (Unit unit in _unitManager.units)
             {
@@ -479,9 +484,9 @@ namespace Basic_Wars_V2
             }
         }
 
-        private void Income(Player player)
+        public void Income(Player player)
         {
-            foreach (Tile structure in _gameMap.structures)
+            foreach (Structure structure in _gameMap.structures)
             {
                 if (structure.Team == player.Team + 1)
                 {

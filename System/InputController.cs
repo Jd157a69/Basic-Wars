@@ -66,7 +66,8 @@ namespace Basic_Wars_V2.System
                 {
                     if (
                         MouseCollider.Intersects(unit.Collider)
-                        && LeftMouseClicked()
+                        && currentMouseState.LeftButton == ButtonState.Pressed
+                        && previousMouseState.LeftButton == ButtonState.Released
                        )
                     {
                         UnitSelected = true;
@@ -80,7 +81,8 @@ namespace Basic_Wars_V2.System
                     {
                         if (
                             MouseCollider.Intersects(tile.Collider)
-                            && LeftMouseClicked()
+                            && currentMouseState.LeftButton == ButtonState.Pressed
+                            && previousMouseState.LeftButton == ButtonState.Released
                            )
                         {
                             tile.State = TileState.Selected;
@@ -92,8 +94,9 @@ namespace Basic_Wars_V2.System
             foreach (Button button in _buttonManager.buttons)
             {
                 if (
-                    MouseCollider.Intersects(button.Collider) 
-                    && LeftMouseClicked()
+                    MouseCollider.Intersects(button.Collider)
+                    && currentMouseState.LeftButton == ButtonState.Pressed
+                    && previousMouseState.LeftButton == ButtonState.Released
                    )
                 {
                     button.Pressed = true;

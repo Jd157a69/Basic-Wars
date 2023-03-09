@@ -123,7 +123,7 @@ namespace Basic_Wars_V2.Entities
             else if (StructureType == "Factory")
             {
                 Type = TileType.Factory;
-                StructureSparsity *= 3;
+                StructureSparsity *= 2;
                 StructureColumnShift = -6;
                 StructureRowShift= 1;
             }

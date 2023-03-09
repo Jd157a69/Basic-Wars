@@ -66,7 +66,6 @@ namespace Basic_Wars_V2.Entities
         private bool DrawReachable = false;
 
         private List<Tile> attackableTiles = new List<Tile>();
-        private List<Tile> attackableOverlay = new List<Tile>();
         private bool DrawAttackable = false;
 
         private List<Tile> tilesToBeRemoved = new List<Tile>();
@@ -135,7 +134,7 @@ namespace Basic_Wars_V2.Entities
             PlayerMoveButton = new Button(Texture, Font, new Vector2(0, 425), 1, "Move");
             PlayerAttackButton = new Button(Texture, Font, new Vector2(0, 550), 1, "Attack");
             ReturnButton = new Button(Texture, Font, new Vector2(0, 675), 1, "Return");
-            CaptureButton = new Button(Texture, Font, new Vector2(0, 825), 1, "Capture");
+            CaptureButton = new Button(Texture, Font, new Vector2(0, 125), 1, "Capture");
 
             AttributeDisplayInfo = new Button(Texture, Font, new Vector2(1600, 180), 2);
             TypeInfo = new Button(Texture, Font, new Vector2(1600, 550), 1);
@@ -258,15 +257,15 @@ namespace Basic_Wars_V2.Entities
             {
                 foreach (Unit defendingUnit in _unitManager.units)
                 {
-                    if (defendingUnit.Position == tile.Position
+                    if (
+                        defendingUnit.Position == tile.Position
                         && defendingUnit.Team != attackingUnit.Team
+                        && attackingUnit.Type != UnitType.APC
                        )
                     {
-                        Tile overlayTile = new Tile(tile.Position, Texture);
-                        overlayTile.CreateTile(1, 1);
-                        attackableOverlay.Add(overlayTile);
-
-                        attackableTiles.Add(tile);
+                        Tile attackingTile = new Tile(tile.Position, Texture);
+                        attackingTile.CreateTile(1, 1);
+                        attackableTiles.Add(attackingTile);
                     }
                 }
             }
@@ -302,7 +301,7 @@ namespace Basic_Wars_V2.Entities
 
             if (DrawAttackable)
             {
-                foreach (Tile tile in attackableOverlay)
+                foreach (Tile tile in attackableTiles)
                 {
                     tile.Draw(_spriteBatch, gameTime);
                 }
@@ -411,16 +410,9 @@ namespace Basic_Wars_V2.Entities
             return GameState.PlayerSelect;
         }
 
-        public GameState DisplayPlayerActions(GameTime gameTime, Button PressedButton, bool displayCapture)
+        public GameState DisplayPlayerActions(GameTime gameTime, Button PressedButton)
         {
-            if (displayCapture)
-            {
-                _buttonManager.DrawButtonIDs(11, 19, 20, 25);
-            }
-            else
-            {
-                _buttonManager.DrawButtonIDs(11, 18, 20, 25);
-            }
+            _buttonManager.DrawButtonIDs(11, 18, 20, 25);       //Need to be able to display both actions and attributes but how?
 
             if (PressedButton != null)
             {
@@ -441,8 +433,6 @@ namespace Basic_Wars_V2.Entities
                         DrawReachable = false;
                         DrawAttackable = false;
                         return GameState.PlayerSelect;
-                    case 19:
-                        return GameState.PlayerCapture;
                 }
             }
 
@@ -484,21 +474,11 @@ namespace Basic_Wars_V2.Entities
 
         public int ProcessUnitProduction(GameTime gameTime, Button PressedButton)
         {
-            _buttonManager.DrawButtonIDs(11, 14, 26, 29);
 
-            if (PressedButton != null)
+            switch (PressedButton.ID) 
             {
-                switch (PressedButton.ID)
-                {
-                    case 26:
-                        return 0;
-                    case 27:
-                        return 1;
-                    case 28:
-                        return 2;
-                    case 29:
-                        return 3;
-                }
+                case 0:
+                    break;
             }
 
             return -1;
