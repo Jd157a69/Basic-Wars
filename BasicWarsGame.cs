@@ -75,7 +75,11 @@ namespace Basic_Wars_V2
 
         private bool DrawRan;
 
-        /*  
+        /*  TODO: Code optimisations
+         *      - Feels like code starts to run much slower after a short period of time
+         *      - Likely a lot of code that isn't necessary needs to be removed
+         *  
+         *  
          *  TODO: Create a main game loop
          *      - Update method should loop through a list of players, going through each game state before moving onto the next player
          *      - This will introduce the Player class: potential use of built in Enum PlayerIndex?
@@ -87,13 +91,15 @@ namespace Basic_Wars_V2
          *  
          *  DONE: Ability to distinguish what team a unit is on and only allowing the current player to select units on their team
          *  
-         *  TODO: Ability for units to attack each other 
-         *  
          *  DONE: Attributes for both units and tiles should be displayed
          *      - Use console for now and implement UI version in the future
          *      
          *  DONE: User should eneter the number of players in the game (Max 4) 
          *      - Use console for this and implement the UI version in future
+         *      
+         *  TODO: Ability for units to attack each other 
+         *      
+         *  TODO: Adjustable map size
          *      
          *  TODO: Universalise the Team number
          *  
@@ -444,6 +450,9 @@ namespace Basic_Wars_V2
 
         private void PlayerAttack(GameTime gameTime)
         {
+            //Starting unit is attacked for some reason?
+            //Should add counterattacking after a unit has attacked - need to include health in the damage calculation (fraction of unit health * damage)
+
             if (SelectedUnit.Type != UnitType.APC)
             {
                 while (gameState == GameState.PlayerAttack && DrawRan)
@@ -453,12 +462,19 @@ namespace Basic_Wars_V2
                     foreach (Tile tile in attackableTiles)
                     {
                         if (
-                            _inputController.MouseCollider.Intersects(tile.Collider)        //Issue with logic possibly?
+                            _inputController.MouseCollider.Intersects(tile.Collider)        
                             && _inputController.LeftMouseClicked()
                             && SelectedUnit.Ammo > 0
                            )
-                        {                                                            
-                            AttackUnit(SelectedUnit, _inputController.GetTileUnit(tile));       //Starting unit is attacked for some reason?
+                        {
+                            Unit defendingUnit = _inputController.GetTileUnit(tile);
+
+                            SelectedUnit.Ammo--;
+                            SelectedUnit.State = UnitState.Used;
+
+                            defendingUnit.Health -= CalculateDamage(SelectedUnit, defendingUnit);
+
+                            gameState = GameState.PlayerSelect;
                         }
                     }
                 }
@@ -515,18 +531,6 @@ namespace Basic_Wars_V2
                     gameState = GameState.PlayerSelect;
                 }
             }
-        }
-
-        private void AttackUnit(Unit attackingUnit, Unit defendingUnit)
-        {
-            //Wrong unit taking damage for some reason?
-
-            attackingUnit.Ammo--;
-            attackingUnit.State = UnitState.Used;
-
-            defendingUnit.Health -= CalculateDamage(attackingUnit, defendingUnit);
-
-            gameState = GameState.PlayerSelect;
         }
 
         private int CalculateDamage(Unit attackingUnit, Unit defendingUnit)
