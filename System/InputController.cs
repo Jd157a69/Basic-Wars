@@ -101,6 +101,11 @@ namespace Basic_Wars_V2.System
             }
         }
 
+        public void ChangeMap(MapManager newMap)
+        {
+            _gameMap = newMap;
+        }
+
         public Unit GetSelectedUnit()
         {
             foreach (Unit unit in _unitManager.units)
@@ -160,6 +165,11 @@ namespace Basic_Wars_V2.System
                 }
             }
             return null;
+        }
+
+        public void Update(UnitManager unitManager)
+        {
+            _unitManager = unitManager;
         }
     }
 }
