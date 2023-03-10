@@ -51,6 +51,14 @@ namespace Basic_Wars_V2.Entities
             return positions;
         }
 
+        public void ResetUnitStates()
+        {
+            foreach (Unit unit in units)
+            {
+                unit.State = UnitState.None;
+            }
+        }
+
         public void Draw(SpriteBatch _spriteBatch, GameTime gameTime, float Scale)
         {
             if (DrawUnits)
@@ -68,7 +76,7 @@ namespace Basic_Wars_V2.Entities
             {
                 if (unit.Health <= 0)
                 {
-                    unitsToRemove.Add(unit);
+                    RemoveUnit(unit);
                 }
 
                 unit.Update(gameTime);
