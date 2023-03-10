@@ -29,7 +29,7 @@ namespace Basic_Wars_V2.Entities
         private Button Players4Button;
         private Button RefreshMapButton;
         private Button StartGameButton;
-        private Button Menu;
+        private Button MenuButton;
 
         //Turn
         private Button TurnNumberInfo;
@@ -123,7 +123,7 @@ namespace Basic_Wars_V2.Entities
             Players4Button = new Button(Texture, Font, new Vector2(1600, 428), 1, "4");
             RefreshMapButton = new Button(Texture, Font, new Vector2(0, 720), 1, "Refresh Map");
             StartGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 900), 0, "Start Game");
-            Menu = new Button(Texture, Font, new Vector2(0, 0), 1, "Main Menu");
+            MenuButton = new Button(Texture, Font, new Vector2(0, 0), 1, "Main Menu");
 
             EndTurnButton = new Button(Texture, Font, new Vector2(1600, 925), 1, $"End Turn");
 
@@ -134,8 +134,8 @@ namespace Basic_Wars_V2.Entities
             PlayerIdleButton = new Button(Texture, Font, new Vector2(0, 300), 1, "Idle");
             PlayerMoveButton = new Button(Texture, Font, new Vector2(0, 425), 1, "Move");
             PlayerAttackButton = new Button(Texture, Font, new Vector2(0, 550), 1, "Attack");
-            ReturnButton = new Button(Texture, Font, new Vector2(0, 675), 1, "Return");
-            CaptureButton = new Button(Texture, Font, new Vector2(0, 825), 1, "Capture");
+            ReturnButton = new Button(Texture, Font, new Vector2(0, 800), 1, "Return");
+            CaptureButton = new Button(Texture, Font, new Vector2(0, 675), 1, "Capture");
 
             AttributeDisplayInfo = new Button(Texture, Font, new Vector2(1600, 180), 2);
             TypeInfo = new Button(Texture, Font, new Vector2(1600, 550), 1);
@@ -144,10 +144,10 @@ namespace Basic_Wars_V2.Entities
             FuelInfo = new Button(Texture, Font, new Vector2(1625, 463.5f - 110));
             DefenceInfo = new Button(Texture, Font, new Vector2(1625, 558 - 110));
 
-            UnitInfantryButton = new Button(Texture, Font, new Vector2(0, 175), 1, "Infantry");
-            UnitMechButton = new Button(Texture, Font, new Vector2(0, 300), 1, "Mech");
-            UnitTankButton = new Button(Texture, Font, new Vector2(0, 425), 1, "Tank");
-            UnitAPCButton = new Button(Texture, Font, new Vector2(0, 550), 1, "APC");
+            UnitInfantryButton = new Button(Texture, Font, new Vector2(0, 300), 1, "Infantry");
+            UnitMechButton = new Button(Texture, Font, new Vector2(0, 425), 1, "Mech");
+            UnitTankButton = new Button(Texture, Font, new Vector2(0, 550), 1, "Tank");
+            UnitAPCButton = new Button(Texture, Font, new Vector2(0, 675), 1, "APC");
 
             _buttonManager.AddButton(BasicWarsTitle);
             _buttonManager.AddButton(NewGameButton);
@@ -160,7 +160,7 @@ namespace Basic_Wars_V2.Entities
             _buttonManager.AddButton(Players4Button);
             _buttonManager.AddButton(RefreshMapButton);
             _buttonManager.AddButton(StartGameButton);
-            _buttonManager.AddButton(Menu);
+            _buttonManager.AddButton(MenuButton);
 
             _buttonManager.AddButton(TurnNumberInfo);
             _buttonManager.AddButton(CurrentPlayerTeamInfo);
@@ -251,6 +251,7 @@ namespace Basic_Wars_V2.Entities
         public List<Tile> GetAttackableTiles(Unit attackingUnit, Tile StartingTile)
         {
             attackableTiles.Clear();
+            attackableOverlay.Clear();
 
             List<Tile> adjacentTiles = _gameMap.GetNeighbours(StartingTile);
 
@@ -441,9 +442,14 @@ namespace Basic_Wars_V2.Entities
                         DrawReachable = false;
                         DrawAttackable = false;
                         return GameState.PlayerSelect;
+                }
 
-                    case 19:
+                if (displayCapture)
+                {
+                    if (PressedButton.ID == 19)
+                    {
                         return GameState.PlayerCapture;
+                    }
                 }
             }
 
@@ -485,24 +491,26 @@ namespace Basic_Wars_V2.Entities
 
         public int ProcessUnitProduction(GameTime gameTime, Button PressedButton)
         {
-            _buttonManager.DrawButtonIDs(11, 14, 26, 29);
+            _buttonManager.DrawButtonIDs(11, 14, 18, 18, 26, 29);
 
             if (PressedButton != null)
             {
                 switch (PressedButton.ID)
                 {
+                    case 18:
+                        return -1;
                     case 26:
-                        return 0;
-                    case 27:
                         return 1;
-                    case 28:
+                    case 27:
                         return 2;
-                    case 29:
+                    case 28:
                         return 3;
+                    case 29:
+                        return 4;              
                 }
             }
 
-            return -1;
+            return -2;
         }
     }
 }
