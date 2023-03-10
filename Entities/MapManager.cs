@@ -250,9 +250,10 @@ namespace Basic_Wars_V2.Entities
 
             HQTile.Type = TileType.HQ;
             HQTile.MapGridPos = new Vector2(X, Y);
+            HQTile.Team = team;
 
             map[X, Y] = HQTile;
-            map[X, Y].CreateTile(-6, 2);
+            map[X, Y].CreateTile(-6 + team, 2);
 
             structures.Add(HQTile);
         }
@@ -376,10 +377,10 @@ namespace Basic_Wars_V2.Entities
 
         public void Update(GameTime gameTime)
         {
-            foreach (Tile tile in map)
-            {
-                tile.Update(gameTime);
-            }
+            //foreach (Tile tile in map)
+            //{
+            //    tile.Update(gameTime);
+            //}
         }
     }
 }
