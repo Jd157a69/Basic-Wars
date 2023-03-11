@@ -159,7 +159,7 @@ namespace Basic_Wars_V2.System
         {
             foreach (Unit unit in _unitManager.units)
             {
-                if (tile.Position == tile.Position)
+                if (tile.Position == unit.Position)
                 {
                     return unit;
                 }
