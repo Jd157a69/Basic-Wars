@@ -79,7 +79,6 @@ namespace Basic_Wars_V2
          *      - Feels like code starts to run much slower after a short period of time
          *      - Likely a lot of code that isn't necessary needs to be removed
          *  
-         *  
          *  TODO: Create a main game loop
          *      - Update method should loop through a list of players, going through each game state before moving onto the next player
          *      - This will introduce the Player class: potential use of built in Enum PlayerIndex?
@@ -415,7 +414,7 @@ namespace Basic_Wars_V2
             gameState = _gameUI.DisplayPlayerActions(gameTime, PressedButton, displayCapture);
         }
 
-        private void PlayerMove(GameTime gameTime)
+        private void PlayerMove(GameTime gameTime)      //Needs fix - Player is able to move again after return and then reselection
         {
             if (SelectedUnit.State != UnitState.Moved)
             {
@@ -514,7 +513,8 @@ namespace Basic_Wars_V2
         {
             while (gameState == GameState.PlayerProduceUnit && DrawRan)
             {
-                int unitType = _gameUI.ProcessUnitProduction(gameTime, PressedButton);  
+                int unitType = _gameUI.ProcessUnitProduction(gameTime, PressedButton);
+                
                 DrawRan = false; 
 
                 if (unitType == -1)
@@ -524,11 +524,18 @@ namespace Basic_Wars_V2
                 
                 if (unitType != -1 && unitType != -2)
                 {
-                    Unit newUnit = new Unit(InGameAssets, SelectedTile.Position, unitType, CurrentPlayer.Team + 1);     
-                    newUnit.State = UnitState.Used;            //Really need to make the player team and unitType universal values to avoid the +1, -1 issue
-                    _unitManager.AddUnit(newUnit);
+                    Unit newUnit = new Unit(InGameAssets, SelectedTile.Position, unitType, CurrentPlayer.Team + 1);
 
-                    gameState = GameState.PlayerSelect;
+                    if (CurrentPlayer.Funds >= newUnit.CostToProduce)
+                    {
+                        CurrentPlayer.Funds -= newUnit.CostToProduce;
+
+                        newUnit.State = UnitState.Used;            //Really need to make the player team and unitType universal values to avoid the +1, -1 issue
+                        _unitManager.AddUnit(newUnit);
+
+                        gameState = GameState.PlayerSelect;
+                    }
+  
                 }
             }
         }
