@@ -414,6 +414,8 @@ namespace Basic_Wars_V2
             if ((unitTile.Type == TileType.City
                 || unitTile.Type == TileType.Factory
                 || unitTile.Type == TileType.HQ)
+                && SelectedUnit.Type != UnitType.Tank
+                && SelectedUnit.Type != UnitType.APC
                 && SelectedUnit.Team != unitTile.Team
                 )
             {
@@ -480,13 +482,7 @@ namespace Basic_Wars_V2
                             && SelectedUnit.Ammo > 0
                            )
                         {
-                            Console.WriteLine($"Tile grid pos: {tile.MapGridPos}");
-
                             Unit defendingUnit = _inputController.GetTileUnit(tile);        
-
-                            //DEBUG
-                            Console.WriteLine($"AttackingUnit: {SelectedUnit.Type}");
-                            Console.WriteLine($"Defending Unit: {defendingUnit.Type}"); //Defending unit is wrong - Always attacking the starting unit
 
                             defendingUnit.Health -= CalculateDamage(SelectedUnit, defendingUnit);
                             SelectedUnit.Health -= CalculateDamage(defendingUnit, SelectedUnit);
