@@ -59,6 +59,7 @@ namespace Basic_Wars_V2.Entities
         private Button UnitAPCButton;
 
         private Tile SelectedUI;
+
         public bool DrawSelectedUI { get; set; }
 
         private List<Tile> reachableTiles = new List<Tile>();
@@ -78,7 +79,7 @@ namespace Basic_Wars_V2.Entities
         private UnitManager _unitManager;
         private Dijkstra _pathFinder;
 
-        public MapManager _gameMap;
+        private MapManager _gameMap;
 
         private int numOfplayers = 2;
 
@@ -412,6 +413,7 @@ namespace Basic_Wars_V2.Entities
             return GameState.PlayerSelect;
         }
 
+        //Maybe add unit as a parameter here to set the state when selecting idle?
         public GameState DisplayPlayerActions(GameTime gameTime, Button PressedButton, bool displayCapture)
         {
             if (displayCapture)
@@ -428,7 +430,7 @@ namespace Basic_Wars_V2.Entities
                 switch (PressedButton.ID)
                 {
                     case 15:
-                        return GameState.SelectAction;
+                        return GameState.PlayerSelect;
 
                     case 16:
                         DrawReachable = true;
@@ -511,6 +513,16 @@ namespace Basic_Wars_V2.Entities
             }
 
             return -2;
+        }
+
+        public void ClearAttackableOverlay()
+        {
+            attackableOverlay.Clear();
+        }
+
+        public void ClearMoveableOverlay()
+        {
+            moveableOverlay.Clear();
         }
     }
 }
