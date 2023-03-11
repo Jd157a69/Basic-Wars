@@ -74,9 +74,9 @@ namespace Basic_Wars_V2.Entities
         {
             foreach (Unit unit in units)
             {
-                if (unit.Health <= 0)
+                if (unit.State == UnitState.Dead)
                 {
-                    RemoveUnit(unit);
+                    unitsToRemove.Add(unit);
                 }
 
                 unit.Update(gameTime);
