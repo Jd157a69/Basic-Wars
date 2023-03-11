@@ -228,7 +228,6 @@ namespace Basic_Wars_V2
             base.Draw(gameTime);
         }
 
-
         private void PlayingGame(GameTime gameTime)
         {
             if (TurnNumber == 0)
@@ -259,11 +258,6 @@ namespace Basic_Wars_V2
 
                 //Need to sort out this method, refresh everything at start of turn
                 gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);       
-
-                //DEBUG
-                Console.WriteLine("\nNew Turn");
-                Console.WriteLine($"Player: {CurrentPlayer.Team + 1}");
-                Console.WriteLine($"Turn: {TurnNumber}");
             }
 
             switch (gameState)
@@ -335,10 +329,15 @@ namespace Basic_Wars_V2
             ProcessButtonsOnly = false;
             UpdateUnitStats();
 
+            _gameUI.ClearAttackableOverlay();
+
+            //Need some indication of when a unit has been used
             //For if return is selected as a unit action
             if (SelectedUnit != null)           //Need to handle when player selects Idle for a unit
             {
-                if (SelectedUnit.State != UnitState.Used)
+                if (SelectedUnit.State != UnitState.Used
+                    && SelectedUnit.State != UnitState.Moved
+                   )
                 {
                     SelectedUnit.State = UnitState.None;
                 }
@@ -357,7 +356,9 @@ namespace Basic_Wars_V2
 
                 _gameUI.DisplayAttributes(SelectedUnit);
 
-                if (SelectedUnit.Team == CurrentPlayer.Team + 1 && SelectedUnit.State != UnitState.Used)    //Doesn't work properly?
+                if (SelectedUnit.Team == CurrentPlayer.Team + 1
+                    && SelectedUnit.State != UnitState.Used
+                   )    //Doesn't work properly?
                 {
                     Console.WriteLine($"Player Team: {CurrentPlayer.Team + 1}");
                     Console.WriteLine($"Unit team: {SelectedUnit.Team}");
@@ -382,7 +383,7 @@ namespace Basic_Wars_V2
                     && SelectedTile.Team == CurrentPlayer.Team + 1
                    )
                 {                                                    
-                    gameState = GameState.PlayerProduceUnit;            //Issues here
+                    gameState = GameState.PlayerProduceUnit;
                 }
             }
         }
@@ -392,10 +393,18 @@ namespace Basic_Wars_V2
             ProcessButtonsOnly = true;
             _gameUI.DisplayAttributes(SelectedUnit);
 
-            //ReachableTiles displays for a split second. Clear it after it's been used maybe?
-            reachableTiles = _gameUI.GetReachableTiles(SelectedUnit, _unitManager.GetUnitPositions(), _inputController.GetUnitTile(SelectedUnit));
-            attackableTiles = _gameUI.GetAttackableTiles(SelectedUnit, _inputController.GetUnitTile(SelectedUnit)); //Issue with attackable tiles
-            //Needs to stop displaying after PlayerAttack has run
+            //Likely somewhere else I can put this
+            if (SelectedUnit.State != UnitState.Moved)
+            {
+                reachableTiles = _gameUI.GetReachableTiles(SelectedUnit, _unitManager.GetUnitPositions(), _inputController.GetUnitTile(SelectedUnit));
+            }
+            else
+            {
+                reachableTiles.Clear();
+                _gameUI.ClearMoveableOverlay();
+            }
+            
+            attackableTiles = _gameUI.GetAttackableTiles(SelectedUnit, _inputController.GetUnitTile(SelectedUnit));
 
             DrawRan = false;
 
@@ -414,9 +423,11 @@ namespace Basic_Wars_V2
             gameState = _gameUI.DisplayPlayerActions(gameTime, PressedButton, displayCapture);
         }
 
-        private void PlayerMove(GameTime gameTime)      //Needs fix - Player is able to move again after return and then reselection
+        private void PlayerMove(GameTime gameTime) 
         {
-            if (SelectedUnit.State != UnitState.Moved)
+            if (SelectedUnit.State != UnitState.Moved 
+                && reachableTiles.Count != 0
+               )
             {
                 while (gameState == GameState.PlayerMove && DrawRan)
                 {
@@ -450,9 +461,11 @@ namespace Basic_Wars_V2
         private void PlayerAttack(GameTime gameTime)
         {
             //Starting unit is attacked for some reason?
-            //Should add counterattacking after a unit has attacked - need to include health in the damage calculation (fraction of unit health * damage)
 
-            if (SelectedUnit.Type != UnitType.APC)
+            if (SelectedUnit.State != UnitState.Used 
+                && SelectedUnit.Type != UnitType.APC 
+                && attackableTiles.Count != 0
+               )
             {
                 while (gameState == GameState.PlayerAttack && DrawRan)
                 {
@@ -460,19 +473,25 @@ namespace Basic_Wars_V2
 
                     foreach (Tile tile in attackableTiles)
                     {
+                        
                         if (
                             _inputController.MouseCollider.Intersects(tile.Collider)        
                             && _inputController.LeftMouseClicked()
                             && SelectedUnit.Ammo > 0
                            )
                         {
-                            Unit defendingUnit = _inputController.GetTileUnit(tile);
+                            Console.WriteLine($"Tile grid pos: {tile.MapGridPos}");
 
-                            SelectedUnit.Ammo--;
-                            SelectedUnit.State = UnitState.Used;
+                            Unit defendingUnit = _inputController.GetTileUnit(tile);        
+
+                            //DEBUG
+                            Console.WriteLine($"AttackingUnit: {SelectedUnit.Type}");
+                            Console.WriteLine($"Defending Unit: {defendingUnit.Type}"); //Defending unit is wrong - Always attacking the starting unit
 
                             defendingUnit.Health -= CalculateDamage(SelectedUnit, defendingUnit);
+                            SelectedUnit.Health -= CalculateDamage(defendingUnit, SelectedUnit);
 
+                            SelectedUnit.State = UnitState.Used;
                             gameState = GameState.PlayerSelect;
                         }
                     }
@@ -530,7 +549,7 @@ namespace Basic_Wars_V2
                     {
                         CurrentPlayer.Funds -= newUnit.CostToProduce;
 
-                        newUnit.State = UnitState.Used;            //Really need to make the player team and unitType universal values to avoid the +1, -1 issue
+                        newUnit.State = UnitState.Used;            //Really need to make the player team and unitType universal values to avoid the +1, -1
                         _unitManager.AddUnit(newUnit);
 
                         gameState = GameState.PlayerSelect;
@@ -542,14 +561,16 @@ namespace Basic_Wars_V2
 
         private int CalculateDamage(Unit attackingUnit, Unit defendingUnit)
         {
-            int damage = 0;
+            attackingUnit.Ammo--;
 
             int baseDamage = baseDamageDictionary[(attackingUnit.Type, defendingUnit.Type)];
-            int defendingUnitDefenceBonus = _inputController.GetUnitTile(defendingUnit).DefenceBonus;
 
-            damage = baseDamage - (int)(baseDamage * (defendingUnitDefenceBonus / 100));
+            double defenceMultiplier = (double)_inputController.GetUnitTile(defendingUnit).DefenceBonus / 100;
 
-            return damage;
+            double HealthMultiplier = (double)attackingUnit.Health / 100;
+
+            //return (int)(HealthMultiplier * (baseDamage - (int)(baseDamage * ((double)defenceMultiplier / 100))));
+            return (int)(HealthMultiplier * (baseDamage - (baseDamage * defenceMultiplier)));
         }
 
         private void UpdateUnitStats()
