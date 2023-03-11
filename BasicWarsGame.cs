@@ -77,11 +77,19 @@ namespace Basic_Wars_V2
 
         /*  TODO: Code optimisations
          *      - Feels like code starts to run much slower after a short period of time
-         *      - Likely a lot of code that isn't necessary needs to be removed
+         *      - A lot of repeated code in places
          *  
          *  TODO: Create a main game loop
          *      - Update method should loop through a list of players, going through each game state before moving onto the next player
          *      - This will introduce the Player class: potential use of built in Enum PlayerIndex?
+         *      
+         *  TODO: PausedGame state
+         *      - Display options to user: Resume, Save, Menu, Quit
+         *      
+         *  TODO: GameOver condition and state
+         *      - GameOver screen
+         *      - Display Winner
+         *      - Return to menu
          *  
          *  DONE: Generate units using a factory tile
          *      - Use console to specify type and team of unit for now and implement UI version in the future
@@ -96,7 +104,7 @@ namespace Basic_Wars_V2
          *  DONE: User should eneter the number of players in the game (Max 4) 
          *      - Use console for this and implement the UI version in future
          *      
-         *  TODO: Ability for units to attack each other 
+         *  DONE: Ability for units to attack each other 
          *      
          *  TODO: Adjustable map size
          *      
@@ -114,6 +122,8 @@ namespace Basic_Wars_V2
          *      - Serialization and deserialization of files: 
          *          https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to?pivots=dotnet-7-0
          *          https://www.c-sharpcorner.com/article/working-with-json-in-C-Sharp/
+         *      - Get data method in MapManager, UnitManager, Player and BasicWarGame classes
+         *      - Method in BasciWarsGame class to load and save data
          *  
          */
 
