@@ -53,13 +53,13 @@ namespace Basic_Wars_V2.Entities
 
         }
 
-        public void Draw(SpriteBatch _spriteBatch, GameTime gameTime, float Scale = 1.0f)
+        public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
         {
             foreach (Button button in buttons)
             {
                 if (button.DrawButton)
                 {
-                    button.Draw(_spriteBatch, gameTime, Scale);
+                    button.Draw(_spriteBatch, gameTime);
                 }
             }
         }

@@ -130,10 +130,10 @@ namespace Basic_Wars_V2.Entities
             CentreText();   //Should only centre text once, currently doing it every update
         }
 
-        public void Draw(SpriteBatch _spriteBatch, GameTime gameTime, float Scale = 1.0f)
+        public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
         {
-            buttonSprite.Draw(_spriteBatch, ButtonPosition, Scale);
-            text.WriteText(_spriteBatch, TextPosition, Scale);
+            buttonSprite.Draw(_spriteBatch, ButtonPosition);
+            text.WriteText(_spriteBatch, TextPosition);
         }
 
         public void Update(GameTime gameTime)
