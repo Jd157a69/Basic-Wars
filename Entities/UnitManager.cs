@@ -70,16 +70,21 @@ namespace Basic_Wars_V2.Entities
             }
         }
 
+        public void ClearUnits()
+        {
+            units.Clear();
+        }
+
         public void Update(GameTime gameTime)
         {
             foreach (Unit unit in units)
             {
+                unit.Update(gameTime);
+
                 if (unit.State == UnitState.Dead)
                 {
                     unitsToRemove.Add(unit);
                 }
-
-                unit.Update(gameTime);
             }
 
             foreach (Unit unit in unitsToRemove)
