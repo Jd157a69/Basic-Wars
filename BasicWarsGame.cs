@@ -137,8 +137,8 @@ namespace Basic_Wars_V2
         protected override void Initialize()
         {
             _graphics.IsFullScreen = false;
-            _graphics.SynchronizeWithVerticalRetrace = false;
-            IsFixedTimeStep = false;
+            //_graphics.SynchronizeWithVerticalRetrace = true;
+            IsFixedTimeStep = true;
             _graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
             _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
             _graphics.ApplyChanges();
@@ -175,20 +175,19 @@ namespace Basic_Wars_V2
             _entityManager.AddEntity(_unitManager);
             _entityManager.AddEntity(_gameUI);
 
-            //      TESTING
-            for (int i = 0; i < 4; i++)
-            {
-                int temp = 56 * i;
-                Unit unit = new Unit(InGameAssets, new Vector2(512 + temp, 92), i + 1, i + 1);
-                _unitManager.AddUnit(unit);
-            }
 
+            //      TESTING
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    int temp = 56 * i;
+            //    Unit unit = new Unit(InGameAssets, new Vector2(512 + temp, 92), i + 1, i + 1);
+            //    _unitManager.AddUnit(unit);
+            //}
         }
+        
 
         protected override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
             _inputController.ProcessControls(gameTime, ProcessButtonsOnly);
             PressedButton = _inputController.GetButtonPressed();
 
@@ -229,8 +228,13 @@ namespace Basic_Wars_V2
             }
 
             _entityManager.Update(gameTime);
+
+            DrawRan = true;
+
+            base.Update(gameTime);
         }
 
+        //Memory Leak here causing extreme performance issues
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -238,8 +242,6 @@ namespace Basic_Wars_V2
             _spriteBatch.Begin();
             _entityManager.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
-
-            DrawRan = true;
 
             base.Draw(gameTime);
         }
@@ -377,9 +379,6 @@ namespace Basic_Wars_V2
                     && SelectedUnit.State != UnitState.Used
                    )    //Doesn't work properly?
                 {
-                    Console.WriteLine($"Player Team: {CurrentPlayer.Team + 1}");
-                    Console.WriteLine($"Unit team: {SelectedUnit.Team}");
-
                     gameState = GameState.SelectAction;
                 }
                 else
@@ -396,10 +395,12 @@ namespace Basic_Wars_V2
 
                 _gameUI.DisplayAttributes(null, SelectedTile);
 
-                if (SelectedTile.Type == TileType.Factory
+                if ((SelectedTile.Type == TileType.Factory 
+                    || SelectedTile.Type == TileType.HQ)
                     && SelectedTile.Team == CurrentPlayer.Team + 1
                    )
-                {                                                    
+                {
+                    ProcessButtonsOnly = true;
                     gameState = GameState.PlayerProduceUnit;
                 }
             }
@@ -411,7 +412,9 @@ namespace Basic_Wars_V2
             _gameUI.DisplayAttributes(SelectedUnit);
 
             //Likely somewhere else I can put this
-            if (SelectedUnit.State != UnitState.Moved)
+            if (SelectedUnit.State != UnitState.Moved 
+                && SelectedUnit.State != UnitState.Used
+               )
             {
                 reachableTiles = _gameUI.GetReachableTiles(SelectedUnit, _unitManager.GetUnitPositions(), _inputController.GetUnitTile(SelectedUnit));
             }
@@ -421,9 +424,7 @@ namespace Basic_Wars_V2
                 _gameUI.ClearMoveableOverlay();
             }
             
-            attackableTiles = _gameUI.GetAttackableTiles(SelectedUnit, _inputController.GetUnitTile(SelectedUnit));
-
-            DrawRan = false;
+            attackableTiles = _gameUI.GetAttackableTiles(SelectedUnit, _inputController.GetUnitTile(SelectedUnit));  
 
             bool displayCapture = false;
             Tile unitTile = _inputController.GetUnitTile(SelectedUnit);
@@ -450,7 +451,7 @@ namespace Basic_Wars_V2
             {
                 while (gameState == GameState.PlayerMove && DrawRan)
                 {
-                    _inputController.UpdateMouseState();
+                    DrawRan = false;
 
                     foreach (Tile tile in reachableTiles)
                     {
@@ -479,8 +480,6 @@ namespace Basic_Wars_V2
 
         private void PlayerAttack(GameTime gameTime)
         {
-            //Starting unit is attacked for some reason?
-
             if (SelectedUnit.State != UnitState.Used 
                 && SelectedUnit.Type != UnitType.APC 
                 && attackableTiles.Count != 0
@@ -488,11 +487,10 @@ namespace Basic_Wars_V2
             {
                 while (gameState == GameState.PlayerAttack && DrawRan)
                 {
-                    _inputController.UpdateMouseState();
+                    DrawRan = false;
 
                     foreach (Tile tile in attackableTiles)
                     {
-                        
                         if (
                             _inputController.MouseCollider.Intersects(tile.Collider)        
                             && _inputController.LeftMouseClicked()
@@ -538,16 +536,15 @@ namespace Basic_Wars_V2
                     break;
             }
             gameState = GameState.SelectAction;
-
         }
 
-        private void PlayerProduceUnit(GameTime gameTime)               //WORKING ON THIS
+        private void PlayerProduceUnit(GameTime gameTime)               
         {
             while (gameState == GameState.PlayerProduceUnit && DrawRan)
             {
+                DrawRan = false;
+
                 int unitType = _gameUI.ProcessUnitProduction(gameTime, PressedButton);
-                
-                DrawRan = false; 
 
                 if (unitType == -1)
                 {
@@ -567,7 +564,6 @@ namespace Basic_Wars_V2
 
                         gameState = GameState.PlayerSelect;
                     }
-  
                 }
             }
         }
@@ -582,7 +578,6 @@ namespace Basic_Wars_V2
 
             double HealthMultiplier = (double)attackingUnit.Health / 100;
 
-            //return (int)(HealthMultiplier * (baseDamage - (int)(baseDamage * ((double)defenceMultiplier / 100))));
             return (int)(HealthMultiplier * (baseDamage - (baseDamage * defenceMultiplier)));
         }
 
