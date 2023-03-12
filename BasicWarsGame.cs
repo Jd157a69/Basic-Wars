@@ -175,7 +175,6 @@ namespace Basic_Wars_V2
             _entityManager.AddEntity(_unitManager);
             _entityManager.AddEntity(_gameUI);
 
-
             //      TESTING
             //for (int i = 0; i < 4; i++)
             //{
@@ -184,10 +183,12 @@ namespace Basic_Wars_V2
             //    _unitManager.AddUnit(unit);
             //}
         }
-        
 
         protected override void Update(GameTime gameTime)
         {
+            //This fixes the memory issue
+            _entityManager.Refresh();
+
             _inputController.ProcessControls(gameTime, ProcessButtonsOnly);
             PressedButton = _inputController.GetButtonPressed();
 
@@ -242,6 +243,8 @@ namespace Basic_Wars_V2
             _spriteBatch.Begin();
             _entityManager.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
+
+            DrawRan = true;
 
             base.Draw(gameTime);
         }
@@ -445,7 +448,8 @@ namespace Basic_Wars_V2
 
         private void PlayerMove(GameTime gameTime) 
         {
-            if (SelectedUnit.State != UnitState.Moved 
+            if ((SelectedUnit.State != UnitState.Moved
+                || SelectedUnit.State != UnitState.Used)
                 && reachableTiles.Count != 0
                )
             {
@@ -474,7 +478,7 @@ namespace Basic_Wars_V2
             }
             else
             {
-                gameState = GameState.SelectAction;
+                gameState = GameState.PlayerSelect;
             }
         }
 
@@ -510,7 +514,7 @@ namespace Basic_Wars_V2
             }
             else
             {
-                gameState = GameState.SelectAction;
+                gameState = GameState.PlayerSelect;
             }
             
         }
@@ -535,7 +539,7 @@ namespace Basic_Wars_V2
                     unitTile.CreateTileSprite(-6 + SelectedUnit.Team, 2);
                     break;
             }
-            gameState = GameState.SelectAction;
+            gameState = GameState.PlayerSelect;
         }
 
         private void PlayerProduceUnit(GameTime gameTime)               

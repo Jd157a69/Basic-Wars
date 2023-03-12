@@ -52,6 +52,13 @@ namespace Basic_Wars_V2.Entities
             entitiesToRemove.Add(entity);
         }
 
+        public void Refresh()
+        {
+            List<IGameEntity> oldEntities = entities;
+            ClearEntities();
+            entities = oldEntities;
+        }
+
         public void ClearEntities()
         {
             entities.Clear();
