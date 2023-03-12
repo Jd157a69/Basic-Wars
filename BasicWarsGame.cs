@@ -75,6 +75,9 @@ namespace Basic_Wars_V2
 
         private bool DrawRan;
 
+        //DEBUG
+        private bool DebugUnitFreeMove = true;
+
         /*  TODO: Code optimisations
          *      - Feels like code starts to run much slower after a short period of time
          *      - A lot of repeated code in places
@@ -105,10 +108,12 @@ namespace Basic_Wars_V2
          *      - Use console for this and implement the UI version in future
          *      
          *  DONE: Ability for units to attack each other 
+         *  
+         *  TODO: Resupply using APC
          *      
          *  TODO: Adjustable map size
          *      
-         *  TODO: Universalise the Team number
+         *  TODO: Universalise the UnitTeam, PlayerTeam, UnitType
          *  
          *  TODO: Code the AI
          *      - Use heuristics and weights to determine what is most important for the AI to do
@@ -207,6 +212,11 @@ namespace Basic_Wars_V2
                     gameState = GameState.PlayerSelect;
                     break;
 
+                case MenuState.GameOver:
+                    ProcessButtonsOnly = true;
+                    _gameUI.GameOver(gameTime, PressedButton, CurrentPlayer);
+                    break;
+
                 case MenuState.RefreshMap:
                     RefreshMap();
                     break;
@@ -269,7 +279,15 @@ namespace Basic_Wars_V2
 
                 CurrentPlayer = Players[PlayerIndex];
                 Income(CurrentPlayer);
-                CheckUnitRessuply(CurrentPlayer.Team);
+                CheckUnitResupply(CurrentPlayer.Team);
+
+                bool GameOver = CheckWinner(CurrentPlayer.Team);
+                CheckHQ();
+
+                if (GameOver)
+                {
+                    menuState = MenuState.GameOver;
+                }
 
                 //Need to sort out this method, refresh everything at start of turn
                 gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);       
@@ -311,14 +329,12 @@ namespace Basic_Wars_V2
                     NextPlayer = true;
                     PlayerIndex++;
                     break;
-
-                case GameState.GameOver:
-                    break;
             }
         }
 
         private void RefreshMap(int Width = 16, int Height = 16)
         {
+            Players = _gameUI.GetPlayers();
             _entityManager.RemoveEntity(_gameMap);
             _gameMap = new MapManager(InGameAssets, Width, Height, Players.Count);
             _entityManager.AddEntity(_gameMap);
@@ -412,6 +428,7 @@ namespace Basic_Wars_V2
             //Likely somewhere else I can put this
             if (SelectedUnit.State != UnitState.Moved 
                 && SelectedUnit.State != UnitState.Used
+                || DebugUnitFreeMove
                )
             {
                 reachableTiles = _gameUI.GetReachableTiles(SelectedUnit, _unitManager.GetUnitPositions(), _inputController.GetUnitTile(SelectedUnit));
@@ -443,10 +460,7 @@ namespace Basic_Wars_V2
 
         private void PlayerMove(GameTime gameTime) 
         {
-            if ((SelectedUnit.State != UnitState.Moved
-                || SelectedUnit.State != UnitState.Used)
-                && reachableTiles.Count != 0
-               )
+            if (reachableTiles.Count != 0)
             {
                 while (gameState == GameState.PlayerMove && DrawRan)
                 {
@@ -599,7 +613,7 @@ namespace Basic_Wars_V2
             }
         }
 
-        private void CheckUnitRessuply(int Team)
+        private void CheckUnitResupply(int Team)
         {
             foreach (Unit unit in _unitManager.units)
             {
@@ -613,6 +627,56 @@ namespace Basic_Wars_V2
                 {
                     unit.RefreshUnitAttributes();
                 }
+            }
+        }
+
+        private bool CheckWinner(int Team)
+        {
+            foreach (Tile HQ in _gameMap.HQs)
+            {
+                if (HQ.Team != Team + 1)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void CheckHQ()
+        {
+            List<Player> playersToRemove = new List<Player>();
+
+            foreach (Player player in Players)
+            {
+                foreach (Tile HQ in _gameMap.HQs)
+                {
+                    if (HQ.Team == player.Team + 1)
+                    {
+                        player.HasHQ = true;
+                        break;
+                    }
+                    else
+                    {
+                        player.HasHQ = false;
+                    }
+                }
+
+                if (!player.HasHQ)
+                {
+                    playersToRemove.Add(player);
+                    foreach (Unit unit in _unitManager.units)
+                    {
+                        if (unit.Team == player.Team)
+                        {
+                            _unitManager.RemoveUnit(unit);      //Units are not removed
+                        }
+                    }
+                }
+            }
+
+            foreach (Player player in playersToRemove)
+            {
+                Players.Remove(player);
             }
         }
     }
