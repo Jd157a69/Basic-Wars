@@ -10,6 +10,7 @@ namespace Basic_Wars_V2.Enums
     {
         Initial,
         NewGame,
+        SaveGame,
         LoadGame,
         RefreshMap,
         PlayingGame,
