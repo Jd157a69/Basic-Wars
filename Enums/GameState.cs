@@ -16,6 +16,5 @@ namespace Basic_Wars_V2.Enums
         PlayerProduceUnit,
         EnemyTurn,
         PauseGame,
-        GameOver,
     }
 }

@@ -14,6 +14,7 @@ namespace Basic_Wars_V2.Enums
         LoadGame,
         RefreshMap,
         PlayingGame,
+        GameOver,
         GamePaused,
         QuitGame,
     }
