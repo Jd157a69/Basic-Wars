@@ -36,6 +36,7 @@ namespace Basic_Wars_V2.Entities
         private Button CurrentPlayerTeamInfo;
         private Button CurrentPlayerFundsInfo;
         private Button EndTurnButton;
+        private Button PauseGameButton;
 
         //DisplayActions
         private Button PlayerIdleButton;
@@ -57,6 +58,11 @@ namespace Basic_Wars_V2.Entities
         private Button UnitMechButton;
         private Button UnitTankButton;
         private Button UnitAPCButton;
+
+        //Paused Game
+        private Button ResumeGameButton;
+        private Button SaveGameButton;
+        private Button MainMenuButton;
 
         private Tile SelectedUI;
 
@@ -129,8 +135,9 @@ namespace Basic_Wars_V2.Entities
             EndTurnButton = new Button(Texture, Font, new Vector2(1600, 925), 1, $"End Turn");
 
             TurnNumberInfo = new Button(Texture, Font, new Vector2(1600, 0), 1, $"Turn: 0");
-            CurrentPlayerTeamInfo = new Button(Texture, Font, new Vector2(0, 0), 1, $"Player: {CurrentPlayer.Team}");
+            CurrentPlayerTeamInfo = new Button(Texture, Font, new Vector2(131, 0), 1, $"Player: {CurrentPlayer.Team}");
             CurrentPlayerFundsInfo = new Button(Texture, Font, new Vector2(0, 126), 1, $"{CurrentPlayer.Funds}");
+            PauseGameButton = new Button(Texture, Font, new Vector2(0, 0), 3);
 
             PlayerIdleButton = new Button(Texture, Font, new Vector2(0, 300), 1, "Idle");
             PlayerMoveButton = new Button(Texture, Font, new Vector2(0, 425), 1, "Move");
@@ -150,6 +157,10 @@ namespace Basic_Wars_V2.Entities
             UnitTankButton = new Button(Texture, Font, new Vector2(0, 550), 1, "Tank");
             UnitAPCButton = new Button(Texture, Font, new Vector2(0, 675), 1, "APC");
 
+            ResumeGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 360), 0, "Resume");
+            SaveGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 487), 0, "Save");
+            MainMenuButton = new Button(Texture, Font, new Vector2(CentreButtonX, 614), 0, "Menu");
+
             _buttonManager.AddButton(BasicWarsTitle);
             _buttonManager.AddButton(NewGameButton);
             _buttonManager.AddButton(LoadGameButton);
@@ -167,6 +178,7 @@ namespace Basic_Wars_V2.Entities
             _buttonManager.AddButton(CurrentPlayerTeamInfo);
             _buttonManager.AddButton(CurrentPlayerFundsInfo);
             _buttonManager.AddButton(EndTurnButton);
+            _buttonManager.AddButton(PauseGameButton);
 
             _buttonManager.AddButton(PlayerIdleButton);
             _buttonManager.AddButton(PlayerMoveButton);
@@ -185,6 +197,10 @@ namespace Basic_Wars_V2.Entities
             _buttonManager.AddButton(UnitMechButton);
             _buttonManager.AddButton(UnitTankButton);
             _buttonManager.AddButton(UnitAPCButton);
+
+            _buttonManager.AddButton(ResumeGameButton);
+            _buttonManager.AddButton(SaveGameButton);
+            _buttonManager.AddButton(MainMenuButton);
         }
 
         public void ChangeSelectedPosition(Vector2 position)
@@ -389,11 +405,11 @@ namespace Basic_Wars_V2.Entities
         {
             if (CurrentUnit != null || CurrentTile != null)
             {
-                _buttonManager.DrawButtonIDs(11, 14, 20, 25);
+                _buttonManager.DrawButtonIDs(11, 15, 21, 26);
             }
             else
             {
-                _buttonManager.DrawButtonIDs(11, 14);
+                _buttonManager.DrawButtonIDs(11, 15);
             }
 
             CurrentPlayer = currentPlayer;
@@ -408,6 +424,10 @@ namespace Basic_Wars_V2.Entities
                 {
                     return GameState.EnemyTurn;
                 }
+                if (PressedButton.ID == 15)
+                {
+                    return GameState.PauseGame;
+                }
             }
 
             return GameState.PlayerSelect;
@@ -418,29 +438,29 @@ namespace Basic_Wars_V2.Entities
         {
             if (displayCapture)
             {
-                _buttonManager.DrawButtonIDs(11, 19, 20, 25);
+                _buttonManager.DrawButtonIDs(11, 20, 21, 26);
             }
             else
             {
-                _buttonManager.DrawButtonIDs(11, 18, 20, 25);
+                _buttonManager.DrawButtonIDs(11, 19, 21, 26);
             }
 
             if (PressedButton != null)
             {
                 switch (PressedButton.ID)
                 {
-                    case 15:
+                    case 16:
                         return GameState.PlayerSelect;
 
-                    case 16:
+                    case 17:
                         DrawReachable = true;
                         return GameState.PlayerMove;
 
-                    case 17:
+                    case 18:
                         DrawAttackable = true;
                         return GameState.PlayerAttack;
 
-                    case 18:
+                    case 19:
                         DrawReachable = false;
                         DrawAttackable = false;
                         return GameState.PlayerSelect;
@@ -448,7 +468,7 @@ namespace Basic_Wars_V2.Entities
 
                 if (displayCapture)
                 {
-                    if (PressedButton.ID == 19)
+                    if (PressedButton.ID == 20)
                     {
                         return GameState.PlayerCapture;
                     }
@@ -473,7 +493,7 @@ namespace Basic_Wars_V2.Entities
 
             if (CurrentUnit != null || CurrentTile != null)
             {
-                _buttonManager.DrawButtonIDs(11, 14, 23, 25);
+                _buttonManager.DrawButtonIDs(11, 15, 24, 26);
 
                 if (CurrentUnit != null)
                 {
@@ -493,26 +513,51 @@ namespace Basic_Wars_V2.Entities
 
         public int ProcessUnitProduction(GameTime gameTime, Button PressedButton)
         {
-            _buttonManager.DrawButtonIDs(11, 14, 18, 18, 26, 29);
+            _buttonManager.DrawButtonIDs(11, 15, 19, 19, 27, 30);
 
             if (PressedButton != null)
             {
                 switch (PressedButton.ID)
                 {
-                    case 18:
+                    case 19:
                         return -1;
-                    case 26:
-                        return 1;
                     case 27:
-                        return 2;
+                        return 1;
                     case 28:
-                        return 3;
+                        return 2;
                     case 29:
+                        return 3;
+                    case 30:
                         return 4;              
                 }
             }
 
             return -2;
+        }
+
+        public MenuState PausedGame(GameTime gameTime, Button PressedButton)
+        {
+            _buttonManager.DrawButtonIDs(31, 33, 3, 3); //Paused game options: Resume, Save, Menu, Quit
+
+            if (PressedButton != null)
+            {
+                switch (PressedButton.ID)
+                {
+                    case 3:
+                        return MenuState.QuitGame;
+
+                    case 31:
+                        return MenuState.PlayingGame;
+
+                    case 32:
+                        return MenuState.SaveGame;
+
+                    case 33:
+                        return MenuState.Initial;
+                }
+            }
+
+            return MenuState.GamePaused;
         }
 
         public void ClearAttackableOverlay()
