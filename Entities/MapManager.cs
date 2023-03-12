@@ -21,6 +21,7 @@ namespace Basic_Wars_V2.Entities
 
         public Tile[,] map { get; private set; }
         public List<Tile> structures {get; private set; } = new List<Tile>();
+        public List<Tile> HQs { get; private set; } = new List<Tile>();
 
         private List<Tile> tempTiles = new List<Tile>();
 
@@ -256,6 +257,7 @@ namespace Basic_Wars_V2.Entities
             map[X, Y].CreateTileSprite(-6 + team, 2);
 
             structures.Add(HQTile);
+            HQs.Add(HQTile);
         }
 
         public Rectangle Collider

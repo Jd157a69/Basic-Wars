@@ -64,6 +64,9 @@ namespace Basic_Wars_V2.Entities
         private Button SaveGameButton;
         private Button MainMenuButton;
 
+        private Button GameOverInfo;
+        private Button WinnerInfo;
+
         private Tile SelectedUI;
 
         public bool DrawSelectedUI { get; set; }
@@ -161,6 +164,9 @@ namespace Basic_Wars_V2.Entities
             SaveGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 305), 0, "Save");
             MainMenuButton = new Button(Texture, Font, new Vector2(CentreButtonX, 430), 0, "Menu");
 
+            GameOverInfo = new Button(Texture, Font, new Vector2(CentreButtonX, 90), 0, "Game Over");
+            WinnerInfo = new Button(Texture, Font, new Vector2(CentreButtonX, 215), 0);
+
             _buttonManager.AddButton(BasicWarsTitle);
             _buttonManager.AddButton(NewGameButton);
             _buttonManager.AddButton(LoadGameButton);
@@ -201,6 +207,9 @@ namespace Basic_Wars_V2.Entities
             _buttonManager.AddButton(ResumeGameButton);
             _buttonManager.AddButton(SaveGameButton);
             _buttonManager.AddButton(MainMenuButton);
+
+            _buttonManager.AddButton(GameOverInfo);
+            _buttonManager.AddButton(WinnerInfo);
         }
 
         public void ChangeSelectedPosition(Vector2 position)
@@ -562,6 +571,27 @@ namespace Basic_Wars_V2.Entities
             }
 
             return MenuState.GamePaused;
+        }
+
+        public MenuState GameOver(GameTime gameTime, Button PressedButton, Player Winner)
+        {
+            _buttonManager.UpdateButtonText(WinnerInfo, $"Winner: {Winner.Team + 1}");
+
+            _buttonManager.DrawButtonIDs(3, 3, 33, 35);
+
+            if (PressedButton != null)
+            {
+                switch (PressedButton.ID)
+                {
+                    case 3:
+                        return MenuState.QuitGame;
+
+                    case 33:
+                        return MenuState.Initial;
+                }
+            }
+
+            return MenuState.GameOver;
         }
 
         public void ClearAttackableOverlay()
