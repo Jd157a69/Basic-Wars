@@ -40,7 +40,6 @@ namespace Basic_Wars_V2.System
                     if (!reachableTiles.Contains(neighbor) && cost <= unit.MovementPoints)
                     {
                         neighbor.TotalCost = cost;
-                        neighbor.Parent = currentTile;
 
                         queue.Enqueue(neighbor, cost);
                     }

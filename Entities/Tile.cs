@@ -12,12 +12,10 @@ namespace Basic_Wars_V2.Entities
 {
     public class Tile : IGameEntity, ICollideable
     {
-        public const int TILE_WIDTH = 56;
-        public const int TILE_HEIGHT = 56;
-        public const int X_SPRITE_SHEET_START_POS = 336;
-        public const int Y_SPRITE_SHEET_START_POS = 224;
-
-        //Unit unit;
+        private const int TILE_WIDTH = 56;
+        private const int TILE_HEIGHT = 56;
+        private const int X_SPRITE_SHEET_START_POS = 336;
+        private const int Y_SPRITE_SHEET_START_POS = 224;
 
         public TileType Type { get; set; }
         public TileState State { get; set; }
@@ -26,10 +24,9 @@ namespace Basic_Wars_V2.Entities
         public Vector2 MapGridPos { get; set; }
 
         public int TotalCost { get; set; }
-        public Tile Parent { get; set; }
 
-        public Texture2D Texture { get; set; }
-        public Sprite TileSprite;
+        private Texture2D Texture { get; set; }
+        private Sprite TileSprite;
 
         public int Team { get; set; }
 
@@ -47,7 +44,7 @@ namespace Basic_Wars_V2.Entities
             State = TileState.None;
         }
 
-        public void CreateTile(int TileColumn = 0, int TileRow = 0)
+        public void CreateTileSprite(int TileColumn = 0, int TileRow = 0)
         {
             TileColumn = TileColumn * TILE_WIDTH;
             TileRow = TileRow * TILE_HEIGHT;
