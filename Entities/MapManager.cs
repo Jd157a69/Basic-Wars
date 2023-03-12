@@ -99,7 +99,7 @@ namespace Basic_Wars_V2.Entities
                     }
 
                     map[j, i] = newTile;
-                    map[j, i].CreateTile(randomTile);
+                    map[j, i].CreateTileSprite(randomTile);
                     x += 56;
                 }
                 y += 56;
@@ -144,7 +144,7 @@ namespace Basic_Wars_V2.Entities
                     newStructure.MapGridPos = new Vector2(newGridX, newGridY);
                     map[newGridX, newGridY] = newStructure;
                     map[newGridX, newGridY].Type = Type;
-                    map[newGridX, newGridY].CreateTile(StructureColumnShift, StructureRowShift);
+                    map[newGridX, newGridY].CreateTileSprite(StructureColumnShift, StructureRowShift);
 
                     structures.Add(newStructure);
                 }
@@ -213,7 +213,7 @@ namespace Basic_Wars_V2.Entities
                 roadTile.MapGridPos = new Vector2(X, Y);
 
                 map[X, Y] = roadTile;
-                map[X, Y].CreateTile(direction);
+                map[X, Y].CreateTileSprite(direction);
             }
         }
 
@@ -253,7 +253,7 @@ namespace Basic_Wars_V2.Entities
             HQTile.Team = team;
 
             map[X, Y] = HQTile;
-            map[X, Y].CreateTile(-6 + team, 2);
+            map[X, Y].CreateTileSprite(-6 + team, 2);
 
             structures.Add(HQTile);
         }

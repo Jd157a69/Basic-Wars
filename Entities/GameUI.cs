@@ -108,7 +108,7 @@ namespace Basic_Wars_V2.Entities
             DrawSelectedUI = false;
 
             SelectedUI = new Tile(new Vector2(0, 0), Texture);
-            SelectedUI.CreateTile(0, 1);
+            SelectedUI.CreateTileSprite(0, 1);
         }
 
         public void InitialiseButtons()
@@ -229,7 +229,7 @@ namespace Basic_Wars_V2.Entities
                        )
                     {
                         Tile overlayTile = new Tile(tile.Position, Texture);
-                        overlayTile.CreateTile(2, 1);
+                        overlayTile.CreateTileSprite(2, 1);
                         moveableOverlay.Add(overlayTile);
                     }
                     else
@@ -265,7 +265,7 @@ namespace Basic_Wars_V2.Entities
                        )
                     {
                         Tile overlayTile = new Tile(tile.Position, Texture);
-                        overlayTile.CreateTile(1, 1);
+                        overlayTile.CreateTileSprite(1, 1);
                         attackableOverlay.Add(overlayTile);
 
                         attackableTiles.Add(tile);
