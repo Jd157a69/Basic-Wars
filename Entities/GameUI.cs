@@ -128,9 +128,9 @@ namespace Basic_Wars_V2.Entities
             Players2Button = new Button(Texture, Font, new Vector2(1600, 180), 1, "2");
             Players3Button = new Button(Texture, Font, new Vector2(1600, 304), 1, "3");
             Players4Button = new Button(Texture, Font, new Vector2(1600, 428), 1, "4");
-            RefreshMapButton = new Button(Texture, Font, new Vector2(0, 720), 1, "Refresh Map");
+            RefreshMapButton = new Button(Texture, Font, new Vector2(0, 720), 1, "Refresh");
             StartGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 900), 0, "Start Game");
-            MenuButton = new Button(Texture, Font, new Vector2(0, 0), 1, "Main Menu");
+            MenuButton = new Button(Texture, Font, new Vector2(0, 0), 1, "Menu");
 
             EndTurnButton = new Button(Texture, Font, new Vector2(1600, 925), 1, $"End Turn");
 
@@ -157,9 +157,9 @@ namespace Basic_Wars_V2.Entities
             UnitTankButton = new Button(Texture, Font, new Vector2(0, 550), 1, "Tank");
             UnitAPCButton = new Button(Texture, Font, new Vector2(0, 675), 1, "APC");
 
-            ResumeGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 360), 0, "Resume");
-            SaveGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 487), 0, "Save");
-            MainMenuButton = new Button(Texture, Font, new Vector2(CentreButtonX, 614), 0, "Menu");
+            ResumeGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 180), 0, "Resume");
+            SaveGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 305), 0, "Save");
+            MainMenuButton = new Button(Texture, Font, new Vector2(CentreButtonX, 430), 0, "Menu");
 
             _buttonManager.AddButton(BasicWarsTitle);
             _buttonManager.AddButton(NewGameButton);
