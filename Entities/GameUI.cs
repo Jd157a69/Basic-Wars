@@ -152,10 +152,10 @@ namespace Basic_Wars_V2.Entities
             FuelInfo = new Button(Texture, Font, new Vector2(1625, 463.5f - 110));
             DefenceInfo = new Button(Texture, Font, new Vector2(1625, 558 - 110));
 
-            UnitInfantryButton = new Button(Texture, Font, new Vector2(0, 300), 1, "Infantry");
-            UnitMechButton = new Button(Texture, Font, new Vector2(0, 425), 1, "Mech");
-            UnitTankButton = new Button(Texture, Font, new Vector2(0, 550), 1, "Tank");
-            UnitAPCButton = new Button(Texture, Font, new Vector2(0, 675), 1, "APC");
+            UnitInfantryButton = new Button(Texture, Font, new Vector2(0, 300), 1, "Infantry\n1000");
+            UnitMechButton = new Button(Texture, Font, new Vector2(0, 425), 1, "Mech\n3000");
+            UnitTankButton = new Button(Texture, Font, new Vector2(0, 550), 1, "Tank\n7000");
+            UnitAPCButton = new Button(Texture, Font, new Vector2(0, 675), 1, "APC\n5000");
 
             ResumeGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 180), 0, "Resume");
             SaveGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 305), 0, "Save");
@@ -353,6 +353,10 @@ namespace Basic_Wars_V2.Entities
 
         public MenuState NewGame(GameTime gameTime, Button PressedButton)
         {
+            _buttonManager.UpdateButtonText(CurrentPlayerTeamInfo, "");
+            _buttonManager.UpdateButtonText(CurrentPlayerFundsInfo, "");
+            _buttonManager.UpdateButtonText(TurnNumberInfo, "");
+
             _buttonManager.DrawButtonIDs(4, 10);
 
             if (PressedButton != null)
@@ -415,7 +419,7 @@ namespace Basic_Wars_V2.Entities
             CurrentPlayer = currentPlayer;
 
             _buttonManager.UpdateButtonText(CurrentPlayerTeamInfo, $"Team: {currentPlayer.Team + 1}");
-            _buttonManager.UpdateButtonText(CurrentPlayerFundsInfo, $"Funds: {currentPlayer.Funds}");
+            _buttonManager.UpdateButtonText(CurrentPlayerFundsInfo, $"${currentPlayer.Funds}");
             _buttonManager.UpdateButtonText(TurnNumberInfo, $"Turn: {turnNumber}");
 
             if (PressedButton != null)
