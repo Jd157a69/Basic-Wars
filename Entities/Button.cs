@@ -94,6 +94,13 @@ namespace Basic_Wars_V2.Entities
                     Height = 378;
                     break;
                 case 3:
+                    //Pause
+                    ButtonShiftX = 252;
+                    ButtonShiftY = 791;
+                    Width = 131;
+                    Height = 131;
+                    break;
+                case 4:
                     //Tile
                     ButtonShiftX = 500;
                     ButtonShiftY = 500;
