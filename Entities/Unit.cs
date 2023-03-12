@@ -1,5 +1,6 @@
 ﻿using Basic_Wars.Graphics;
 using Basic_Wars_V2.Enums;
+using Basic_Wars_V2.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -18,13 +19,14 @@ namespace Basic_Wars_V2.Entities
 
         private const int X_SPRITE_SHEET_START_POS = 0;
         private const int Y_SPRITE_SHEET_START_POS = 0;
-
-        private const int ANIMATION_SHIFT = 56;
+        
+        //Animations not implemented
+        //private const int ANIMATION_SHIFT = 56;
 
         private const int SPRITE_SHEET_TEAM_SHIFT = 168;
         private const int SPRITE_SHEET_UNIT_SHIFT = 56;
 
-        public Sprite unitSprite;
+        private Sprite unitSprite;
 
         private Texture2D Texture { get; set; }
 
@@ -53,7 +55,8 @@ namespace Basic_Wars_V2.Entities
             Team = team;
 
             CreateUnitSprite(unitType);
-            SetUnitAttributes(unitType);
+            SetStartingAttributes(unitType);
+            RefreshUnitAttributes(unitType);
         }
 
         public void CreateUnitSprite(int unitType)
@@ -76,12 +79,15 @@ namespace Basic_Wars_V2.Entities
             unitSprite.Draw(_spriteBatch, Position, Scale);
         }
 
-        public void SetUnitAttributes(int unitType)
+        private void SetStartingAttributes(int unitType)
         {
             Selected = false;
             Health = 100;
             State = UnitState.None;
+        }
 
+        public void RefreshUnitAttributes(int unitType)
+        {
             switch (unitType - 1)
             {
                 case 0:
