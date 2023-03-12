@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Basic_Wars_V2
@@ -19,8 +20,8 @@ namespace Basic_Wars_V2
         readonly private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        const string ASSET_NAME_IN_GAME_ASSETS = "InGameAssets";
-        const string ASSET_NAME_GAMEFONT = "Font";
+        private const string ASSET_NAME_IN_GAME_ASSETS = "InGameAssets";
+        private const string ASSET_NAME_GAMEFONT = "Font";
 
         private Texture2D InGameAssets;
         private SpriteFont Font;
@@ -71,7 +72,6 @@ namespace Basic_Wars_V2
         private Button PressedButton;
 
         private int TurnNumber;
-
 
         private bool DrawRan;
 
@@ -203,11 +203,17 @@ namespace Basic_Wars_V2
                     Players = _gameUI.GetPlayers();
                     break;
 
+                case MenuState.SaveGame:
+                    break;
+
                 case MenuState.PlayingGame:
                     PlayingGame(gameTime);
                     break;
 
                 case MenuState.GamePaused:
+                    ProcessButtonsOnly = true;
+                    menuState = _gameUI.PausedGame(gameTime, PressedButton);
+                    gameState = GameState.PlayerSelect;
                     break;
 
                 case MenuState.RefreshMap:
@@ -299,6 +305,7 @@ namespace Basic_Wars_V2
 
                 case GameState.PauseGame:
                     menuState = MenuState.GamePaused;
+                    _gameUI.DrawSelectedUI = false;
                     break;
 
                 case GameState.EnemyTurn:
@@ -519,15 +526,15 @@ namespace Basic_Wars_V2
             switch (unitTile.Type)
             {
                 case TileType.City:
-                    unitTile.CreateTile(-6 + SelectedUnit.Team);
+                    unitTile.CreateTileSprite(-6 + SelectedUnit.Team);
                     break;
 
                 case TileType.Factory:
-                    unitTile.CreateTile(-6 + SelectedUnit.Team, 1);
+                    unitTile.CreateTileSprite(-6 + SelectedUnit.Team, 1);
                     break;
 
                 case TileType.HQ:
-                    unitTile.CreateTile(-6 + SelectedUnit.Team, 2);
+                    unitTile.CreateTileSprite(-6 + SelectedUnit.Team, 2);
                     break;
             }
             gameState = GameState.SelectAction;
