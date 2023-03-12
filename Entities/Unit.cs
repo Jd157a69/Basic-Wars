@@ -35,6 +35,7 @@ namespace Basic_Wars_V2.Entities
       
         public int Team { get; set; }
         public UnitType Type { get; private set; }
+        public int UnitTypeInt { get; set; }
 
         public int Health { get; set; }
         public int Ammo { get; set; }
@@ -53,10 +54,11 @@ namespace Basic_Wars_V2.Entities
             Texture = texture;
             Position = position;
             Team = team;
+            UnitTypeInt = unitType;
 
             CreateUnitSprite(unitType);
-            SetStartingAttributes(unitType);
-            RefreshUnitAttributes(unitType);
+            SetStartingAttributes();
+            RefreshUnitAttributes();
         }
 
         public void CreateUnitSprite(int unitType)
@@ -79,16 +81,16 @@ namespace Basic_Wars_V2.Entities
             unitSprite.Draw(_spriteBatch, Position);
         }
 
-        private void SetStartingAttributes(int unitType)
+        private void SetStartingAttributes()
         {
             Selected = false;
             Health = 100;
             State = UnitState.None;
         }
 
-        public void RefreshUnitAttributes(int unitType)
+        public void RefreshUnitAttributes()
         {
-            switch (unitType - 1)
+            switch (UnitTypeInt - 1)
             {
                 case 0:
                     Type = UnitType.Infantry;                   
@@ -124,17 +126,12 @@ namespace Basic_Wars_V2.Entities
             }
         }
 
-        private void CheckHealth()
+        public void Update(GameTime gameTime)
         {
-            if (Health <= 0) 
+            if (Health <= 0)
             {
                 State = UnitState.Dead;
             }
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            CheckHealth();
         }
 
     }
