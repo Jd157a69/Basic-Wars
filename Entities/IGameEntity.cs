@@ -14,6 +14,6 @@ namespace Basic_Wars_V2.Entities
 
         void Update(GameTime gameTime);
 
-        void Draw(SpriteBatch spriteBatch, GameTime gameTime, float Scale);
+        void Draw(SpriteBatch spriteBatch, GameTime gameTime);
     }
 }

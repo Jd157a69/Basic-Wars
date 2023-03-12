@@ -95,9 +95,9 @@ namespace Basic_Wars_V2.Entities
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime, float Scale = 1.0f)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            TileSprite.Draw(spriteBatch, Position, Scale);
+            TileSprite.Draw(spriteBatch, Position);
         }
 
         public void Update(GameTime gameTime)

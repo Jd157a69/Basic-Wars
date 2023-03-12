@@ -364,13 +364,13 @@ namespace Basic_Wars_V2.Entities
             return neighbors;
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime, float Scale)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (DrawMap)
             {
                 foreach (Tile tile in map)
                 {
-                    tile.Draw(spriteBatch, gameTime, Scale);
+                    tile.Draw(spriteBatch, gameTime);
                 }
             }
         }
