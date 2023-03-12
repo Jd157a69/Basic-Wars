@@ -79,11 +79,11 @@ namespace Basic_Wars_V2
          *      - Feels like code starts to run much slower after a short period of time
          *      - A lot of repeated code in places
          *  
-         *  TODO: Create a main game loop
+         *  DONE: Create a main game loop
          *      - Update method should loop through a list of players, going through each game state before moving onto the next player
          *      - This will introduce the Player class: potential use of built in Enum PlayerIndex?
          *      
-         *  TODO: PausedGame state
+         *  DONE: PausedGame state
          *      - Display options to user: Resume, Save, Menu, Quit
          *      
          *  TODO: GameOver condition and state
@@ -137,7 +137,6 @@ namespace Basic_Wars_V2
         protected override void Initialize()
         {
             _graphics.IsFullScreen = false;
-            //_graphics.SynchronizeWithVerticalRetrace = true;
             IsFixedTimeStep = true;
             _graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
             _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
@@ -174,19 +173,11 @@ namespace Basic_Wars_V2
             _entityManager.AddEntity(_gameMap);
             _entityManager.AddEntity(_unitManager);
             _entityManager.AddEntity(_gameUI);
-
-            //      TESTING
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    int temp = 56 * i;
-            //    Unit unit = new Unit(InGameAssets, new Vector2(512 + temp, 92), i + 1, i + 1);
-            //    _unitManager.AddUnit(unit);
-            //}
         }
 
         protected override void Update(GameTime gameTime)
         {
-            //This fixes the memory issue
+            //This fixes the memory issue somehow
             _entityManager.Refresh();
 
             _inputController.ProcessControls(gameTime, ProcessButtonsOnly);
@@ -199,8 +190,8 @@ namespace Basic_Wars_V2
                     break;
 
                 case MenuState.NewGame:
+                    _unitManager.ClearUnits();
                     menuState = _gameUI.NewGame(gameTime, PressedButton);
-                    Players = _gameUI.GetPlayers();
                     break;
 
                 case MenuState.SaveGame:
@@ -258,9 +249,11 @@ namespace Basic_Wars_V2
                 PlayerIndex = 0;
             }
 
+            //Turns
             if (NextPlayer)
             {
                 _unitManager.ResetUnitStates();
+
                 _gameUI.DrawSelectedUI = false;
                 NextPlayer = false;
 
@@ -276,6 +269,7 @@ namespace Basic_Wars_V2
 
                 CurrentPlayer = Players[PlayerIndex];
                 Income(CurrentPlayer);
+                CheckUnitRessuply(CurrentPlayer.Team);
 
                 //Need to sort out this method, refresh everything at start of turn
                 gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);       
@@ -337,6 +331,7 @@ namespace Basic_Wars_V2
 
         private void StartGame(GameTime gameTime)
         {
+            Players = _gameUI.GetPlayers();
             _gameMap.DrawMap = true;
             _unitManager.DrawUnits = true;
         }
@@ -600,6 +595,23 @@ namespace Basic_Wars_V2
                 if (structure.Team == player.Team + 1)
                 {
                     player.Funds += 1000;
+                }
+            }
+        }
+
+        private void CheckUnitRessuply(int Team)
+        {
+            foreach (Unit unit in _unitManager.units)
+            {
+                Tile unitTile = _inputController.GetUnitTile(unit);
+
+                if (unit.Team == Team + 1
+                    && (unitTile.Type == TileType.HQ
+                    || unitTile.Type == TileType.City
+                    || unitTile.Type == TileType.Factory)
+                   )
+                {
+                    unit.RefreshUnitAttributes();
                 }
             }
         }
