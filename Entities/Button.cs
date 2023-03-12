@@ -84,7 +84,7 @@ namespace Basic_Wars_V2.Entities
                     ButtonShiftX = 252;
                     ButtonShiftY = 127;
                     Width = 289;
-                    Height = 127;
+                    Height = 125;
                     break;
                 case 2:
                     //Attribute
@@ -96,7 +96,7 @@ namespace Basic_Wars_V2.Entities
                 case 3:
                     //Pause
                     ButtonShiftX = 252;
-                    ButtonShiftY = 791;
+                    ButtonShiftY = 252;
                     Width = 131;
                     Height = 131;
                     break;
