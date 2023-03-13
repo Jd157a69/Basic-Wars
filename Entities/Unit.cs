@@ -95,7 +95,7 @@ namespace Basic_Wars_V2.Entities
                 case 0:
                     Type = UnitType.Infantry;                   
                     Ammo = 100;
-                    Fuel = 100;
+                    Fuel = 50;
                     CostToProduce = 1000;
                     MovementPoints = 3;
                     break;
@@ -103,7 +103,7 @@ namespace Basic_Wars_V2.Entities
                 case 1:
                     Type = UnitType.Mech;
                     Ammo = 3;
-                    Fuel = 70;
+                    Fuel = 40;
                     CostToProduce = 3000;
                     MovementPoints = 2;
                     break;
@@ -111,7 +111,7 @@ namespace Basic_Wars_V2.Entities
                 case 2:
                     Type = UnitType.Tank;
                     Ammo = 9;
-                    Fuel = 70;
+                    Fuel = 25;
                     CostToProduce = 7000;
                     MovementPoints = 6;
                     break;
@@ -119,7 +119,7 @@ namespace Basic_Wars_V2.Entities
                 case 3:
                     Type = UnitType.APC;
                     Ammo = 0;
-                    Fuel = 60;
+                    Fuel = 30;
                     CostToProduce = 5000;
                     MovementPoints = 6;
                     break;
