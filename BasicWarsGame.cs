@@ -4,7 +4,9 @@ using Basic_Wars_V2.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
@@ -19,6 +21,7 @@ namespace Basic_Wars_V2
 
         private const string ASSET_NAME_IN_GAME_ASSETS = "InGameAssets";
         private const string ASSET_NAME_GAMEFONT = "Font";
+        private const string SAVE_GAME_PATH = "GameData.xml";
 
         private Texture2D InGameAssets;
         private SpriteFont Font;
@@ -48,7 +51,7 @@ namespace Basic_Wars_V2
         private List<Player> Players;
 
         private Player CurrentPlayer;
-        private int PlayerIndex;
+        private int CurrentPlayerIndex;
         private bool NextPlayer;
 
         private InputController _inputController;
@@ -145,7 +148,7 @@ namespace Basic_Wars_V2
 
         protected override void Initialize()
         {
-            _graphics.IsFullScreen = true;
+            _graphics.IsFullScreen = false;
             IsFixedTimeStep = true;
             _graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
             _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
@@ -193,6 +196,7 @@ namespace Basic_Wars_V2
             switch (menuState)
             {
                 case MenuState.Initial:
+                    _unitManager.ClearUnits();
                     _gameMap.DrawMap = false;
                     menuState = _gameUI.Init(gameTime, PressedButton);
                     break;
@@ -218,7 +222,7 @@ namespace Basic_Wars_V2
                     break;
 
                 case MenuState.SaveGame:
-                    // TODO: Save Game logic
+                    SaveGame(gameTime);
                     break;
 
                 case MenuState.PlayingGame:
@@ -241,7 +245,7 @@ namespace Basic_Wars_V2
                     break;
 
                 case MenuState.LoadGame:
-                    // TODO: Load Game Logic
+                    LoadGame(gameTime);
                     break;
 
                 case MenuState.QuitGame:
@@ -273,7 +277,7 @@ namespace Basic_Wars_V2
                 Players = _gameUI.GetPlayers();
                 _unitManager.DrawUnits = true;
 
-                PlayerIndex = 0;
+                CurrentPlayerIndex = 0;
                 NextPlayer = true;
             }
 
@@ -285,17 +289,17 @@ namespace Basic_Wars_V2
                 _gameUI.DrawSelectedUI = false;
                 NextPlayer = false;
 
-                if (PlayerIndex > Players.Count - 1)
+                if (CurrentPlayerIndex > Players.Count - 1)
                 {
                     TurnNumber++;
                 }
 
-                if (PlayerIndex > Players.Count - 1)
+                if (CurrentPlayerIndex > Players.Count - 1)
                 {
-                    PlayerIndex = 0;
+                    CurrentPlayerIndex = 0;
                 }
 
-                CurrentPlayer = Players[PlayerIndex];
+                CurrentPlayer = Players[CurrentPlayerIndex];
                 Income(CurrentPlayer);
 
                 gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);       
@@ -344,7 +348,7 @@ namespace Basic_Wars_V2
 
                 case GameState.EnemyTurn:
                     NextPlayer = true;
-                    PlayerIndex++;
+                    CurrentPlayerIndex++;
                     break;
             }
         }
@@ -360,11 +364,6 @@ namespace Basic_Wars_V2
             _inputController.ChangeMap(_gameMap);
 
             menuState = MenuState.NewGame;
-        }
-
-        private void LoadGame(GameTime gameTime)
-        {
-
         }
 
         //Player Select logic needs tidying up
@@ -764,6 +763,103 @@ namespace Basic_Wars_V2
             {
                 Players.Remove(player);
             }
+        }
+
+        private void SaveGame(GameTime gameTime)
+        {
+            List<UnitData> unitData = new List<UnitData>();
+            List<TileData> mapData = new List<TileData>();
+            List<PlayerData> playerData = new List<PlayerData>();
+
+            GameStateData gameStateData = new GameStateData(TurnNumber, CurrentPlayerIndex);
+
+            foreach (Unit unit in _unitManager.units)
+            {
+                unitData.Add(new UnitData(unit));
+            }
+
+            foreach (Tile tile in _gameMap.map)
+            {
+                mapData.Add(new TileData(tile));
+            }
+
+            foreach (Player player in Players)
+            {
+                playerData.Add(new PlayerData(player));
+            }
+
+            GameData gameData = new GameData(unitData, mapData, playerData, gameStateData);
+
+            XmlSerializer serializer = new XmlSerializer(typeof(GameData));
+            using (StreamWriter streamWriter = new StreamWriter(SAVE_GAME_PATH))
+            {
+                serializer.Serialize(streamWriter, gameData);
+            }
+
+            if (File.Exists(SAVE_GAME_PATH))
+            {
+                Console.WriteLine("Game Saved");
+            }
+            else
+            {
+                Console.WriteLine("Game Save Failed");
+            }
+
+            menuState = MenuState.PlayingGame;
+        }
+
+        private void LoadGame(GameTime gameTime)
+        {
+            if (File.Exists(SAVE_GAME_PATH))
+            {
+                _unitManager.ClearUnits();
+                Players.Clear();
+
+                GameData gameData;
+
+                List<Tile> Map = new List<Tile>();
+
+                XmlSerializer serializer = new XmlSerializer(typeof(GameData));
+                using (StreamReader streamReader = new StreamReader(SAVE_GAME_PATH))
+                {
+                    gameData = (GameData)serializer.Deserialize(streamReader);
+                }
+
+                foreach (UnitData unitData in gameData.Units)
+                {
+                    _unitManager.AddUnit(unitData.FromUnitData(InGameAssets));
+                }
+
+                foreach (TileData tileData in gameData.Map)
+                {
+                    Map.Add(tileData.FromTileData(InGameAssets));
+                }
+
+                foreach (PlayerData players in gameData.Players)
+                {
+                    Players.Add(players.FromPlayerData());
+                }
+
+                foreach (Tile tile in Map)
+                {
+                    _gameMap.map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y] = tile;
+                }
+
+                _gameMap.RegenerateHQandRoads();
+
+                CurrentPlayerIndex = gameData.GameStateData.CurrentPlayerIndex;
+                TurnNumber = gameData.GameStateData.TurnNumber; 
+
+                CurrentPlayer = Players[CurrentPlayerIndex];
+
+                Console.WriteLine("Game Loaded");
+            }
+            else
+            {
+                Console.WriteLine("Game not loaded - file does not exist");
+            }
+
+            menuState = MenuState.PlayingGame;
         }
     }
 }
