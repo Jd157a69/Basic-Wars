@@ -14,9 +14,6 @@ namespace Basic_Wars_V2.Entities
         public List<Unit> units = new List<Unit>();
         public List<Unit> unitsToRemove = new List<Unit>();
 
-        private int ID = 0;
-        private int TotalUnitsCreated = 0;
-
         public bool DrawUnits { get; set; }
 
         public int DrawOrder => 1;
@@ -29,9 +26,6 @@ namespace Basic_Wars_V2.Entities
         public void AddUnit(Unit unit)
         {
             units.Add(unit);
-            ID++;
-            TotalUnitsCreated++;
-            units[TotalUnitsCreated - 1].ID = ID;
         }
 
         public void RemoveUnit(Unit unit)
@@ -51,11 +45,14 @@ namespace Basic_Wars_V2.Entities
             return positions;
         }
 
-        public void ResetUnitStates()
+        public void ResetUnitStates(Player currentPlayer)
         {
             foreach (Unit unit in units)
             {
-                unit.State = UnitState.None;
+                if (unit.Team == currentPlayer.Team)
+                {
+                    unit.State = UnitState.None;
+                }
             }
         }
 
