@@ -127,7 +127,7 @@ namespace Basic_Wars_V2.Entities
         public void UpdateButtonText(string displayedText)
         {
             text = new Font(spriteFont, displayedText);
-            CentreText();   //Should only centre text once, currently doing it every update
+            CentreText();
         }
 
         public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
