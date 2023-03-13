@@ -30,7 +30,6 @@ namespace Basic_Wars_V2.System
             State = tile.State;
             Position = tile.Position;
             MapGridPos = tile.MapGridPos;
-            TotalCost = tile.TotalCost;
             Team = tile.Team;
             DefenceBonus = tile.DefenceBonus;
         }
