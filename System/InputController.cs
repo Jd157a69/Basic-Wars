@@ -17,13 +17,13 @@ namespace Basic_Wars_V2.System
 {
     public class InputController
     {
-        public UnitManager _unitManager;
-        public ButtonManager _buttonManager;
-        public MapManager _gameMap;
-        public GameUI GameUI;
+        private UnitManager _unitManager;
+        private ButtonManager _buttonManager;
+        private MapManager _gameMap;
+        private GameUI GameUI;
 
-        public MouseState currentMouseState;
-        public MouseState previousMouseState;
+        private MouseState currentMouseState;
+        private MouseState previousMouseState;
 
         public Rectangle MouseCollider { get; private set; }
 

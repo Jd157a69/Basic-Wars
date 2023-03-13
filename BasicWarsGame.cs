@@ -1,12 +1,9 @@
 ﻿using Basic_Wars_V2.Entities;
 using Basic_Wars_V2.Enums;
-using Basic_Wars_V2.Graphics;
 using Basic_Wars_V2.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
@@ -112,7 +109,9 @@ namespace Basic_Wars_V2
          *  
          *  DONE: Universalise the UnitTeam, PlayerTeam, UnitType
          *  
-         *  TODO: Resupply using APC
+         *  DONE: Resupply using APC
+         *      - Resupply surrounding units if they are from the same team
+         *      - Resupply APC itself if it is on a structure as well
          *      
          *  DONE: Adjustable map size
          *  
@@ -133,7 +132,7 @@ namespace Basic_Wars_V2
          *          https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to?pivots=dotnet-7-0
          *          https://www.c-sharpcorner.com/article/working-with-json-in-C-Sharp/
          *      - Get data method in MapManager, UnitManager, Player and BasicWarGame classes
-         *      - Method in BasciWarsGame class to load and save data
+         *      - Method in BasicWarsGame class to load and save data
          *  
          */
 
@@ -146,12 +145,11 @@ namespace Basic_Wars_V2
 
         protected override void Initialize()
         {
-            _graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = true;
             IsFixedTimeStep = true;
             _graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
             _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
             _graphics.ApplyChanges();
-
 
             base.Initialize();
         }
@@ -187,8 +185,6 @@ namespace Basic_Wars_V2
 
         protected override void Update(GameTime gameTime)
         {
-            //_entityManager.Refresh();
-
             _inputController.ProcessControls(gameTime, ProcessButtonsOnly);
             PressedButton = _inputController.GetButtonPressed();
 
@@ -197,12 +193,14 @@ namespace Basic_Wars_V2
             switch (menuState)
             {
                 case MenuState.Initial:
+                    _gameMap.DrawMap = false;
                     menuState = _gameUI.Init(gameTime, PressedButton);
                     break;
 
                 case MenuState.NewGame:
                     _unitManager.ClearUnits();
                     TurnNumber = 0;
+                    _gameMap.DrawMap = true;
                     menuState = _gameUI.NewGame(gameTime, PressedButton);
                     break;
 
@@ -220,6 +218,7 @@ namespace Basic_Wars_V2
                     break;
 
                 case MenuState.SaveGame:
+                    // TODO: Save Game logic
                     break;
 
                 case MenuState.PlayingGame:
@@ -242,6 +241,7 @@ namespace Basic_Wars_V2
                     break;
 
                 case MenuState.LoadGame:
+                    // TODO: Load Game Logic
                     break;
 
                 case MenuState.QuitGame:
@@ -271,7 +271,6 @@ namespace Basic_Wars_V2
             {
                 TurnNumber = 1;
                 Players = _gameUI.GetPlayers();
-                _gameMap.DrawMap = true;
                 _unitManager.DrawUnits = true;
 
                 PlayerIndex = 0;

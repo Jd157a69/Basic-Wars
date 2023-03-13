@@ -54,7 +54,7 @@ namespace Basic_Wars_V2.Entities
             map = new Tile[MapWidth, MapHeight];
             StructureSparsity = (MapWidth / 6) * TILE_DIMENSIONS;
 
-            DrawMap = true;
+            DrawMap = false;
 
             GenerateMap();
         }
