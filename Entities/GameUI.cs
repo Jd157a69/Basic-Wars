@@ -64,8 +64,12 @@ namespace Basic_Wars_V2.Entities
         private Button SaveGameButton;
         private Button MainMenuButton;
 
+        //Game Over Screen
         private Button GameOverInfo;
         private Button WinnerInfo;
+
+        private Button IncreaseMapSizeButton;
+        private Button DecreaseMapSizeButton;
 
         private Tile SelectedUI;
 
@@ -167,6 +171,9 @@ namespace Basic_Wars_V2.Entities
             GameOverInfo = new Button(Texture, Font, new Vector2(CentreButtonX, 90), 0, "Game Over");
             WinnerInfo = new Button(Texture, Font, new Vector2(CentreButtonX, 215), 0);
 
+            IncreaseMapSizeButton = new Button(Texture, Font, new Vector2(1600, 600), 1, "+");
+            DecreaseMapSizeButton = new Button(Texture, Font, new Vector2(1600, 725), 1, "-");
+
             _buttonManager.AddButton(BasicWarsTitle);
             _buttonManager.AddButton(NewGameButton);
             _buttonManager.AddButton(LoadGameButton);
@@ -210,6 +217,9 @@ namespace Basic_Wars_V2.Entities
 
             _buttonManager.AddButton(GameOverInfo);
             _buttonManager.AddButton(WinnerInfo);
+
+            _buttonManager.AddButton(IncreaseMapSizeButton);
+            _buttonManager.AddButton(DecreaseMapSizeButton);
         }
 
         public void ChangeSelectedPosition(Vector2 position)
@@ -241,7 +251,6 @@ namespace Basic_Wars_V2.Entities
             }
             tilesToBeRemoved.Clear();
 
-
             foreach (Tile tile in reachableTiles)
             {
                 if (tile.Position != unit.Position)
@@ -268,6 +277,7 @@ namespace Basic_Wars_V2.Entities
             foreach (Tile tile in tilesToBeRemoved)
             {
                 moveableOverlay.Remove(tile);
+                reachableTiles.Remove(tile);
             }
             tilesToBeRemoved.Clear();
 
@@ -366,7 +376,7 @@ namespace Basic_Wars_V2.Entities
             _buttonManager.UpdateButtonText(CurrentPlayerFundsInfo, "");
             _buttonManager.UpdateButtonText(TurnNumberInfo, "");
 
-            _buttonManager.DrawButtonIDs(4, 10);
+            _buttonManager.DrawButtonIDs(4, 10, 36, 37);
 
             if (PressedButton != null)
             {
@@ -395,6 +405,12 @@ namespace Basic_Wars_V2.Entities
 
                     case 10:
                         return MenuState.Initial;
+
+                    case 36:
+                        return MenuState.IncreaseMapSize;
+
+                    case 37:
+                        return MenuState.DecreaseMapSize;
                 }
             }
 
