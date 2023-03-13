@@ -226,21 +226,21 @@ namespace Basic_Wars_V2.Entities
             switch (NumOfPlayers)
             {
                 case 2:
-                    CreateHQTile(0, 0, 1);
-                    CreateHQTile(mapWidth, mapHeight, 2);
+                    CreateHQTile(0, 0, 0);
+                    CreateHQTile(mapWidth, mapHeight, 1);
                     break;
 
                 case 3:
-                    CreateHQTile(0, 0, 1);
-                    CreateHQTile(mapWidth, mapHeight, 2);
-                    CreateHQTile(mapWidth, 0, 3);
+                    CreateHQTile(0, 0, 0);
+                    CreateHQTile(mapWidth, mapHeight, 1);
+                    CreateHQTile(mapWidth, 0, 2);
                     break;
 
                 case 4:
-                    CreateHQTile(0, 0, 1);
-                    CreateHQTile(mapWidth, mapHeight, 2);
-                    CreateHQTile(mapWidth, 0, 3);
-                    CreateHQTile(0, mapHeight, 4);
+                    CreateHQTile(0, 0, 0);
+                    CreateHQTile(mapWidth, mapHeight, 1);
+                    CreateHQTile(mapWidth, 0, 2);
+                    CreateHQTile(0, mapHeight, 3);
                     break;
             }
         }
@@ -254,7 +254,7 @@ namespace Basic_Wars_V2.Entities
             HQTile.Team = team;
 
             map[X, Y] = HQTile;
-            map[X, Y].CreateTileSprite(-6 + team, 2);
+            map[X, Y].CreateTileSprite(-6 + team + 1, 2);
 
             structures.Add(HQTile);
             HQs.Add(HQTile);
