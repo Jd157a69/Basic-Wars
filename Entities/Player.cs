@@ -8,10 +8,10 @@ namespace Basic_Wars_V2.Entities
 {
     public class Player
     {
-        public int Team { get; private set; }
+        public int Team { get; set; }
         public int Funds { get; set; }
         public bool HasHQ { get; set; }
-        public string Colour { get; private set; }
+        public string Colour { get; set; }
 
         public Player(int team, int initialFunds)
         {

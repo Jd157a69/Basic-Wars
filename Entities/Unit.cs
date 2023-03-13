@@ -41,8 +41,8 @@ namespace Basic_Wars_V2.Entities
         public int Ammo { get; set; }
         public int Fuel { get; set; }
         public float Defence { get; set; }
-        public int MovementPoints { get; private set; }
-        public int CostToProduce { get; private set; }
+        public int MovementPoints { get; set; }
+        public int CostToProduce { get; set; }
 
         public bool Selected { get; set; }
 
