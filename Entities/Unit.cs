@@ -63,7 +63,7 @@ namespace Basic_Wars_V2.Entities
 
         public void CreateUnitSprite(int unitType)
         {
-            int teamShift = (Team - 1) * SPRITE_SHEET_TEAM_SHIFT;
+            int teamShift = (Team) * SPRITE_SHEET_TEAM_SHIFT;
             int unitShift = (unitType - 1) * SPRITE_SHEET_UNIT_SHIFT;
             unitSprite = new Sprite(Texture, X_SPRITE_SHEET_START_POS + teamShift, Y_SPRITE_SHEET_START_POS + unitShift, UNIT_WIDTH, UNIT_HEIGHT);
         }
