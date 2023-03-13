@@ -46,7 +46,6 @@ namespace Basic_Wars_V2.Entities
 
         public bool Selected { get; set; }
 
-        public int ID { get; set; }
         public int DrawOrder { get; set; }
 
         public Unit(Texture2D texture, Vector2 position, int unitType, int team)
