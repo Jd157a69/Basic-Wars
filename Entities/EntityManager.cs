@@ -12,7 +12,6 @@ namespace Basic_Wars_V2.Entities
     {
         private List<IGameEntity> entities = new List<IGameEntity>();
         private List<IGameEntity> entitiesToRemove = new List<IGameEntity>();
-        private List<IGameEntity> entitiesToAdd = new List<IGameEntity>();
 
         public void Update(GameTime gameTime)
         {
@@ -26,10 +25,7 @@ namespace Basic_Wars_V2.Entities
                 entities.Remove(entity);
             }
 
-            foreach (IGameEntity entity in entitiesToAdd)
-            {
-                entities.Add(entity);
-            }
+            entitiesToRemove.Clear();
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -44,7 +40,7 @@ namespace Basic_Wars_V2.Entities
 
         public void AddEntity(IGameEntity entity)
         {
-            entitiesToAdd.Add(entity);
+            entities.Add(entity);
         }
 
         public void RemoveEntity(IGameEntity entity)
