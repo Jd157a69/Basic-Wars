@@ -10,6 +10,7 @@ namespace Basic_Wars_V2.Enums
     {
         PlayerSelect,
         SelectAction,
+        UnitIdle,
         PlayerMove,
         PlayerAttack,
         PlayerCapture,
