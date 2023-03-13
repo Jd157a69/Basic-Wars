@@ -276,7 +276,6 @@ namespace Basic_Wars_V2
                 TurnNumber = 1;
                 Players = _gameUI.GetPlayers();
                 _unitManager.DrawUnits = true;
-
                 CurrentPlayerIndex = 0;
                 NextPlayer = true;
             }
@@ -851,6 +850,9 @@ namespace Basic_Wars_V2
                 TurnNumber = gameData.GameStateData.TurnNumber; 
 
                 CurrentPlayer = Players[CurrentPlayerIndex];
+
+                _unitManager.DrawUnits = true;
+                _gameMap.DrawMap = true;
 
                 Console.WriteLine("Game Loaded");
             }
