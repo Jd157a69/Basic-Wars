@@ -427,7 +427,7 @@ namespace Basic_Wars_V2.Entities
 
             CurrentPlayer = currentPlayer;
 
-            _buttonManager.UpdateButtonText(CurrentPlayerTeamInfo, $"Team: {currentPlayer.Team + 1}");
+            _buttonManager.UpdateButtonText(CurrentPlayerTeamInfo, $"Team\n{currentPlayer.Colour}");
             _buttonManager.UpdateButtonText(CurrentPlayerFundsInfo, $"${currentPlayer.Funds}");
             _buttonManager.UpdateButtonText(TurnNumberInfo, $"Turn: {turnNumber}");
 
@@ -463,7 +463,7 @@ namespace Basic_Wars_V2.Entities
                 switch (PressedButton.ID)
                 {
                     case 16:
-                        return GameState.PlayerSelect;
+                        return GameState.UnitIdle;
 
                     case 17:
                         DrawReachable = true;
@@ -575,7 +575,7 @@ namespace Basic_Wars_V2.Entities
 
         public MenuState GameOver(GameTime gameTime, Button PressedButton, Player Winner)
         {
-            _buttonManager.UpdateButtonText(WinnerInfo, $"Winner: {Winner.Team + 1}");
+            _buttonManager.UpdateButtonText(WinnerInfo, $"Winner: {Winner.Colour} Team");
 
             _buttonManager.DrawButtonIDs(3, 3, 33, 35);
 
