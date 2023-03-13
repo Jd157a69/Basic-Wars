@@ -89,11 +89,11 @@ namespace Basic_Wars_V2
          *  DONE: PausedGame state
          *      - Display options to user: Resume, Save, Menu, Quit
          *      
-         *  FIX: GameOver condition and state
+         *  DONE: GameOver condition and state
          *      - GameOver screen
          *      - Display Winner
          *      - FIXED: Return to menu not working
-         *      - FIX: Units are not removed after a team has lost
+         *      - FIXED: Units are not removed after a team has lost
          *  
          *  DONE: Generate units using a factory tile
          *      - Use console to specify type and team of unit for now and implement UI version in the future
@@ -116,7 +116,9 @@ namespace Basic_Wars_V2
          *      
          *  TODO: Adjustable map size
          *  
-         *  WORKING ON: Dead units are not removed from the game
+         *  DONE: Dead units are not removed from the game
+         *  
+         *  DONE: Fix memory leak
          *  
          *  TODO: Code the AI
          *      - Use heuristics and weights to determine what is most important for the AI to do
@@ -185,7 +187,7 @@ namespace Basic_Wars_V2
 
         protected override void Update(GameTime gameTime)
         {
-            _entityManager.Refresh();
+            //_entityManager.Refresh();
 
             _inputController.ProcessControls(gameTime, ProcessButtonsOnly);
             PressedButton = _inputController.GetButtonPressed();
@@ -676,7 +678,6 @@ namespace Basic_Wars_V2
                         if (unit.Team == player.Team)
                         {
                             _unitManager.RemoveUnit(unit);
-                            Console.WriteLine($"{unit.Team}");
                         }
                     }
 
