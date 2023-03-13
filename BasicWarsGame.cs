@@ -37,7 +37,7 @@ namespace Basic_Wars_V2
                 {(UnitType.Infantry, UnitType.APC), 14 },
                 {(UnitType.Mech, UnitType.Infantry), 65 },
                 {(UnitType.Mech, UnitType.Mech), 55 },
-                {(UnitType.Mech, UnitType.Tank), 55 },
+                {(UnitType.Mech, UnitType.Tank), 65 },
                 {(UnitType.Mech, UnitType.APC), 75 },
                 {(UnitType.Tank, UnitType.Infantry), 75 },
                 {(UnitType.Tank, UnitType.Mech), 70 },
@@ -79,7 +79,6 @@ namespace Basic_Wars_V2
         private bool DebugUnitFreeMove = true;
 
         /*  TODO: Code optimisations
-         *      - Feels like code starts to run much slower after a short period of time
          *      - A lot of repeated code in places
          *  
          *  DONE: Create a main game loop
@@ -114,7 +113,7 @@ namespace Basic_Wars_V2
          *  
          *  TODO: Resupply using APC
          *      
-         *  TODO: Adjustable map size
+         *  DONE: Adjustable map size
          *  
          *  DONE: Dead units are not removed from the game
          *  
@@ -206,6 +205,19 @@ namespace Basic_Wars_V2
                     menuState = _gameUI.NewGame(gameTime, PressedButton);
                     break;
 
+                case MenuState.IncreaseMapSize:
+                    RefreshMap(_gameMap.MapWidth += 1, _gameMap.MapHeight += 1);
+                    menuState = MenuState.NewGame;
+                    break;
+
+                case MenuState.DecreaseMapSize:
+                    if (_gameMap.MapWidth > 6 && _gameMap.MapHeight > 6)
+                    {
+                        RefreshMap(_gameMap.MapWidth -= 1, _gameMap.MapHeight -= 1);
+                    }
+                    menuState = MenuState.NewGame;
+                    break;
+
                 case MenuState.SaveGame:
                     break;
 
@@ -225,7 +237,7 @@ namespace Basic_Wars_V2
                     break;
 
                 case MenuState.RefreshMap:
-                    RefreshMap();
+                    RefreshMap(_gameMap.MapWidth, _gameMap.MapHeight);
                     break;
 
                 case MenuState.LoadGame:
@@ -364,6 +376,8 @@ namespace Basic_Wars_V2
             //For if return or idle is selected as a unit action 
             if (SelectedUnit != null)
             {
+                _gameUI.DisplayAttributes(SelectedUnit);
+
                 if (SelectedUnit.State != UnitState.Used
                     && SelectedUnit.State != UnitState.Moved
                     && SelectedUnit.State != UnitState.Dead
@@ -481,7 +495,12 @@ namespace Basic_Wars_V2
                             _gameUI.ChangeSelectedPosition(SelectedUnit.Position);
 
                             gameState = GameState.SelectAction;
-                        }
+                        }       
+                    }
+
+                    if (SelectedUnit.Fuel <= 0)
+                    {
+                        gameState = GameState.SelectAction;
                     }
                 }
             }
@@ -513,7 +532,10 @@ namespace Basic_Wars_V2
                             Unit defendingUnit = _inputController.GetTileUnit(tile);        
 
                             defendingUnit.Health -= CalculateDamage(SelectedUnit, defendingUnit);
-                            SelectedUnit.Health -= CalculateDamage(defendingUnit, SelectedUnit);
+                            if (defendingUnit.Health > 0)
+                            {
+                                SelectedUnit.Health -= CalculateDamage(defendingUnit, SelectedUnit);
+                            }
 
                             SelectedUnit.State = UnitState.Used;
                             gameState = GameState.PlayerSelect;

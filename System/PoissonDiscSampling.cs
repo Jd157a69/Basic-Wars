@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.System
 {
-    public static class PoissonDiscSampling
+    public class PoissonDiscSampling
     {
-        public static List<Vector2> GetPoints (double radius, Vector2 mapSize, int k = 30)
+        public List<Vector2> GetPoints (double radius, Vector2 mapSize, int k = 30)
         {
             Random random = new Random();
 
@@ -62,7 +62,7 @@ namespace Basic_Wars_V2.System
             return points;
         }
 
-        static bool isValid(Vector2 potentialPoint, Vector2 mapSize, double cellSize, List<Vector2> points, int[,] grid, double radius)
+        private bool isValid(Vector2 potentialPoint, Vector2 mapSize, double cellSize, List<Vector2> points, int[,] grid, double radius)
         {
             if (potentialPoint.X >= 0 && potentialPoint.X < mapSize.X && potentialPoint.Y >= 0 && potentialPoint.Y < mapSize.Y) 
             {
@@ -92,7 +92,7 @@ namespace Basic_Wars_V2.System
             return false;
         }
 
-        static double SquaredDistance(Vector2 start, Vector2 end)
+        private double SquaredDistance(Vector2 start, Vector2 end)
         {
             double x = start.X - end.X;
             double y = start.Y - end.Y;

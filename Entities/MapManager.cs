@@ -25,8 +25,8 @@ namespace Basic_Wars_V2.Entities
 
         private List<Tile> tempTiles = new List<Tile>();
 
-        private int MapWidth { get; set; }
-        private int MapHeight { get; set; }
+        public int MapWidth { get; set; }
+        public int MapHeight { get; set; }
         private int NumOfPlayers { get; set; }
 
         public bool DrawMap { get; set; }
@@ -129,7 +129,8 @@ namespace Basic_Wars_V2.Entities
                 StructureRowShift= 1;
             }
 
-            points = PoissonDiscSampling.GetPoints(StructureSparsity, MapSize);
+            PoissonDiscSampling sampler = new PoissonDiscSampling();
+            points = sampler.GetPoints(StructureSparsity, MapSize);
 
             foreach (Vector2 point in points)
             {

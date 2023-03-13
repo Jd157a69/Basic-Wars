@@ -10,6 +10,8 @@ namespace Basic_Wars_V2.Enums
     {
         Initial,
         NewGame,
+        IncreaseMapSize,
+        DecreaseMapSize,
         SaveGame,
         LoadGame,
         RefreshMap,
