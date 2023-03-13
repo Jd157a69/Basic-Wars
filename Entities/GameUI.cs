@@ -71,6 +71,8 @@ namespace Basic_Wars_V2.Entities
         private Button IncreaseMapSizeButton;
         private Button DecreaseMapSizeButton;
 
+        private Button UnitResupplyButton;
+
         private Tile SelectedUI;
 
         public bool DrawSelectedUI { get; set; }
@@ -150,7 +152,7 @@ namespace Basic_Wars_V2.Entities
             PlayerIdleButton = new Button(Texture, Font, new Vector2(0, 300), 1, "Idle");
             PlayerMoveButton = new Button(Texture, Font, new Vector2(0, 425), 1, "Move");
             PlayerAttackButton = new Button(Texture, Font, new Vector2(0, 550), 1, "Attack");
-            ReturnButton = new Button(Texture, Font, new Vector2(0, 800), 1, "Return");
+            ReturnButton = new Button(Texture, Font, new Vector2(0, 925), 1, "Return");
             CaptureButton = new Button(Texture, Font, new Vector2(0, 675), 1, "Capture");
 
             AttributeDisplayInfo = new Button(Texture, Font, new Vector2(1600, 180), 2);
@@ -174,6 +176,8 @@ namespace Basic_Wars_V2.Entities
 
             IncreaseMapSizeButton = new Button(Texture, Font, new Vector2(1600, 600), 1, "+");
             DecreaseMapSizeButton = new Button(Texture, Font, new Vector2(1600, 725), 1, "-");
+
+            UnitResupplyButton = new Button(Texture, Font, new Vector2(0, 800), 1, "Resupply");
 
             _buttonManager.AddButtons(new List<Button>()
             {
@@ -223,6 +227,8 @@ namespace Basic_Wars_V2.Entities
 
                 IncreaseMapSizeButton,
                 DecreaseMapSizeButton,
+
+                UnitResupplyButton,
             });
         }
 
@@ -467,11 +473,19 @@ namespace Basic_Wars_V2.Entities
         }
 
         //Maybe add unit as a parameter here to set the state when selecting idle?
-        public GameState DisplayPlayerActions(GameTime gameTime, Button PressedButton, bool displayCapture)
+        public GameState DisplayPlayerActions(GameTime gameTime, Button PressedButton, bool displayCapture = false, bool displayResupply = false)
         {
-            if (displayCapture)
+            if (displayCapture && displayResupply)
+            {
+                _buttonManager.DrawButtonIDs(11, 20, 21, 26, 38, 38);
+            }
+            else if (displayCapture && !displayResupply)
             {
                 _buttonManager.DrawButtonIDs(11, 20, 21, 26);
+            }
+            else if (!displayCapture && displayResupply)
+            {
+                _buttonManager.DrawButtonIDs(11, 19, 21, 26, 38, 38);
             }
             else
             {
@@ -497,6 +511,9 @@ namespace Basic_Wars_V2.Entities
                         DrawReachable = false;
                         DrawAttackable = false;
                         return GameState.PlayerSelect;
+
+                    case 38:
+                        return GameState.PlayerResupply;
                 }
 
                 if (displayCapture)

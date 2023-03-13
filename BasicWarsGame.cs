@@ -64,6 +64,7 @@ namespace Basic_Wars_V2
         private MapManager _gameMap;
 
         private Unit SelectedUnit;
+        private Tile CurrentUnitTile;
         private List<Tile> reachableTiles;
         private List<Tile> attackableTiles;
 
@@ -297,9 +298,7 @@ namespace Basic_Wars_V2
 
                 CurrentPlayer = Players[PlayerIndex];
                 Income(CurrentPlayer);
-                CheckUnitResupply(CurrentPlayer.Team);
 
-                //Need to sort out this method, refresh everything at start of turn
                 gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);       
             }
 
@@ -329,6 +328,10 @@ namespace Basic_Wars_V2
 
                 case GameState.PlayerCapture:
                     PlayerCapture(gameTime);
+                    break;
+
+                case GameState.PlayerResupply:
+                    PlayerResupply(gameTime);
                     break;
 
                 case GameState.PlayerProduceUnit:
@@ -394,8 +397,6 @@ namespace Basic_Wars_V2
 
             if (SelectedUnit != null)
             {
-                Console.WriteLine($"{SelectedUnit.State}");
-
                 _gameUI.ChangeSelectedPosition(SelectedUnit.Position);
                 _gameUI.DrawSelectedUI = true;
                 SelectedUnit.Selected = true;
@@ -435,6 +436,8 @@ namespace Basic_Wars_V2
 
         private void PlayerSelectAction(GameTime gameTime, Button PressedButton)
         {
+            CurrentUnitTile = _inputController.GetUnitTile(SelectedUnit);
+
             ProcessButtonsOnly = true;
             _gameUI.DisplayAttributes(SelectedUnit);
 
@@ -445,7 +448,7 @@ namespace Basic_Wars_V2
                 || DebugUnitFreeMove
                )
             {
-                reachableTiles = _gameUI.GetReachableTiles(SelectedUnit, _unitManager.GetUnitPositions(), _inputController.GetUnitTile(SelectedUnit));
+                reachableTiles = _gameUI.GetReachableTiles(SelectedUnit, _unitManager.GetUnitPositions(), CurrentUnitTile);
             }
             else
             {
@@ -453,23 +456,37 @@ namespace Basic_Wars_V2
                 _gameUI.ClearMoveableOverlay();
             }
             
-            attackableTiles = _gameUI.GetAttackableTiles(SelectedUnit, _inputController.GetUnitTile(SelectedUnit));  
+            attackableTiles = _gameUI.GetAttackableTiles(SelectedUnit, CurrentUnitTile);  
 
             bool displayCapture = false;
-            Tile unitTile = _inputController.GetUnitTile(SelectedUnit);
+            bool displayResupply = false;
 
-            if ((unitTile.Type == TileType.City
-                || unitTile.Type == TileType.Factory
-                || unitTile.Type == TileType.HQ)
+            if ((CurrentUnitTile.Type == TileType.City
+                || CurrentUnitTile.Type == TileType.Factory
+                || CurrentUnitTile.Type == TileType.HQ)
                 && SelectedUnit.Type != UnitType.Tank
                 && SelectedUnit.Type != UnitType.APC
-                && SelectedUnit.Team != unitTile.Team
+                && SelectedUnit.Team != CurrentUnitTile.Team
                 )
             {
                 displayCapture = true;
             }
 
-            gameState = _gameUI.DisplayPlayerActions(gameTime, PressedButton, displayCapture);
+            if (
+                (
+                 (CurrentUnitTile.Type == TileType.City
+                 || CurrentUnitTile.Type == TileType.Factory
+                 || CurrentUnitTile.Type == TileType.HQ
+                )
+                 && SelectedUnit.Team == CurrentUnitTile.Team
+                )
+                 || SelectedUnit.Type == UnitType.APC
+               )
+            {
+                displayResupply = true;
+            }
+
+            gameState = _gameUI.DisplayPlayerActions(gameTime, PressedButton, displayCapture, displayResupply);
         }
 
         private void PlayerMove(GameTime gameTime) 
@@ -551,23 +568,22 @@ namespace Basic_Wars_V2
         }
         private void PlayerCapture(GameTime gameTime)
         {
-            Tile unitTile = _inputController.GetUnitTile(SelectedUnit);
-            unitTile.Team = SelectedUnit.Team;
+            CurrentUnitTile.Team = SelectedUnit.Team;
 
             SelectedUnit.State = UnitState.Used;
 
-            switch (unitTile.Type)
+            switch (CurrentUnitTile.Type)
             {
                 case TileType.City:
-                    unitTile.CreateTileSprite(-5 + SelectedUnit.Team);
+                    CurrentUnitTile.CreateTileSprite(-5 + SelectedUnit.Team);
                     break;
 
                 case TileType.Factory:
-                    unitTile.CreateTileSprite(-5 + SelectedUnit.Team, 1);
+                    CurrentUnitTile.CreateTileSprite(-5 + SelectedUnit.Team, 1);
                     break;
 
                 case TileType.HQ:
-                    unitTile.CreateTileSprite(-5 + SelectedUnit.Team, 2);
+                    CurrentUnitTile.CreateTileSprite(-5 + SelectedUnit.Team, 2);
                     break;
             }
 
@@ -580,6 +596,43 @@ namespace Basic_Wars_V2
             }
 
             gameState = GameState.PlayerSelect;
+        }
+
+        private void PlayerResupply(GameTime gameTime)
+        {
+            if (SelectedUnit.Type == UnitType.APC)
+            {
+                SelectedUnit.State = UnitState.Used;
+
+                List<Tile> neighbours = _gameMap.GetNeighbours(CurrentUnitTile);
+
+                foreach (Tile neighbour in neighbours)
+                {
+                    Unit neighbouringUnit = _inputController.GetTileUnit(neighbour);
+                    if (neighbouringUnit != null && neighbouringUnit.Team == SelectedUnit.Team)
+                    {
+                        neighbouringUnit.RefreshUnitAttributes();
+                    }
+                }
+
+                if ((CurrentUnitTile.Type == TileType.City
+                    || CurrentUnitTile.Type == TileType.Factory
+                    || CurrentUnitTile.Type == TileType.HQ)
+                    && CurrentUnitTile.Team == SelectedUnit.Team
+                    )
+                {
+                    SelectedUnit.RefreshUnitAttributes();
+                }
+
+                gameState = GameState.PlayerSelect;
+            }
+            else
+            {
+                SelectedUnit.State = UnitState.Used;
+                SelectedUnit.RefreshUnitAttributes();
+
+                gameState = GameState.PlayerSelect;
+            }
         }
 
         private void PlayerProduceUnit(GameTime gameTime)               
@@ -640,23 +693,6 @@ namespace Basic_Wars_V2
                 if (structure.Team == player.Team)
                 {
                     player.Funds += 1000;
-                }
-            }
-        }
-
-        private void CheckUnitResupply(int Team)
-        {
-            foreach (Unit unit in _unitManager.units)
-            {
-                Tile unitTile = _inputController.GetUnitTile(unit);
-
-                if (unit.Team == Team
-                    && (unitTile.Type == TileType.HQ
-                    || unitTile.Type == TileType.City
-                    || unitTile.Type == TileType.Factory)
-                   )
-                {
-                    unit.RefreshUnitAttributes();
                 }
             }
         }
