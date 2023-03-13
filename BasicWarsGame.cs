@@ -89,7 +89,7 @@ namespace Basic_Wars_V2
          *  DONE: PausedGame state
          *      - Display options to user: Resume, Save, Menu, Quit
          *      
-         *  FIXING: GameOver condition and state
+         *  FIX: GameOver condition and state
          *      - GameOver screen
          *      - Display Winner
          *      - FIXED: Return to menu not working
@@ -116,7 +116,7 @@ namespace Basic_Wars_V2
          *      
          *  TODO: Adjustable map size
          *  
-         *  FIXING: Dead units are not removed from the game
+         *  WORKING ON: Dead units are not removed from the game
          *  
          *  TODO: Code the AI
          *      - Use heuristics and weights to determine what is most important for the AI to do
@@ -200,6 +200,7 @@ namespace Basic_Wars_V2
 
                 case MenuState.NewGame:
                     _unitManager.ClearUnits();
+                    TurnNumber = 0;
                     menuState = _gameUI.NewGame(gameTime, PressedButton);
                     break;
 
@@ -253,15 +254,19 @@ namespace Basic_Wars_V2
         {
             if (TurnNumber == 0)
             {
-                TurnNumber++;
-                StartGame(gameTime);
+                TurnNumber = 1;
+                Players = _gameUI.GetPlayers();
+                _gameMap.DrawMap = true;
+                _unitManager.DrawUnits = true;
+
                 PlayerIndex = 0;
+                NextPlayer = true;
             }
 
             //Turns
             if (NextPlayer)
             {
-                _unitManager.ResetUnitStates();
+                _unitManager.ResetUnitStates(CurrentPlayer);
 
                 _gameUI.DrawSelectedUI = false;
                 NextPlayer = false;
@@ -341,14 +346,6 @@ namespace Basic_Wars_V2
             menuState = MenuState.NewGame;
         }
 
-        private void StartGame(GameTime gameTime)
-        {
-            Players = _gameUI.GetPlayers();
-            TurnNumber = 1;
-            _gameMap.DrawMap = true;
-            _unitManager.DrawUnits = true;
-        }
-
         private void LoadGame(GameTime gameTime)
         {
 
@@ -381,6 +378,8 @@ namespace Basic_Wars_V2
 
             if (SelectedUnit != null)
             {
+                Console.WriteLine($"{SelectedUnit.State}");
+
                 _gameUI.ChangeSelectedPosition(SelectedUnit.Position);
                 _gameUI.DrawSelectedUI = true;
                 SelectedUnit.Selected = true;
@@ -423,6 +422,7 @@ namespace Basic_Wars_V2
             ProcessButtonsOnly = true;
             _gameUI.DisplayAttributes(SelectedUnit);
 
+            //Repeated code
             if (SelectedUnit.State != UnitState.Moved 
                 && SelectedUnit.State != UnitState.Used
                 //DEBUG
@@ -535,15 +535,15 @@ namespace Basic_Wars_V2
             switch (unitTile.Type)
             {
                 case TileType.City:
-                    unitTile.CreateTileSprite(-6 + SelectedUnit.Team);
+                    unitTile.CreateTileSprite(-5 + SelectedUnit.Team);
                     break;
 
                 case TileType.Factory:
-                    unitTile.CreateTileSprite(-6 + SelectedUnit.Team, 1);
+                    unitTile.CreateTileSprite(-5 + SelectedUnit.Team, 1);
                     break;
 
                 case TileType.HQ:
-                    unitTile.CreateTileSprite(-6 + SelectedUnit.Team, 2);
+                    unitTile.CreateTileSprite(-5 + SelectedUnit.Team, 2);
                     break;
             }
 
@@ -676,8 +676,29 @@ namespace Basic_Wars_V2
                         if (unit.Team == player.Team)
                         {
                             _unitManager.RemoveUnit(unit);
+                            Console.WriteLine($"{unit.Team}");
                         }
                     }
+
+                    foreach (Tile structure  in _gameMap.structures)
+                    {
+                        if (structure.Team == player.Team)
+                        {
+                            structure.Team = -1;
+
+                            switch (structure.Type)
+                            {
+                                case TileType.City:
+                                    structure.CreateTileSprite(-6);
+                                    break;
+
+                                case TileType.Factory:
+                                    structure.CreateTileSprite(-6, 1);
+                                    break;
+                            }
+                        }
+                    }
+
                 }
             }
 
