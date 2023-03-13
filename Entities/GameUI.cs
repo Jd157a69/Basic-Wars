@@ -126,6 +126,7 @@ namespace Basic_Wars_V2.Entities
 
         public void InitialiseButtons()
         {
+
             BasicWarsTitle = new Button(Texture, Font, new Vector2(CentreButtonX, 90), 0, "Basic Wars");
             NewGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 360), 0, "New Game");
             LoadGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 540), 0, "Load Game");
@@ -174,52 +175,55 @@ namespace Basic_Wars_V2.Entities
             IncreaseMapSizeButton = new Button(Texture, Font, new Vector2(1600, 600), 1, "+");
             DecreaseMapSizeButton = new Button(Texture, Font, new Vector2(1600, 725), 1, "-");
 
-            _buttonManager.AddButton(BasicWarsTitle);
-            _buttonManager.AddButton(NewGameButton);
-            _buttonManager.AddButton(LoadGameButton);
-            _buttonManager.AddButton(QuitGameButton);
+            _buttonManager.AddButtons(new List<Button>()
+            {
+                BasicWarsTitle,
+                NewGameButton,
+                LoadGameButton,
+                QuitGameButton,
 
-            _buttonManager.AddButton(NumOfPlayersInfo);
-            _buttonManager.AddButton(Players2Button);
-            _buttonManager.AddButton(Players3Button);
-            _buttonManager.AddButton(Players4Button);
-            _buttonManager.AddButton(RefreshMapButton);
-            _buttonManager.AddButton(StartGameButton);
-            _buttonManager.AddButton(MenuButton);
+                NumOfPlayersInfo,
+                Players2Button,
+                Players3Button,
+                Players4Button,
+                RefreshMapButton,
+                StartGameButton,
+                MenuButton,
 
-            _buttonManager.AddButton(TurnNumberInfo);
-            _buttonManager.AddButton(CurrentPlayerTeamInfo);
-            _buttonManager.AddButton(CurrentPlayerFundsInfo);
-            _buttonManager.AddButton(EndTurnButton);
-            _buttonManager.AddButton(PauseGameButton);
+                TurnNumberInfo,
+                CurrentPlayerTeamInfo,
+                CurrentPlayerFundsInfo,
+                EndTurnButton,
+                PauseGameButton,
 
-            _buttonManager.AddButton(PlayerIdleButton);
-            _buttonManager.AddButton(PlayerMoveButton);
-            _buttonManager.AddButton(PlayerAttackButton);
-            _buttonManager.AddButton(ReturnButton);
-            _buttonManager.AddButton(CaptureButton);
+                PlayerIdleButton,
+                PlayerMoveButton,
+                PlayerAttackButton,
+                ReturnButton,
+                CaptureButton,
 
-            _buttonManager.AddButton(AttributeDisplayInfo);
-            _buttonManager.AddButton(HealthInfo);
-            _buttonManager.AddButton(AmmoInfo);
-            _buttonManager.AddButton(FuelInfo);
-            _buttonManager.AddButton(DefenceInfo);
-            _buttonManager.AddButton(TypeInfo);
+                AttributeDisplayInfo,
+                HealthInfo,
+                AmmoInfo,
+                FuelInfo,
+                DefenceInfo,
+                TypeInfo,
 
-            _buttonManager.AddButton(UnitInfantryButton);
-            _buttonManager.AddButton(UnitMechButton);
-            _buttonManager.AddButton(UnitTankButton);
-            _buttonManager.AddButton(UnitAPCButton);
+                UnitInfantryButton,
+                UnitMechButton,
+                UnitTankButton,
+                UnitAPCButton,
 
-            _buttonManager.AddButton(ResumeGameButton);
-            _buttonManager.AddButton(SaveGameButton);
-            _buttonManager.AddButton(MainMenuButton);
+                ResumeGameButton,
+                SaveGameButton,
+                MainMenuButton,
 
-            _buttonManager.AddButton(GameOverInfo);
-            _buttonManager.AddButton(WinnerInfo);
+                GameOverInfo,
+                WinnerInfo,
 
-            _buttonManager.AddButton(IncreaseMapSizeButton);
-            _buttonManager.AddButton(DecreaseMapSizeButton);
+                IncreaseMapSizeButton,
+                DecreaseMapSizeButton,
+            });
         }
 
         public void ChangeSelectedPosition(Vector2 position)

@@ -22,6 +22,14 @@ namespace Basic_Wars_V2.Entities
             ID++;
         }
 
+        public void AddButtons(List<Button> buttons)
+        {
+            foreach (Button button in buttons)
+            {
+                AddButton(button);
+            }
+        }
+
         public void DrawButtonIDs(int initialID = -1, int finalID = -1, int initial2ID = -1, int final2ID = -1, int initial3ID = -1, int final3ID = -1)
         {
             foreach (Button button in buttons)
