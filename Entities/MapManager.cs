@@ -68,6 +68,12 @@ namespace Basic_Wars_V2.Entities
             GenerateHQs();
         }
 
+        public void RegenerateHQandRoads()
+        {
+            GenerateRoads();
+            GenerateHQs();
+        }
+
         private void GenerateBaseMap()
         {
             float x = Position.X;
