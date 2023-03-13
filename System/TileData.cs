@@ -19,8 +19,6 @@ namespace Basic_Wars_V2.System
         public Vector2 Position { get; set; }
         public Vector2 MapGridPos { get; set; }
 
-        public int TotalCost { get; set; }
-
         public int Team { get; set; }
         public int DefenceBonus { get; set; }
 
@@ -43,7 +41,6 @@ namespace Basic_Wars_V2.System
             tile.Type = Type;
             tile.State = State;
             tile.MapGridPos = MapGridPos;
-            tile.TotalCost = TotalCost;
             tile.DefenceBonus = DefenceBonus;
 
             switch (tile.Type)
