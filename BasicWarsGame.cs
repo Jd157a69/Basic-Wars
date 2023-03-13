@@ -89,10 +89,11 @@ namespace Basic_Wars_V2
          *  DONE: PausedGame state
          *      - Display options to user: Resume, Save, Menu, Quit
          *      
-         *  TODO: GameOver condition and state
+         *  FIXING: GameOver condition and state
          *      - GameOver screen
          *      - Display Winner
-         *      - Return to menu
+         *      - FIXED: Return to menu not working
+         *      - FIX: Units are not removed after a team has lost
          *  
          *  DONE: Generate units using a factory tile
          *      - Use console to specify type and team of unit for now and implement UI version in the future
@@ -109,11 +110,13 @@ namespace Basic_Wars_V2
          *      
          *  DONE: Ability for units to attack each other 
          *  
+         *  DONE: Universalise the UnitTeam, PlayerTeam, UnitType
+         *  
          *  TODO: Resupply using APC
          *      
          *  TODO: Adjustable map size
-         *      
-         *  TODO: Universalise the UnitTeam, PlayerTeam, UnitType
+         *  
+         *  FIXING: Dead units are not removed from the game
          *  
          *  TODO: Code the AI
          *      - Use heuristics and weights to determine what is most important for the AI to do
@@ -182,11 +185,12 @@ namespace Basic_Wars_V2
 
         protected override void Update(GameTime gameTime)
         {
-            //This fixes the memory issue somehow
             _entityManager.Refresh();
 
             _inputController.ProcessControls(gameTime, ProcessButtonsOnly);
             PressedButton = _inputController.GetButtonPressed();
+
+            _entityManager.Update(gameTime);
 
             switch (menuState)
             {
@@ -214,7 +218,7 @@ namespace Basic_Wars_V2
 
                 case MenuState.GameOver:
                     ProcessButtonsOnly = true;
-                    _gameUI.GameOver(gameTime, PressedButton, CurrentPlayer);
+                    menuState = _gameUI.GameOver(gameTime, PressedButton, CurrentPlayer);
                     break;
 
                 case MenuState.RefreshMap:
@@ -229,14 +233,11 @@ namespace Basic_Wars_V2
                     break;
             }
 
-            _entityManager.Update(gameTime);
-
             DrawRan = true;
 
             base.Update(gameTime);
         }
 
-        //Memory Leak here causing extreme performance issues
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -244,8 +245,6 @@ namespace Basic_Wars_V2
             _spriteBatch.Begin();
             _entityManager.Draw(_spriteBatch, gameTime);
             _spriteBatch.End();
-
-            DrawRan = true;
 
             base.Draw(gameTime);
         }
@@ -267,7 +266,7 @@ namespace Basic_Wars_V2
                 _gameUI.DrawSelectedUI = false;
                 NextPlayer = false;
 
-                if (PlayerIndex + 1 > Players.Count)
+                if (PlayerIndex > Players.Count - 1)
                 {
                     TurnNumber++;
                 }
@@ -280,14 +279,6 @@ namespace Basic_Wars_V2
                 CurrentPlayer = Players[PlayerIndex];
                 Income(CurrentPlayer);
                 CheckUnitResupply(CurrentPlayer.Team);
-
-                bool GameOver = CheckWinner(CurrentPlayer.Team);
-                CheckHQ();
-
-                if (GameOver)
-                {
-                    menuState = MenuState.GameOver;
-                }
 
                 //Need to sort out this method, refresh everything at start of turn
                 gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);       
@@ -302,6 +293,11 @@ namespace Basic_Wars_V2
 
                 case GameState.SelectAction:
                     PlayerSelectAction(gameTime, PressedButton);
+                    break;
+
+                case GameState.UnitIdle:
+                    SelectedUnit.State = UnitState.Used;
+                    gameState = GameState.PlayerSelect;
                     break;
 
                 case GameState.PlayerMove:
@@ -348,6 +344,7 @@ namespace Basic_Wars_V2
         private void StartGame(GameTime gameTime)
         {
             Players = _gameUI.GetPlayers();
+            TurnNumber = 1;
             _gameMap.DrawMap = true;
             _unitManager.DrawUnits = true;
         }
@@ -357,19 +354,20 @@ namespace Basic_Wars_V2
 
         }
 
-        private void PlayerSelect(GameTime gameTime)            //Select logic needs to be redone to disable allowing the selection of "Used" units
+        //Player Select logic needs tidying up
+        private void PlayerSelect(GameTime gameTime)
         {
             ProcessButtonsOnly = false;
             UpdateUnitStats();
 
             _gameUI.ClearAttackableOverlay();
 
-            //Need some indication of when a unit has been used
-            //For if return is selected as a unit action
-            if (SelectedUnit != null)           //Need to handle when player selects Idle for a unit
+            //For if return or idle is selected as a unit action 
+            if (SelectedUnit != null)
             {
                 if (SelectedUnit.State != UnitState.Used
                     && SelectedUnit.State != UnitState.Moved
+                    && SelectedUnit.State != UnitState.Dead
                    )
                 {
                     SelectedUnit.State = UnitState.None;
@@ -389,9 +387,9 @@ namespace Basic_Wars_V2
 
                 _gameUI.DisplayAttributes(SelectedUnit);
 
-                if (SelectedUnit.Team == CurrentPlayer.Team + 1
+                if (SelectedUnit.Team == CurrentPlayer.Team
                     && SelectedUnit.State != UnitState.Used
-                   )    //Doesn't work properly?
+                   )
                 {
                     gameState = GameState.SelectAction;
                 }
@@ -411,7 +409,7 @@ namespace Basic_Wars_V2
 
                 if ((SelectedTile.Type == TileType.Factory 
                     || SelectedTile.Type == TileType.HQ)
-                    && SelectedTile.Team == CurrentPlayer.Team + 1
+                    && SelectedTile.Team == CurrentPlayer.Team
                    )
                 {
                     ProcessButtonsOnly = true;
@@ -425,9 +423,9 @@ namespace Basic_Wars_V2
             ProcessButtonsOnly = true;
             _gameUI.DisplayAttributes(SelectedUnit);
 
-            //Likely somewhere else I can put this
             if (SelectedUnit.State != UnitState.Moved 
                 && SelectedUnit.State != UnitState.Used
+                //DEBUG
                 || DebugUnitFreeMove
                )
             {
@@ -548,6 +546,15 @@ namespace Basic_Wars_V2
                     unitTile.CreateTileSprite(-6 + SelectedUnit.Team, 2);
                     break;
             }
+
+            bool GameOver = CheckWinner(CurrentPlayer.Team);
+            CheckHQ();
+
+            if (GameOver)
+            {
+                menuState = MenuState.GameOver;
+            }
+
             gameState = GameState.PlayerSelect;
         }
 
@@ -566,13 +573,13 @@ namespace Basic_Wars_V2
                 
                 if (unitType != -1 && unitType != -2)
                 {
-                    Unit newUnit = new Unit(InGameAssets, SelectedTile.Position, unitType, CurrentPlayer.Team + 1);
+                    Unit newUnit = new Unit(InGameAssets, SelectedTile.Position, unitType, CurrentPlayer.Team);
 
                     if (CurrentPlayer.Funds >= newUnit.CostToProduce)
                     {
                         CurrentPlayer.Funds -= newUnit.CostToProduce;
 
-                        newUnit.State = UnitState.Used;            //Really need to make the player team and unitType universal values to avoid the +1, -1
+                        newUnit.State = UnitState.Used;
                         _unitManager.AddUnit(newUnit);
 
                         gameState = GameState.PlayerSelect;
@@ -606,7 +613,7 @@ namespace Basic_Wars_V2
         {
             foreach (Tile structure in _gameMap.structures)
             {
-                if (structure.Team == player.Team + 1)
+                if (structure.Team == player.Team)
                 {
                     player.Funds += 1000;
                 }
@@ -619,7 +626,7 @@ namespace Basic_Wars_V2
             {
                 Tile unitTile = _inputController.GetUnitTile(unit);
 
-                if (unit.Team == Team + 1
+                if (unit.Team == Team
                     && (unitTile.Type == TileType.HQ
                     || unitTile.Type == TileType.City
                     || unitTile.Type == TileType.Factory)
@@ -634,7 +641,7 @@ namespace Basic_Wars_V2
         {
             foreach (Tile HQ in _gameMap.HQs)
             {
-                if (HQ.Team != Team + 1)
+                if (HQ.Team != Team)
                 {
                     return false;
                 }
@@ -650,7 +657,7 @@ namespace Basic_Wars_V2
             {
                 foreach (Tile HQ in _gameMap.HQs)
                 {
-                    if (HQ.Team == player.Team + 1)
+                    if (HQ.Team == player.Team)
                     {
                         player.HasHQ = true;
                         break;
@@ -668,7 +675,7 @@ namespace Basic_Wars_V2
                     {
                         if (unit.Team == player.Team)
                         {
-                            _unitManager.RemoveUnit(unit);      //Units are not removed
+                            _unitManager.RemoveUnit(unit);
                         }
                     }
                 }
