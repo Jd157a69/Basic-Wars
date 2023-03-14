@@ -20,7 +20,6 @@ namespace Basic_Wars_V2.System
         public Vector2 MapGridPos { get; set; }
 
         public int Team { get; set; }
-        public int DefenceBonus { get; set; }
 
         public TileData() { }   
 
@@ -31,7 +30,6 @@ namespace Basic_Wars_V2.System
             Position = tile.Position;
             MapGridPos = tile.MapGridPos;
             Team = tile.Team;
-            DefenceBonus = tile.DefenceBonus;
         }
 
         public Tile FromTileData(Texture2D Texture)
@@ -40,7 +38,6 @@ namespace Basic_Wars_V2.System
             tile.Type = Type;
             tile.State = State;
             tile.MapGridPos = MapGridPos;
-            tile.DefenceBonus = DefenceBonus;
 
             switch (tile.Type)
             {
