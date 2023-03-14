@@ -8,7 +8,7 @@ namespace Basic_Wars_V2.System
 {
     public class AI : Player
     {
-        private Random random = new Random();
+        private readonly Random random = new Random();
 
         private Texture2D Texture { get; set; }
 
@@ -19,12 +19,12 @@ namespace Basic_Wars_V2.System
 
         private Tile HQ { get; set; }
 
-        private List<Tile> FriendlyBuildings = new List<Tile>();
-        private List<Tile> EnemyHQs = new List<Tile>();
-        private List<Unit> AIUnits = new List<Unit>();
+        private readonly List<Tile> FriendlyBuildings = new List<Tile>();
+        private readonly List<Tile> EnemyHQs = new List<Tile>();
+        private readonly List<Unit> AIUnits = new List<Unit>();
 
         private List<Tile> reachableTiles = new List<Tile>();
-        private List<Tile> closeByStructures = new List<Tile>();
+        private readonly List<Tile> closeByStructures = new List<Tile>();
 
         private AIState State { get; set; }
 
@@ -411,8 +411,10 @@ namespace Basic_Wars_V2.System
 
                     if (unitType != -1)
                     {
-                        Unit newUnit = new Unit(Texture, structure.Position, unitType, Team);
-                        newUnit.State = UnitState.Used;
+                        Unit newUnit = new Unit(Texture, structure.Position, unitType, Team)
+                        {
+                            State = UnitState.Used
+                        };
                         _unitManager.AddUnit(newUnit);
                     }
                 }

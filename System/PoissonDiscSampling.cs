@@ -36,7 +36,7 @@ namespace Basic_Wars_V2.System
                     Vector2 direction = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
                     Vector2 candidatePoint = startPoint + direction * random.Next((int)radius, (int)radius * 2);
 
-                    if (isValid(candidatePoint, mapSize, cellSize, points, grid, radius))
+                    if (IsValid(candidatePoint, mapSize, cellSize, points, grid, radius))
                     {
                         points.Add(candidatePoint);
                         startPoints.Add(candidatePoint);
@@ -57,7 +57,7 @@ namespace Basic_Wars_V2.System
             return points;
         }
 
-        private bool isValid(Vector2 potentialPoint, Vector2 mapSize, double cellSize, List<Vector2> points, int[,] grid, double radius)
+        private static bool IsValid(Vector2 potentialPoint, Vector2 mapSize, double cellSize, List<Vector2> points, int[,] grid, double radius)
         {
             if (potentialPoint.X >= 0 && potentialPoint.X < mapSize.X && potentialPoint.Y >= 0 && potentialPoint.Y < mapSize.Y)
             {
@@ -87,7 +87,7 @@ namespace Basic_Wars_V2.System
             return false;
         }
 
-        private double SquaredDistance(Vector2 start, Vector2 end)
+        private static double SquaredDistance(Vector2 start, Vector2 end)
         {
             double x = start.X - end.X;
             double y = start.Y - end.Y;

@@ -5,9 +5,9 @@ namespace Basic_Wars_V2.System
 {
     public class Dijkstra
     {
-        private MapManager mapManager;
+        private readonly MapManager mapManager;
 
-        private Tile[,] gameMap;
+        private readonly Tile[,] gameMap;
 
         public Dijkstra(MapManager Map)
         {

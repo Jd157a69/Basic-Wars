@@ -12,7 +12,7 @@ namespace Basic_Wars_V2
 {
     public class BasicWarsGame : Game
     {
-        readonly private GraphicsDeviceManager _graphics;
+        private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
         private const string ASSET_NAME_IN_GAME_ASSETS = "InGameAssets";

@@ -14,10 +14,10 @@ namespace Basic_Wars_V2.Entities
 
         private Sprite buttonSprite;
 
-        private Texture2D Texture;
+        private readonly Texture2D Texture;
         private Vector2 ButtonPosition;
         private Vector2 TextPosition;
-        private SpriteFont spriteFont;
+        private readonly SpriteFont spriteFont;
         private Font text;
 
         private int Width;

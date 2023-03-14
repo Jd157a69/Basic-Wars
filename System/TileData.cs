@@ -28,9 +28,11 @@ namespace Basic_Wars_V2.System
 
         public Tile FromTileData(Texture2D Texture)
         {
-            Tile tile = new Tile(Position, Texture, Team);
-            tile.Type = Type;
-            tile.MapGridPos = MapGridPos;
+            Tile tile = new Tile(Position, Texture, Team)
+            {
+                Type = Type,
+                MapGridPos = MapGridPos
+            };
 
             return tile;
         }

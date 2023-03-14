@@ -7,9 +7,9 @@ namespace Basic_Wars_V2.System
     public class InputController
     {
         private UnitManager _unitManager;
-        private ButtonManager _buttonManager;
+        private readonly ButtonManager _buttonManager;
         private MapManager _gameMap;
-        private GameUI GameUI;
+        private readonly GameUI GameUI;
 
         private MouseState currentMouseState;
         private MouseState previousMouseState;

@@ -8,7 +8,7 @@ namespace Basic_Wars_V2.Entities
 {
     public class GameUI : IGameEntity
     {
-        private Dictionary<(UnitType, UnitType), int> baseDamageDictionary = new Dictionary<(UnitType, UnitType), int>()
+        private readonly Dictionary<(UnitType, UnitType), int> baseDamageDictionary = new Dictionary<(UnitType, UnitType), int>()
         {
                 {(UnitType.Infantry, UnitType.Infantry), 55 },
                 {(UnitType.Infantry, UnitType.Mech), 45 },
@@ -81,32 +81,32 @@ namespace Basic_Wars_V2.Entities
 
         private Button UnitResupplyButton;
 
-        private Tile SelectedUI;
+        private readonly Tile SelectedUI;
 
         public bool DrawSelectedUI { get; set; }
 
         private List<Tile> reachableTiles = new List<Tile>();
-        private List<Tile> moveableOverlay = new List<Tile>();
+        private readonly List<Tile> moveableOverlay = new List<Tile>();
         private bool DrawReachable = false;
 
-        private List<Tile> attackableTiles = new List<Tile>();
-        private List<Tile> attackableOverlay = new List<Tile>();
+        private readonly List<Tile> attackableTiles = new List<Tile>();
+        private readonly List<Tile> attackableOverlay = new List<Tile>();
         private bool DrawAttackable = false;
 
-        private List<Tile> tilesToBeRemoved = new List<Tile>();
+        private readonly List<Tile> tilesToBeRemoved = new List<Tile>();
 
-        private Texture2D Texture;
-        private SpriteFont Font;
+        private readonly Texture2D Texture;
+        private readonly SpriteFont Font;
 
-        private ButtonManager _buttonManager;
-        private UnitManager _unitManager;
+        private readonly ButtonManager _buttonManager;
+        private readonly UnitManager _unitManager;
         private Dijkstra _pathFinder;
 
         private MapManager _gameMap;
 
         private int numOfplayers = 2;
 
-        private int CentreButtonX = (1920 - 672) / 2;
+        private readonly int CentreButtonX = (1920 - 672) / 2;
 
         private Player CurrentPlayer;
         private Unit CurrentUnit;

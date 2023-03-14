@@ -22,9 +22,11 @@ namespace Basic_Wars_V2.System
 
         public AI FromAIData(Texture2D Texture, MapManager mapManager, UnitManager unitManager, GameUI gameUI, InputController inputController)
         {
-            AI Computer = new AI(Team, Funds, mapManager, unitManager, gameUI, inputController, Texture);
-            Computer.HasHQ = HasHQ;
-            Computer.Colour = Colour;
+            AI Computer = new AI(Team, Funds, mapManager, unitManager, gameUI, inputController, Texture)
+            {
+                HasHQ = HasHQ,
+                Colour = Colour
+            };
 
             return Computer;
         }

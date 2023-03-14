@@ -16,8 +16,6 @@ namespace Basic_Wars_V2.Entities
         public List<Tile> Structures { get; private set; } = new List<Tile>();
         public List<Tile> HQs { get; private set; } = new List<Tile>();
 
-        private List<Tile> tempTiles = new List<Tile>();
-
         public int MapWidth { get; set; }
         public int MapHeight { get; set; }
         private int NumOfPlayers { get; set; }
@@ -101,8 +99,10 @@ namespace Basic_Wars_V2.Entities
                     randomTile = RandomTile();
 
                     tempPosition = new Vector2(x, y);
-                    Tile newTile = new Tile(tempPosition, Texture);
-                    newTile.MapGridPos = new Vector2(j, i);
+                    Tile newTile = new Tile(tempPosition, Texture)
+                    {
+                        MapGridPos = new Vector2(j, i)
+                    };
 
                     switch (randomTile)
                     {
@@ -166,8 +166,8 @@ namespace Basic_Wars_V2.Entities
 
         private void GenerateRoads()
         {
-            Vector2 firstStructureGridPos = new Vector2(0, 0);
-            Vector2 nextStructureGridPos = new Vector2(0, 0);
+            Vector2 firstStructureGridPos = new();
+            Vector2 nextStructureGridPos = new();
 
             for (int i = 0; i < Structures.Count - 1; i += 2)
             {
@@ -224,9 +224,11 @@ namespace Basic_Wars_V2.Entities
                 && Map[X, Y].Type != TileType.HQ
                )
             {
-                Tile roadTile = new Tile(Map[X, Y].Position, Texture);
-                roadTile.Type = TileType.Road;
-                roadTile.MapGridPos = new Vector2(X, Y);
+                Tile roadTile = new Tile(Map[X, Y].Position, Texture)
+                {
+                    Type = TileType.Road,
+                    MapGridPos = new Vector2(X, Y)
+                };
 
                 Map[X, Y] = roadTile;
                 Map[X, Y].CreateTileSprite(direction);
@@ -262,11 +264,12 @@ namespace Basic_Wars_V2.Entities
 
         private void CreateHQTile(int X, int Y, int team)
         {
-            Tile HQTile = new Tile(Map[X, Y].Position, Texture);
-
-            HQTile.Type = TileType.HQ;
-            HQTile.MapGridPos = new Vector2(X, Y);
-            HQTile.Team = team;
+            Tile HQTile = new Tile(Map[X, Y].Position, Texture)
+            {
+                Type = TileType.HQ,
+                MapGridPos = new Vector2(X, Y),
+                Team = team
+            };
 
             Map[X, Y] = HQTile;
 
@@ -282,7 +285,7 @@ namespace Basic_Wars_V2.Entities
             }
         }
 
-        private int RandomTile()
+        private static int RandomTile()
         {
             Random random = new Random();
 

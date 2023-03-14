@@ -39,13 +39,15 @@ namespace Basic_Wars_V2.System
 
         public Unit FromUnitData(Texture2D Texture)
         {
-            Unit unit = new Unit(Texture, Position, UnitTypeInt, Team);
-            unit.Health = Health;
-            unit.Ammo = Ammo;
-            unit.Fuel = Fuel;
-            unit.Defence = Defence;
-            unit.MovementPoints = MovementPoints;
-            unit.CostToProduce = CostToProduce;
+            Unit unit = new Unit(Texture, Position, UnitTypeInt, Team)
+            {
+                Health = Health,
+                Ammo = Ammo,
+                Fuel = Fuel,
+                Defence = Defence,
+                MovementPoints = MovementPoints,
+                CostToProduce = CostToProduce
+            };
             unit.CreateUnitSprite(UnitTypeInt);
 
             return unit;

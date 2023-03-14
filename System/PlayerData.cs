@@ -25,10 +25,12 @@ namespace Basic_Wars_V2.System
 
         public Player FromPlayerData()
         {
-            Player player = new Player(Team, Funds);
-            player.HasHQ = HasHQ;
-            player.Colour = Colour;
-            player.IsAI = IsAI;
+            Player player = new Player(Team, Funds)
+            {
+                HasHQ = HasHQ,
+                Colour = Colour,
+                IsAI = IsAI
+            };
 
             return player;
         }
