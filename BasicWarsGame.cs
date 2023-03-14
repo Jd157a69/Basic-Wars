@@ -416,7 +416,6 @@ namespace Basic_Wars_V2
             {
                 _gameUI.ChangeSelectedPosition(SelectedTile.Position);
                 _gameUI.DrawSelectedUI = true;
-                SelectedTile.State = TileState.None;
 
                 _gameUI.DisplayAttributes(null, SelectedTile);
 
@@ -442,7 +441,7 @@ namespace Basic_Wars_V2
             if (SelectedUnit.State != UnitState.Moved 
                 && SelectedUnit.State != UnitState.Used
                 //DEBUG
-                || DebugUnitFreeMove
+                //|| DebugUnitFreeMove
                )
             {
                 reachableTiles = _gameUI.GetReachableTiles(SelectedUnit, _unitManager.GetUnitPositions(), CurrentUnitTile);
@@ -812,6 +811,9 @@ namespace Basic_Wars_V2
         {
             if (File.Exists(SAVE_GAME_PATH))
             {
+                _unitManager.DrawUnits = true;
+                _gameMap.DrawMap = true;
+
                 _unitManager.ClearUnits();
                 Players.Clear();
 
@@ -842,18 +844,21 @@ namespace Basic_Wars_V2
 
                 foreach (Tile tile in Map)
                 {
-                    _gameMap.map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y] = tile;    //Issue here I assume
+                    Console.WriteLine($"{tile.MapGridPos.X}, {tile.MapGridPos.Y}");
+
+                    _gameMap.map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y] = tile;    //Issue here I assume where TileSprite is null?
+                    _gameMap.map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y].CreateTileSpriteOnType();
+                    
+                    Console.WriteLine($"{tile.Type}");
+                    Console.WriteLine($"{tile.TileSprite}");        //Structures in GameMap are empty so road is not able to be generated
                 }
 
-                _gameMap.RegenerateHQandRoads();
+                _gameMap.RegenerateMap();
 
                 CurrentPlayerIndex = gameData.GameStateData.CurrentPlayerIndex;
                 TurnNumber = gameData.GameStateData.TurnNumber; 
 
                 CurrentPlayer = Players[CurrentPlayerIndex];
-
-                _unitManager.DrawUnits = true;
-                _gameMap.DrawMap = true;
 
                 //DEBUG
                 Console.WriteLine("Game Loaded");
