@@ -51,7 +51,7 @@ namespace Basic_Wars_V2.Entities
             Position = new Vector2(WINDOW_WIDTH / 2 - (MapWidth * TILE_DIMENSIONS / 2), WINDOW_HEIGHT / 2 - (MapHeight * TILE_DIMENSIONS / 2));
             MapSize = new Vector2(mapWidth * TILE_DIMENSIONS, mapHeight * TILE_DIMENSIONS);
 
-            map = new Tile[MapWidth, MapHeight];
+            ResetMapSize();
             StructureSparsity = (MapWidth / 6) * TILE_DIMENSIONS;
 
             DrawMap = false;
@@ -81,6 +81,16 @@ namespace Basic_Wars_V2.Entities
             {
                 tile.CreateTileSpriteOnType();
             }
+        }
+
+        public void ClearMap()
+        {
+            Array.Clear(map);
+        }
+
+        public void ResetMapSize()
+        {
+            map = new Tile[MapWidth, MapHeight];
         }
 
         private void GenerateBaseMap()
@@ -218,6 +228,7 @@ namespace Basic_Wars_V2.Entities
             if (map[X, Y].Type != TileType.City 
                 && map[X, Y].Type != TileType.Factory 
                 && map[X, Y].Type != TileType.Mountain
+                && map[X, Y].Type != TileType.HQ
                )
             {
                 Tile roadTile = new Tile(map[X, Y].Position, Texture);

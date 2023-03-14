@@ -130,11 +130,11 @@ namespace Basic_Wars_V2
          *      - Computerphile video on YouTube: https://www.youtube.com/watch?v=ySN5Wnu88nE
          *      - Simple A* Path Finding in Monogame: https://youtu.be/FflEY83irJo
          *  
-         *  TODO: JSON or XML read and write to files
+         *  DONE: JSON or XML read and write to files
          *      - Serialization and deserialization of files: 
+         *          https://learn.microsoft.com/en-us/dotnet/api/system.xml.serialization?view=net-7.0
          *          https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to?pivots=dotnet-7-0
          *          https://www.c-sharpcorner.com/article/working-with-json-in-C-Sharp/
-         *      - Get data method in MapManager, UnitManager, Player and BasicWarGame classes
          *      - Method in BasicWarsGame class to load and save data
          *  
          */
@@ -280,7 +280,6 @@ namespace Basic_Wars_V2
                 NextPlayer = true;
             }
 
-            //Turns
             if (NextPlayer)
             {
                 _unitManager.ResetUnitStates(CurrentPlayer);
@@ -795,7 +794,7 @@ namespace Basic_Wars_V2
                 playerData.Add(new PlayerData(player));
             }
 
-            GameData gameData = new GameData(unitData, mapData, structuresData, playerData, gameStateData);
+            GameData gameData = new GameData(unitData, mapData, structuresData, playerData, gameStateData, _gameMap.MapWidth, _gameMap.MapHeight);
 
             XmlSerializer serializer = new XmlSerializer(typeof(GameData));
             using (StreamWriter streamWriter = new StreamWriter(SAVE_GAME_PATH))
@@ -825,6 +824,7 @@ namespace Basic_Wars_V2
 
                 _unitManager.ClearUnits();
                 Players.Clear();
+                _gameMap.ClearMap();
                 _gameMap.structures.Clear();
                 _gameMap.HQs.Clear();
 
@@ -857,6 +857,11 @@ namespace Basic_Wars_V2
                 {
                     _gameMap.structures.Add(structure.FromTileData(InGameAssets));
                 }
+                
+                _gameMap.MapWidth = gameData.MapWidth;
+                _gameMap.MapHeight = gameData.MapHeight;
+
+                _gameMap.ResetMapSize();
 
                 foreach (Tile tile in Map)
                 {
