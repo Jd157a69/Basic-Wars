@@ -11,12 +11,12 @@ namespace Basic_Wars_V2.Entities
         private readonly Dictionary<(UnitType, UnitType), int> baseDamageDictionary = new()
         {
                 {(UnitType.Infantry, UnitType.Infantry), 55 },
-                {(UnitType.Infantry, UnitType.Mech), 45 },
-                {(UnitType.Infantry, UnitType.Tank), 5 },
-                {(UnitType.Infantry, UnitType.APC), 14 },
+                {(UnitType.Infantry, UnitType.Mech), 40 },
+                {(UnitType.Infantry, UnitType.Tank), 10 },
+                {(UnitType.Infantry, UnitType.APC), 5 },
                 {(UnitType.Mech, UnitType.Infantry), 65 },
                 {(UnitType.Mech, UnitType.Mech), 55 },
-                {(UnitType.Mech, UnitType.Tank), 65 },
+                {(UnitType.Mech, UnitType.Tank), 60 },
                 {(UnitType.Mech, UnitType.APC), 75 },
                 {(UnitType.Tank, UnitType.Infantry), 75 },
                 {(UnitType.Tank, UnitType.Mech), 70 },
@@ -671,8 +671,6 @@ namespace Basic_Wars_V2.Entities
 
         public int CalculateDamage(Unit attackingUnit, Unit defendingUnit)
         {
-            attackingUnit.Ammo--;
-
             int baseDamage = baseDamageDictionary[(attackingUnit.Type, defendingUnit.Type)];
 
             double defenceMultiplier = (double)(defendingUnit.Defence) / 100;
