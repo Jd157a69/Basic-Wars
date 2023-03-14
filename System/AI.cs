@@ -327,7 +327,7 @@ namespace Basic_Wars_V2.System
         private void GetEnemyHQs()
         {
             EnemyHQs.Clear();
-            foreach (Tile structure in _gameMap.structures)
+            foreach (Tile structure in _gameMap.Structures)
             {
                 if (structure.Team != Team
                     && structure.Type == TileType.HQ
@@ -345,7 +345,7 @@ namespace Basic_Wars_V2.System
         private void GetFriendlyBuildings()
         {
             FriendlyBuildings.Clear();
-            foreach (Tile structure in _gameMap.structures)
+            foreach (Tile structure in _gameMap.Structures)
             {
                 if (structure.Team == Team)
                 {

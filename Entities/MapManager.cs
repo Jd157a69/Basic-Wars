@@ -12,8 +12,8 @@ namespace Basic_Wars_V2.Entities
         private const int WINDOW_WIDTH = 1920;
         private const int WINDOW_HEIGHT = 1080;
 
-        public Tile[,] map { get; set; }
-        public List<Tile> structures { get; private set; } = new List<Tile>();
+        public Tile[,] Map { get; set; }
+        public List<Tile> Structures { get; private set; } = new List<Tile>();
         public List<Tile> HQs { get; private set; } = new List<Tile>();
 
         private List<Tile> tempTiles = new List<Tile>();
@@ -70,7 +70,7 @@ namespace Basic_Wars_V2.Entities
 
         private void CreateTileSprites()
         {
-            foreach (Tile tile in map)
+            foreach (Tile tile in Map)
             {
                 tile.CreateTileSpriteOnType();
             }
@@ -78,12 +78,12 @@ namespace Basic_Wars_V2.Entities
 
         public void ClearMap()
         {
-            Array.Clear(map);
+            Array.Clear(Map);
         }
 
         public void ResetMapSize()
         {
-            map = new Tile[MapWidth, MapHeight];
+            Map = new Tile[MapWidth, MapHeight];
         }
 
         private void GenerateBaseMap()
@@ -117,7 +117,7 @@ namespace Basic_Wars_V2.Entities
                             break;
                     }
 
-                    map[j, i] = newTile;
+                    Map[j, i] = newTile;
                     x += 56;
                 }
                 y += 56;
@@ -148,17 +148,17 @@ namespace Basic_Wars_V2.Entities
                 int newGridX = (int)(point.X) / TILE_DIMENSIONS;
                 int newGridY = (int)(point.Y) / TILE_DIMENSIONS;
 
-                Vector2 newGridPos = new Vector2(map[newGridX, newGridY].Position.X, map[newGridX, newGridY].Position.Y);
+                Vector2 newGridPos = new Vector2(Map[newGridX, newGridY].Position.X, Map[newGridX, newGridY].Position.Y);
 
                 Tile newStructure = new Tile(newGridPos, Texture);
 
-                if (!(map[newGridX, newGridY].Type == TileType.City))
+                if (!(Map[newGridX, newGridY].Type == TileType.City))
                 {
                     newStructure.MapGridPos = new Vector2(newGridX, newGridY);
-                    map[newGridX, newGridY] = newStructure;
-                    map[newGridX, newGridY].Type = Type;
+                    Map[newGridX, newGridY] = newStructure;
+                    Map[newGridX, newGridY].Type = Type;
 
-                    structures.Add(newStructure);
+                    Structures.Add(newStructure);
                 }
 
             }
@@ -169,10 +169,10 @@ namespace Basic_Wars_V2.Entities
             Vector2 firstStructureGridPos = new Vector2(0, 0);
             Vector2 nextStructureGridPos = new Vector2(0, 0);
 
-            for (int i = 0; i < structures.Count - 1; i += 2)
+            for (int i = 0; i < Structures.Count - 1; i += 2)
             {
-                firstStructureGridPos = structures[i].MapGridPos;
-                nextStructureGridPos = structures[i + 1].MapGridPos;
+                firstStructureGridPos = Structures[i].MapGridPos;
+                nextStructureGridPos = Structures[i + 1].MapGridPos;
 
                 BuildRoad(firstStructureGridPos, nextStructureGridPos);
             }
@@ -218,18 +218,18 @@ namespace Basic_Wars_V2.Entities
 
         private void CreateRoadTile(int X, int Y, int direction)
         {
-            if (map[X, Y].Type != TileType.City
-                && map[X, Y].Type != TileType.Factory
-                && map[X, Y].Type != TileType.Mountain
-                && map[X, Y].Type != TileType.HQ
+            if (Map[X, Y].Type != TileType.City
+                && Map[X, Y].Type != TileType.Factory
+                && Map[X, Y].Type != TileType.Mountain
+                && Map[X, Y].Type != TileType.HQ
                )
             {
-                Tile roadTile = new Tile(map[X, Y].Position, Texture);
+                Tile roadTile = new Tile(Map[X, Y].Position, Texture);
                 roadTile.Type = TileType.Road;
                 roadTile.MapGridPos = new Vector2(X, Y);
 
-                map[X, Y] = roadTile;
-                map[X, Y].CreateTileSprite(direction);
+                Map[X, Y] = roadTile;
+                Map[X, Y].CreateTileSprite(direction);
             }
         }
 
@@ -262,15 +262,15 @@ namespace Basic_Wars_V2.Entities
 
         private void CreateHQTile(int X, int Y, int team)
         {
-            Tile HQTile = new Tile(map[X, Y].Position, Texture);
+            Tile HQTile = new Tile(Map[X, Y].Position, Texture);
 
             HQTile.Type = TileType.HQ;
             HQTile.MapGridPos = new Vector2(X, Y);
             HQTile.Team = team;
 
-            map[X, Y] = HQTile;
+            Map[X, Y] = HQTile;
 
-            structures.Add(HQTile);
+            Structures.Add(HQTile);
             HQs.Add(HQTile);
         }
 
@@ -361,20 +361,20 @@ namespace Basic_Wars_V2.Entities
 
             if (X > 0)
             {
-                neighbors.Add(map[X - 1, Y]);
+                neighbors.Add(Map[X - 1, Y]);
             }
-            if (X < map.GetLength(0) - 1)
+            if (X < Map.GetLength(0) - 1)
             {
-                neighbors.Add(map[X + 1, Y]);
+                neighbors.Add(Map[X + 1, Y]);
             }
 
             if (Y > 0)
             {
-                neighbors.Add(map[X, Y - 1]);
+                neighbors.Add(Map[X, Y - 1]);
             }
-            if (Y < map.GetLength(1) - 1)
+            if (Y < Map.GetLength(1) - 1)
             {
-                neighbors.Add(map[X, Y + 1]);
+                neighbors.Add(Map[X, Y + 1]);
             }
 
             return neighbors;
@@ -384,7 +384,7 @@ namespace Basic_Wars_V2.Entities
         {
             if (DrawMap)
             {
-                foreach (Tile tile in map)
+                foreach (Tile tile in Map)
                 {
                     tile.Draw(spriteBatch, gameTime);
                 }

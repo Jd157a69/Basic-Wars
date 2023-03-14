@@ -344,7 +344,7 @@ namespace Basic_Wars_V2
                     break;
 
                 case GameState.AITurn:
-                    foreach (Tile structure in _gameMap.structures)
+                    foreach (Tile structure in _gameMap.Structures)
                     {
                         if (structure.Team == Computer.Team)
                         {
@@ -671,7 +671,7 @@ namespace Basic_Wars_V2
 
         private void Income(Player player)
         {
-            foreach (Tile structure in _gameMap.structures)
+            foreach (Tile structure in _gameMap.Structures)
             {
                 if (structure.Team == player.Team)
                 {
@@ -722,7 +722,7 @@ namespace Basic_Wars_V2
                         }
                     }
 
-                    foreach (Tile structure in _gameMap.structures)
+                    foreach (Tile structure in _gameMap.Structures)
                     {
                         if (structure.Team == player.Team)
                         {
@@ -772,12 +772,12 @@ namespace Basic_Wars_V2
                 unitData.Add(new UnitData(unit));
             }
 
-            foreach (Tile tile in _gameMap.map)
+            foreach (Tile tile in _gameMap.Map)
             {
                 mapData.Add(new TileData(tile));
             }
 
-            foreach (Tile tile in _gameMap.structures)
+            foreach (Tile tile in _gameMap.Structures)
             {
                 if (tile.Type != TileType.HQ)
                 {
@@ -829,7 +829,7 @@ namespace Basic_Wars_V2
                 _unitManager.ClearUnits();
                 Players.Clear();
                 _gameMap.ClearMap();
-                _gameMap.structures.Clear();
+                _gameMap.Structures.Clear();
                 _gameMap.HQs.Clear();
 
                 GameData gameData;
@@ -859,7 +859,7 @@ namespace Basic_Wars_V2
 
                 foreach (TileData structure in gameData.Structures)
                 {
-                    _gameMap.structures.Add(structure.FromTileData(InGameAssets));
+                    _gameMap.Structures.Add(structure.FromTileData(InGameAssets));
                 }
 
                 _gameMap.MapWidth = gameData.MapWidth;
@@ -869,7 +869,7 @@ namespace Basic_Wars_V2
 
                 foreach (Tile tile in Map)
                 {
-                    _gameMap.map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y] = tile;
+                    _gameMap.Map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y] = tile;
 
                     if (tile.Type == TileType.HQ)
                     {

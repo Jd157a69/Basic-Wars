@@ -65,7 +65,7 @@ namespace Basic_Wars_V2.System
 
                 if (!UnitSelected)
                 {
-                    foreach (Tile tile in _gameMap.map)
+                    foreach (Tile tile in _gameMap.Map)
                     {
                         if (
                             MouseCollider.Intersects(tile.Collider)
@@ -109,7 +109,7 @@ namespace Basic_Wars_V2.System
 
         public Tile GetSelectedTile()
         {
-            foreach (Tile tile in _gameMap.map)
+            foreach (Tile tile in _gameMap.Map)
             {
                 if (tile.Selected)
                 {
@@ -135,7 +135,7 @@ namespace Basic_Wars_V2.System
 
         public Tile GetUnitTile(Unit unit)
         {
-            foreach (Tile tile in _gameMap.map)
+            foreach (Tile tile in _gameMap.Map)
             {
                 if (unit.Position == tile.Position)
                 {

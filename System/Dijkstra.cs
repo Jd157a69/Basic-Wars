@@ -13,7 +13,7 @@ namespace Basic_Wars_V2.System
         {
             mapManager = Map;
 
-            gameMap = mapManager.map;
+            gameMap = mapManager.Map;
         }
 
         public List<Tile> FindReachableTiles(Tile startingTile, Unit unit)
