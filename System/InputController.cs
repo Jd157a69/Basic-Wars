@@ -83,7 +83,7 @@ namespace Basic_Wars_V2.System
                             && LeftMouseClicked()
                            )
                         {
-                            tile.State = TileState.Selected;
+                            tile.Selected = true;
                         }
                     }
                 }
@@ -122,8 +122,9 @@ namespace Basic_Wars_V2.System
         {
             foreach (Tile tile in _gameMap.map)
             {
-                if (tile.State == TileState.Selected)
+                if (tile.Selected)
                 {
+                    tile.Selected = false;
                     return tile;
                 }
             }

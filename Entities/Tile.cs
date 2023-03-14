@@ -18,7 +18,6 @@ namespace Basic_Wars_V2.Entities
         private const int Y_SPRITE_SHEET_START_POS = 224;
 
         public TileType Type { get; set; }
-        public TileState State { get; set; }
 
         public Vector2 Position { get; set; }
         public Vector2 MapGridPos { get; set; }
@@ -26,13 +25,15 @@ namespace Basic_Wars_V2.Entities
         public int TotalCost { get; set; }
 
         private Texture2D Texture { get; set; }
-        private Sprite TileSprite;
+        public Sprite TileSprite { get; set; }
 
         public int Team { get; set; }
 
         public int DrawOrder { get; set; }
 
         public int DefenceBonus { get; set; }
+
+        public bool Selected { get; set; }
 
         public Tile(Vector2 position, Texture2D texture, int team = -1)
         {
@@ -41,7 +42,7 @@ namespace Basic_Wars_V2.Entities
 
             Team = team;
 
-            State = TileState.None;
+            Selected = false;
         }
 
         public void CreateTileSprite(int TileColumn = 0, int TileRow = 0)
@@ -51,6 +52,36 @@ namespace Basic_Wars_V2.Entities
             TileSprite = new Sprite(Texture, X_SPRITE_SHEET_START_POS + TileColumn, Y_SPRITE_SHEET_START_POS + TileRow, TILE_WIDTH, TILE_HEIGHT);
 
             SetTileAttributes();
+        }
+
+        public void CreateTileSpriteOnType()
+        {
+            switch (Type)
+            {
+                case TileType.Plains:
+                    CreateTileSprite();
+                    break;
+
+                case TileType.Forest:
+                    CreateTileSprite(1, 0);
+                    break;
+
+                case TileType.Mountain:
+                    CreateTileSprite(2, 0);
+                    break;
+
+                case TileType.City:
+                    CreateTileSprite(-5 + Team, 0);
+                    break;
+
+                case TileType.Factory:
+                    CreateTileSprite(-5 + Team, 1);
+                    break;
+
+                case TileType.HQ:
+                    CreateTileSprite(-5 + Team, 2);
+                    break;
+            }
         }
 
         public Rectangle Collider
