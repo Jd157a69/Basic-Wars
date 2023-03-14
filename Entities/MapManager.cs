@@ -19,7 +19,7 @@ namespace Basic_Wars_V2.Entities
         private const int WINDOW_WIDTH = 1920;
         private const int WINDOW_HEIGHT = 1080;
 
-        public Tile[,] map { get; private set; }
+        public Tile[,] map { get; set; }
         public List<Tile> structures {get; private set; } = new List<Tile>();
         public List<Tile> HQs { get; private set; } = new List<Tile>();
 
