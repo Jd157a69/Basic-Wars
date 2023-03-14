@@ -86,10 +86,10 @@ namespace Basic_Wars_V2.Entities
 
         private void GenerateBaseMap()
         {
-            float x = Position.X;
+            float x;
             float y = Position.Y;
             int randomTile;
-            Vector2 tempPosition = new Vector2(x, y);
+            Vector2 tempPosition;
 
             for (int i = 0; i < MapHeight; i++)
             {
@@ -99,7 +99,7 @@ namespace Basic_Wars_V2.Entities
                     randomTile = RandomTile();
 
                     tempPosition = new Vector2(x, y);
-                    Tile newTile = new Tile(tempPosition, Texture)
+                    Tile newTile = new(tempPosition, Texture)
                     {
                         MapGridPos = new Vector2(j, i)
                     };
@@ -128,7 +128,7 @@ namespace Basic_Wars_V2.Entities
         {
             TileType Type = TileType.None;
 
-            List<Vector2> points = new List<Vector2>();
+            List<Vector2> points;
 
             if (StructureType == "City")
             {
@@ -140,7 +140,7 @@ namespace Basic_Wars_V2.Entities
                 StructureSparsity *= 3;
             }
 
-            PoissonDiscSampling sampler = new PoissonDiscSampling();
+            PoissonDiscSampling sampler = new();
             points = sampler.GetPoints(StructureSparsity, MapSize);
 
             foreach (Vector2 point in points)
@@ -148,9 +148,9 @@ namespace Basic_Wars_V2.Entities
                 int newGridX = (int)(point.X) / TILE_DIMENSIONS;
                 int newGridY = (int)(point.Y) / TILE_DIMENSIONS;
 
-                Vector2 newGridPos = new Vector2(Map[newGridX, newGridY].Position.X, Map[newGridX, newGridY].Position.Y);
+                Vector2 newGridPos = new(Map[newGridX, newGridY].Position.X, Map[newGridX, newGridY].Position.Y);
 
-                Tile newStructure = new Tile(newGridPos, Texture);
+                Tile newStructure = new(newGridPos, Texture);
 
                 if (!(Map[newGridX, newGridY].Type == TileType.City))
                 {
@@ -166,8 +166,8 @@ namespace Basic_Wars_V2.Entities
 
         private void GenerateRoads()
         {
-            Vector2 firstStructureGridPos = new();
-            Vector2 nextStructureGridPos = new();
+            Vector2 firstStructureGridPos;
+            Vector2 nextStructureGridPos;
 
             for (int i = 0; i < Structures.Count - 1; i += 2)
             {
@@ -224,7 +224,7 @@ namespace Basic_Wars_V2.Entities
                 && Map[X, Y].Type != TileType.HQ
                )
             {
-                Tile roadTile = new Tile(Map[X, Y].Position, Texture)
+                Tile roadTile = new(Map[X, Y].Position, Texture)
                 {
                     Type = TileType.Road,
                     MapGridPos = new Vector2(X, Y)
@@ -264,7 +264,7 @@ namespace Basic_Wars_V2.Entities
 
         private void CreateHQTile(int X, int Y, int team)
         {
-            Tile HQTile = new Tile(Map[X, Y].Position, Texture)
+            Tile HQTile = new(Map[X, Y].Position, Texture)
             {
                 Type = TileType.HQ,
                 MapGridPos = new Vector2(X, Y),
@@ -287,7 +287,7 @@ namespace Basic_Wars_V2.Entities
 
         private static int RandomTile()
         {
-            Random random = new Random();
+            Random random = new();
 
             int randTileNum = random.Next(0, 20);
 
@@ -357,7 +357,7 @@ namespace Basic_Wars_V2.Entities
 
         public List<Tile> GetNeighbours(Tile tile)
         {
-            List<Tile> neighbors = new List<Tile>();
+            List<Tile> neighbors = new();
 
             int X = (int)tile.MapGridPos.X;
             int Y = (int)tile.MapGridPos.Y;

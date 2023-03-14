@@ -8,7 +8,7 @@ namespace Basic_Wars_V2.Entities
 {
     public class GameUI : IGameEntity
     {
-        private readonly Dictionary<(UnitType, UnitType), int> baseDamageDictionary = new Dictionary<(UnitType, UnitType), int>()
+        private readonly Dictionary<(UnitType, UnitType), int> baseDamageDictionary = new()
         {
                 {(UnitType.Infantry, UnitType.Infantry), 55 },
                 {(UnitType.Infantry, UnitType.Mech), 45 },
@@ -85,15 +85,15 @@ namespace Basic_Wars_V2.Entities
 
         public bool DrawSelectedUI { get; set; }
 
-        private List<Tile> reachableTiles = new List<Tile>();
-        private readonly List<Tile> moveableOverlay = new List<Tile>();
+        private List<Tile> reachableTiles = new();
+        private readonly List<Tile> moveableOverlay = new();
         private bool DrawReachable = false;
 
-        private readonly List<Tile> attackableTiles = new List<Tile>();
-        private readonly List<Tile> attackableOverlay = new List<Tile>();
+        private readonly List<Tile> attackableTiles = new();
+        private readonly List<Tile> attackableOverlay = new();
         private bool DrawAttackable = false;
 
-        private readonly List<Tile> tilesToBeRemoved = new List<Tile>();
+        private readonly List<Tile> tilesToBeRemoved = new();
 
         private readonly Texture2D Texture;
         private readonly SpriteFont Font;
@@ -122,7 +122,7 @@ namespace Basic_Wars_V2.Entities
             _pathFinder = new Dijkstra(map);
             _unitManager = unitManager;
 
-            Player placeHolder = new Player(0, 0);
+            Player placeHolder = new(0, 0);
             CurrentPlayer = placeHolder;
 
             _buttonManager = buttonManager;
@@ -280,7 +280,7 @@ namespace Basic_Wars_V2.Entities
                         && unit.Type == UnitType.APC)
                        )
                     {
-                        Tile overlayTile = new Tile(tile.Position, Texture);
+                        Tile overlayTile = new(tile.Position, Texture);
                         overlayTile.CreateTileSprite(2, 1);
                         moveableOverlay.Add(overlayTile);
                     }
@@ -317,7 +317,7 @@ namespace Basic_Wars_V2.Entities
                         && defendingUnit.Team != attackingUnit.Team
                        )
                     {
-                        Tile overlayTile = new Tile(tile.Position, Texture);
+                        Tile overlayTile = new(tile.Position, Texture);
                         overlayTile.CreateTileSprite(1, 1);
                         attackableOverlay.Add(overlayTile);
 
@@ -437,11 +437,11 @@ namespace Basic_Wars_V2.Entities
 
         public List<Player> GetPlayers()
         {
-            List<Player> Players = new List<Player>();
+            List<Player> Players = new();
 
             for (int i = 0; i < numOfplayers; i++)
             {
-                Player player = new Player(i, 0);
+                Player player = new(i, 0);
                 Players.Add(player);
             }
 

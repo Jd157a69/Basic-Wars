@@ -646,7 +646,7 @@ namespace Basic_Wars_V2
 
                 if (unitType != -1 && unitType != -2)
                 {
-                    Unit newUnit = new Unit(InGameAssets, SelectedTile.Position, unitType, CurrentPlayer.Team);
+                    Unit newUnit = new(InGameAssets, SelectedTile.Position, unitType, CurrentPlayer.Team);
 
                     if (CurrentPlayer.Funds >= newUnit.CostToProduce)
                     {
@@ -694,7 +694,7 @@ namespace Basic_Wars_V2
 
         private void CheckHQ()
         {
-            List<Player> playersToRemove = new List<Player>();
+            List<Player> playersToRemove = new();
 
             foreach (Player player in Players)
             {
@@ -753,12 +753,12 @@ namespace Basic_Wars_V2
         private void SaveGame(GameTime gameTime)
         {
 
-            List<UnitData> unitData = new List<UnitData>();
-            List<TileData> mapData = new List<TileData>();
-            List<TileData> structuresData = new List<TileData>();
-            List<PlayerData> playerData = new List<PlayerData>();
+            List<UnitData> unitData = new();
+            List<TileData> mapData = new();
+            List<TileData> structuresData = new();
+            List<PlayerData> playerData = new();
 
-            GameStateData gameStateData = new GameStateData(TurnNumber, CurrentPlayerIndex, AddAI);
+            GameStateData gameStateData = new(TurnNumber, CurrentPlayerIndex, AddAI);
 
             AIData ComputerData = null;
 
@@ -790,7 +790,7 @@ namespace Basic_Wars_V2
                 playerData.Add(new PlayerData(player));
             }
 
-            GameData gameData = null;
+            GameData gameData;
             if (AddAI)
             {
                 gameData = new GameData(unitData, mapData, structuresData, playerData, gameStateData, _gameMap.MapWidth, _gameMap.MapHeight, ComputerData);
@@ -800,8 +800,8 @@ namespace Basic_Wars_V2
                 gameData = new GameData(unitData, mapData, structuresData, playerData, gameStateData, _gameMap.MapWidth, _gameMap.MapHeight);
             }
 
-            XmlSerializer serializer = new XmlSerializer(typeof(GameData));
-            using (StreamWriter streamWriter = new StreamWriter(SAVE_GAME_PATH))
+            XmlSerializer serializer = new(typeof(GameData));
+            using (StreamWriter streamWriter = new(SAVE_GAME_PATH))
             {
                 serializer.Serialize(streamWriter, gameData);
             }
@@ -834,10 +834,10 @@ namespace Basic_Wars_V2
 
                 GameData gameData;
 
-                List<Tile> Map = new List<Tile>();
+                List<Tile> Map = new();
 
-                XmlSerializer serializer = new XmlSerializer(typeof(GameData));
-                using (StreamReader streamReader = new StreamReader(SAVE_GAME_PATH))
+                XmlSerializer serializer = new(typeof(GameData));
+                using (StreamReader streamReader = new(SAVE_GAME_PATH))
                 {
                     gameData = (GameData)serializer.Deserialize(streamReader);
                 }

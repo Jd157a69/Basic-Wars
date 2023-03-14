@@ -8,7 +8,7 @@ namespace Basic_Wars_V2.System
 {
     public class AI : Player
     {
-        private readonly Random random = new Random();
+        private readonly Random random = new();
 
         private Texture2D Texture { get; set; }
 
@@ -19,12 +19,12 @@ namespace Basic_Wars_V2.System
 
         private Tile HQ { get; set; }
 
-        private readonly List<Tile> FriendlyBuildings = new List<Tile>();
-        private readonly List<Tile> EnemyHQs = new List<Tile>();
-        private readonly List<Unit> AIUnits = new List<Unit>();
+        private readonly List<Tile> FriendlyBuildings = new();
+        private readonly List<Tile> EnemyHQs = new();
+        private readonly List<Unit> AIUnits = new();
 
-        private List<Tile> reachableTiles = new List<Tile>();
-        private readonly List<Tile> closeByStructures = new List<Tile>();
+        private List<Tile> reachableTiles = new();
+        private readonly List<Tile> closeByStructures = new();
 
         private AIState State { get; set; }
 
@@ -170,7 +170,7 @@ namespace Basic_Wars_V2.System
         private void MoveToRandomReachable(Unit unit, bool AwayFromHQ = false, int attempts = 5)
         {
             reachableTiles = GetReachableTiles(unit);
-            int randomTile = 0;
+            int randomTile;
             if (AwayFromHQ)
             {
                 Tile previousTile;
@@ -316,7 +316,7 @@ namespace Basic_Wars_V2.System
             }
         }
 
-        private float GetSquaredDistance(Tile startingTile, Tile destinationTile)
+        private static float GetSquaredDistance(Tile startingTile, Tile destinationTile)
         {
             float x = startingTile.Position.X - destinationTile.Position.X;
             float y = startingTile.Position.Y - destinationTile.Position.Y;
@@ -411,7 +411,7 @@ namespace Basic_Wars_V2.System
 
                     if (unitType != -1)
                     {
-                        Unit newUnit = new Unit(Texture, structure.Position, unitType, Team)
+                        Unit newUnit = new(Texture, structure.Position, unitType, Team)
                         {
                             State = UnitState.Used
                         };

@@ -39,7 +39,7 @@ namespace Basic_Wars_V2.System
 
         public Unit FromUnitData(Texture2D Texture)
         {
-            Unit unit = new Unit(Texture, Position, UnitTypeInt, Team)
+            Unit unit = new(Texture, Position, UnitTypeInt, Team)
             {
                 Health = Health,
                 Ammo = Ammo,

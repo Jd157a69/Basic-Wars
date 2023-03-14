@@ -9,7 +9,6 @@ namespace Basic_Wars_V2.System
         private UnitManager _unitManager;
         private readonly ButtonManager _buttonManager;
         private MapManager _gameMap;
-        private readonly GameUI GameUI;
 
         private MouseState currentMouseState;
         private MouseState previousMouseState;

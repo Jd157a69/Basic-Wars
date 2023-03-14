@@ -8,7 +8,7 @@ namespace Basic_Wars_V2.System
     {
         public List<Vector2> GetPoints(double radius, Vector2 mapSize, int k = 30)
         {
-            Random random = new Random();
+            Random random = new();
 
             double cellSize = radius / Math.Sqrt(2);
 
@@ -17,10 +17,10 @@ namespace Basic_Wars_V2.System
 
             int[,] grid = new int[Width, Height];
 
-            List<Vector2> points = new List<Vector2>();
-            List<Vector2> startPoints = new List<Vector2>();
+            List<Vector2> points = new();
+            List<Vector2> startPoints = new();
 
-            Vector2 initialPoint = new Vector2(random.Next((int)mapSize.X), random.Next((int)mapSize.Y));
+            Vector2 initialPoint = new(random.Next((int)mapSize.X), random.Next((int)mapSize.Y));
 
             startPoints.Add(initialPoint);
 
@@ -33,7 +33,7 @@ namespace Basic_Wars_V2.System
                 for (int tries = 0; tries < k; tries++)
                 {
                     double angle = random.NextDouble() * 2 * Math.PI;
-                    Vector2 direction = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
+                    Vector2 direction = new((float)Math.Sin(angle), (float)Math.Cos(angle));
                     Vector2 candidatePoint = startPoint + direction * random.Next((int)radius, (int)radius * 2);
 
                     if (IsValid(candidatePoint, mapSize, cellSize, points, grid, radius))
@@ -61,7 +61,7 @@ namespace Basic_Wars_V2.System
         {
             if (potentialPoint.X >= 0 && potentialPoint.X < mapSize.X && potentialPoint.Y >= 0 && potentialPoint.Y < mapSize.Y)
             {
-                Vector2 cell = new Vector2((float)(potentialPoint.X / cellSize), (float)(potentialPoint.Y / cellSize));
+                Vector2 cell = new((float)(potentialPoint.X / cellSize), (float)(potentialPoint.Y / cellSize));
                 int startX = Math.Max(0, (int)cell.X - 2);
                 int endX = Math.Min((int)cell.X + 2, grid.GetLength(0) - 1);
                 int startY = Math.Max(0, (int)cell.Y - 2);

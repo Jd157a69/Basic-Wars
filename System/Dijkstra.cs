@@ -7,19 +7,15 @@ namespace Basic_Wars_V2.System
     {
         private readonly MapManager mapManager;
 
-        private readonly Tile[,] gameMap;
-
         public Dijkstra(MapManager Map)
         {
             mapManager = Map;
-
-            gameMap = mapManager.Map;
         }
 
         public List<Tile> FindReachableTiles(Tile startingTile, Unit unit)
         {
-            List<Tile> reachableTiles = new List<Tile>();
-            PriorityQueue<Tile, int> queue = new PriorityQueue<Tile, int>();
+            List<Tile> reachableTiles = new();
+            PriorityQueue<Tile, int> queue = new();
 
             startingTile.TotalCost = 0;
             queue.Enqueue(startingTile, 0);
