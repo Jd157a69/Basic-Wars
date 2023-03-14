@@ -71,7 +71,7 @@ namespace Basic_Wars_V2.Entities
 
         public void RegenerateMap()
         {
-            GenerateRoads();
+            GenerateRoads();  
             CreateTileSprites();
         }
 
@@ -215,7 +215,10 @@ namespace Basic_Wars_V2.Entities
 
         private void CreateRoadTile(int X, int Y, int direction)
         {
-            if (map[X, Y].Type != TileType.City && map[X, Y].Type != TileType.Factory && map[X, Y].Type != TileType.Mountain)
+            if (map[X, Y].Type != TileType.City 
+                && map[X, Y].Type != TileType.Factory 
+                && map[X, Y].Type != TileType.Mountain
+               )
             {
                 Tile roadTile = new Tile(map[X, Y].Position, Texture);
                 roadTile.Type = TileType.Road;

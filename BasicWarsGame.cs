@@ -767,6 +767,7 @@ namespace Basic_Wars_V2
         {
             List<UnitData> unitData = new List<UnitData>();
             List<TileData> mapData = new List<TileData>();
+            List<TileData> structuresData = new List<TileData>();
             List<PlayerData> playerData = new List<PlayerData>();
 
             GameStateData gameStateData = new GameStateData(TurnNumber, CurrentPlayerIndex);
@@ -781,12 +782,20 @@ namespace Basic_Wars_V2
                 mapData.Add(new TileData(tile));
             }
 
+            foreach (Tile tile in _gameMap.structures)
+            {
+                if (tile.Type != TileType.HQ)
+                {
+                    structuresData.Add(new TileData(tile));
+                }
+            }
+
             foreach (Player player in Players)
             {
                 playerData.Add(new PlayerData(player));
             }
 
-            GameData gameData = new GameData(unitData, mapData, playerData, gameStateData);
+            GameData gameData = new GameData(unitData, mapData, structuresData, playerData, gameStateData);
 
             XmlSerializer serializer = new XmlSerializer(typeof(GameData));
             using (StreamWriter streamWriter = new StreamWriter(SAVE_GAME_PATH))
@@ -816,6 +825,8 @@ namespace Basic_Wars_V2
 
                 _unitManager.ClearUnits();
                 Players.Clear();
+                _gameMap.structures.Clear();
+                _gameMap.HQs.Clear();
 
                 GameData gameData;
 
@@ -842,18 +853,22 @@ namespace Basic_Wars_V2
                     Players.Add(players.FromPlayerData());
                 }
 
-                foreach (Tile tile in Map)
+                foreach (TileData structure in gameData.Structures)
                 {
-                    Console.WriteLine($"{tile.MapGridPos.X}, {tile.MapGridPos.Y}");
-
-                    _gameMap.map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y] = tile;    //Issue here I assume where TileSprite is null?
-                    _gameMap.map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y].CreateTileSpriteOnType();
-                    
-                    Console.WriteLine($"{tile.Type}");
-                    Console.WriteLine($"{tile.TileSprite}");        //Structures in GameMap are empty so road is not able to be generated
+                    _gameMap.structures.Add(structure.FromTileData(InGameAssets));
                 }
 
-                _gameMap.RegenerateMap();
+                foreach (Tile tile in Map)
+                {
+                    _gameMap.map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y] = tile;    
+
+                    if (tile.Type == TileType.HQ)
+                    {
+                        _gameMap.HQs.Add(tile);
+                    }
+                }
+                
+                _gameMap.RegenerateMap();   
 
                 CurrentPlayerIndex = gameData.GameStateData.CurrentPlayerIndex;
                 TurnNumber = gameData.GameStateData.TurnNumber; 
