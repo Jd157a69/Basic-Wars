@@ -1,4 +1,5 @@
 ﻿using Basic_Wars_V2.Entities;
+using Basic_Wars_V2.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Basic_Wars_V2.System
         public int Funds { get; set; }
         public bool HasHQ { get; set; }
         public string Colour { get; set; }
+        public bool IsAI { get; set; }
 
         public PlayerData() { }
 
@@ -23,6 +25,7 @@ namespace Basic_Wars_V2.System
             Funds = player.Funds;
             HasHQ = player.HasHQ;
             Colour = player.Colour;
+            IsAI = player.IsAI;
         }
 
         public Player FromPlayerData()
@@ -30,6 +33,7 @@ namespace Basic_Wars_V2.System
             Player player = new Player(Team, Funds);
             player.HasHQ = HasHQ;
             player.Colour = Colour;
+            player.IsAI = IsAI;
 
             return player;
         }

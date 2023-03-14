@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
@@ -14,6 +15,8 @@ namespace Basic_Wars_V2.System
 {
     public class AI : Player
     {
+        private Random random = new Random();   
+
         private Texture2D Texture { get; set; }
 
         private MapManager _gameMap { get; set; }
@@ -28,12 +31,13 @@ namespace Basic_Wars_V2.System
         private List<Unit> AIUnits = new List<Unit>();
              
         private List<Tile> reachableTiles = new List<Tile>();
+        private List<Tile> closeByStructures = new List<Tile>();
 
         private AIState State { get; set; }
 
         public AI(int team, int initialFunds, MapManager map, UnitManager unitManager, GameUI gameUI, InputController inputController, Texture2D texture) : base(team, initialFunds) 
         {
-            State = AIState.ProduceUnit;
+            State = AIState.Initial;
 
             _gameMap = map;
             _unitManager = unitManager;
@@ -41,71 +45,38 @@ namespace Basic_Wars_V2.System
             _inputController = inputController;
 
             Texture = texture;
+        }
 
-            GetEnemyHQs();
+        public void RefreshAI(MapManager map, UnitManager unitManager)
+        {
+            _gameMap = map;
+            _unitManager = unitManager;
         }
 
         public void RunAILogic()
         {
+            GetEnemyHQs();
             GetAIUnits();
 
             switch (State)
             {
+                case AIState.Initial:
+                    ProduceUnits();
+                    break;
+
                 case AIState.Attack:
 
-                    //Move towards enemy HQs
                     foreach (Unit unit in AIUnits)
                     {
-                        if (unit.State != UnitState.Moved)
+                        if (unit.State != UnitState.Moved
+                            && unit.State != UnitState.Used
+                            && unit.Fuel > 0
+                           )
                         {
                             foreach (Tile HQ in EnemyHQs)
                             {
-                                unit.State = UnitState.Moved;
-                                unit.Fuel--;
                                 MoveTowardsTile(unit, HQ);
-
-                                Console.WriteLine($"AI moved: {unit.Type} towards player {HQ.Team} HQ");
                             }
-                        }
-                    }
-
-                    //Attack neighbouring Units
-                    foreach (Unit unit in AIUnits)
-                    {
-                        Tile startingTile = _inputController.GetUnitTile(unit);
-                        List<Tile> adjacentTiles = _gameMap.GetNeighbours(startingTile);
-
-                        foreach (Tile neighbour in adjacentTiles)
-                        {
-                            Unit neighbouringUnit = _inputController.GetTileUnit(neighbour);
-                            if (neighbouringUnit != null
-                                && neighbouringUnit.Team != Team
-                               )
-                            {
-                                unit.Health -= _gameUI.CalculateDamage(unit, neighbouringUnit);
-                                if (neighbouringUnit.Health > 0)
-                                {
-                                    neighbouringUnit.Health -= _gameUI.CalculateDamage(neighbouringUnit, unit);
-                                }
-                                unit.State = UnitState.Used;
-
-                                Console.WriteLine($"AI attacked {neighbouringUnit.Type} on player {neighbouringUnit.Team} with {unit.Type}");
-                            }
-                        }
-                    }
-
-                    //Capture Structures
-                    foreach (Unit unit in AIUnits)
-                    {
-                        Tile unitTile = _inputController.GetUnitTile(unit);
-                        if ((unitTile.Type == TileType.City
-                            || unitTile.Type == TileType.Factory
-                            || unitTile.Type == TileType.HQ)
-                            && unitTile.Team != Team
-                           )
-                        {
-                            unitTile.Team = Team;
-                            unitTile.CreateTileSpriteOnType();
                         }
                     }
 
@@ -115,48 +86,42 @@ namespace Basic_Wars_V2.System
 
                     foreach (Unit unit in AIUnits)
                     {
-                        if (unit.State != UnitState.Moved)
+                        if (unit.State != UnitState.Moved
+                            && unit.State != UnitState.Used
+                            && unit.Fuel > 0
+                           )
                         {
-                            unit.State = UnitState.Moved;
-                            unit.Fuel--;
                             MoveTowardsTile(unit, HQ);
                         }
                     }
 
                     break;
 
-                case AIState.ProduceUnit:
+                case AIState.CaptureStructures:
 
-                    GetFriendlyBuildings();
-
-                    foreach (Tile structure in FriendlyBuildings)
+                    foreach (Unit unit in AIUnits)
                     {
-                        if (structure.Type == TileType.Factory 
-                            || structure.Type == TileType.HQ
-                            && _inputController.GetTileUnit(structure) == null
-                           )
-                        {
-                            int unitType = -1;
-                            if (Funds >= 7000)
-                            {
-                                Funds -= 7000;
-                                unitType = 2;
-                                
-                            }
-                            else if (Funds >= 4000)
-                            {
-                                Funds -= 3000;
-                                unitType = 1;
-                            }
-                            else
-                            {
-                                unitType = 0;
-                            }
+                        reachableTiles = GetReachableTiles(unit);
 
-                            if (unitType != -1)
+                        foreach (Tile structure in closeByStructures)
+                        {
+                            if (reachableTiles.Contains(structure)
+                                && structure.Team != Team
+                                && unit.State != UnitState.Moved
+                                && unit.State != UnitState.Used
+                                && unit.Type != UnitType.Tank
+                                && unit.Type != UnitType.APC
+                                && unit.Fuel > 0
+                               )
                             {
-                                Unit newUnit = new Unit(Texture, structure.Position, unitType, Team);
-                                _unitManager.AddUnit(newUnit);
+                                MoveTowardsTile(unit, structure);
+                            }
+                            else if (unit.State != UnitState.Moved
+                                    && unit.State != UnitState.Used
+                                    && unit.Fuel > 0
+                                   )
+                            {
+                                MoveToRandomReachable(unit, true);
                             }
                         }
                     }
@@ -164,19 +129,162 @@ namespace Basic_Wars_V2.System
                     break;
             }
 
+            AttackNeighbouringUnits();
+            CaptureStructures();
+            ProduceUnits();
+
             //Setting State
-            //if ()
-            //{
-            //    State = AIState.Attack;
-            //}
-            //else if () An enemy unit is too close to the HQ or a captured building
-            //{
-            //    State = AIState.Defend;
-            //}
-            //else if (AIUnits.Count < 5)
-            //{
-            //    State = AIState.ProduceUnit;
-            //}
+            if (AIUnits.Count >= 8)
+            {
+                State = AIState.Attack;
+            }
+            else if (EnemyCloseToHQ())
+            {
+                State = AIState.Defend;
+            }
+            else if (CloseByStructure())
+            {
+                State = AIState.CaptureStructures;
+            }
+        }
+
+        private void CaptureStructures()
+        {
+            foreach (Unit unit in AIUnits)
+            {
+                Tile unitTile = _inputController.GetUnitTile(unit);
+                if ((unitTile.Type == TileType.City
+                    || unitTile.Type == TileType.Factory
+                    || unitTile.Type == TileType.HQ)
+                    && unit.Type != UnitType.Tank
+                    && unit.Type != UnitType.APC
+                    && unitTile.Team != Team
+                    && unit.State != UnitState.Used
+                   )
+                {
+                    unitTile.Team = Team;
+                    unitTile.CreateTileSpriteOnType();
+                    unit.State = UnitState.Used;
+                }
+            }
+        }
+
+        private void MoveToRandomReachable(Unit unit, bool AwayFromHQ = false, int attempts = 5)
+        {
+            reachableTiles = GetReachableTiles(unit);
+            int randomTile = 0;
+            if (AwayFromHQ)
+            {
+                Tile previousTile;
+                Tile newTile = null;
+
+                Tile destination = null;
+                for (int i = 0; i < attempts; i++)
+                {
+                    randomTile = random.Next(reachableTiles.Count);
+                    if (newTile == null)
+                    {
+                        previousTile = reachableTiles[randomTile];
+                    }
+                    else
+                    {
+                        previousTile = newTile;
+                    }
+                    newTile = reachableTiles[randomTile];
+
+                    if (GetSquaredDistance(newTile, HQ) >= GetSquaredDistance(previousTile, HQ))
+                    {
+                        destination = newTile;
+                    }
+                }
+                if (newTile != null)
+                {
+                    unit.Fuel--;
+                    unit.State = UnitState.Moved;
+                    unit.Position = destination.Position;
+                }
+            }
+            else
+            {
+                unit.Fuel--;
+                unit.State = UnitState.Moved;
+                randomTile = random.Next(reachableTiles.Count);
+                unit.Position = reachableTiles[randomTile].Position;
+            }
+        }
+
+        private List<Tile> GetReachableTiles(Unit unit)
+        {
+            return _gameUI.GetReachableTiles(unit, _unitManager.GetUnitPositions(), _inputController.GetUnitTile(unit));
+        }
+
+        private bool EnemyCloseToHQ()
+        {
+            foreach (Unit unit in _unitManager.units) 
+            {
+                reachableTiles = GetReachableTiles(unit);
+
+                if (unit.Team != Team && reachableTiles.Contains(HQ))
+                {
+                    return true;
+                } 
+            }
+
+            return false;
+        }
+
+        private bool CloseByStructure()
+        {
+            closeByStructures.Clear();
+            foreach (Unit unit in AIUnits)
+            {
+                reachableTiles = GetReachableTiles(unit);
+
+                foreach (Tile tile in reachableTiles)
+                {
+                    if ((tile.Type == TileType.City
+                        || tile.Type == TileType.Factory)
+                        && tile.Team != Team)
+                    {
+                        closeByStructures.Add(tile);
+                    }
+                }
+            }
+
+            if (closeByStructures.Count > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void AttackNeighbouringUnits()
+        {
+            foreach (Unit unit in AIUnits)
+            {
+                Tile startingTile = _inputController.GetUnitTile(unit);
+                List<Tile> adjacentTiles = _gameMap.GetNeighbours(startingTile);
+
+                foreach (Tile neighbour in adjacentTiles)
+                {
+                    Unit neighbouringUnit = _inputController.GetTileUnit(neighbour);
+                    if (neighbouringUnit != null
+                        && neighbouringUnit.Team != Team
+                        && unit.Ammo > 0
+                       )
+                    {
+                        unit.Health -= _gameUI.CalculateDamage(unit, neighbouringUnit);
+                        unit.Ammo--;
+                        if (neighbouringUnit.Health > 0)
+                        {
+                            neighbouringUnit.Health -= _gameUI.CalculateDamage(neighbouringUnit, unit);
+                            neighbouringUnit.Ammo--;
+                        }
+                        unit.State = UnitState.Used;
+                    }
+                }
+            }
         }
 
         private void MoveTowardsTile (Unit movingUnit, Tile destination)
@@ -184,20 +292,29 @@ namespace Basic_Wars_V2.System
             reachableTiles.Clear();
             reachableTiles = _gameUI.GetReachableTiles(movingUnit, _unitManager.GetUnitPositions(), _inputController.GetUnitTile(movingUnit));
 
-            Tile closestTile = null;
-            float dist = int.MaxValue;
-            foreach (Tile tile in reachableTiles)
+            if (movingUnit.Position != destination.Position)
             {
-                if (GetSquaredDistance(tile, destination) < dist)
+                Unit destinationUnit = _inputController.GetTileUnit(destination);
+                if (destination.Team != Team || destinationUnit != null && destinationUnit.Team != Team)//HERE
                 {
-                    closestTile = tile;
-                    dist = GetSquaredDistance(tile, destination); 
-                }
-            }
+                    Tile closestTile = null;
+                    float dist = int.MaxValue;
+                    foreach (Tile tile in reachableTiles)
+                    {
+                        if (GetSquaredDistance(tile, destination) < dist)
+                        {
+                            closestTile = tile;
+                            dist = GetSquaredDistance(tile, destination);
+                        }
+                    }
 
-            if (closestTile != null)
-            {
-                movingUnit.Position = closestTile.Position;
+                    if (closestTile != null)
+                    {
+                        movingUnit.Position = closestTile.Position;
+                        movingUnit.State = UnitState.Moved;
+                        movingUnit.Fuel--;
+                    }
+                }
             }
         }
 
@@ -247,6 +364,59 @@ namespace Basic_Wars_V2.System
                 if (unit.Team == Team)
                 {
                     AIUnits.Add(unit);
+                }
+            }
+        }
+
+        private void ProduceUnits()
+        {
+            GetFriendlyBuildings();
+
+            foreach (Unit unit in AIUnits)
+            {
+                if (unit.State != UnitState.Moved
+                    && unit.State != UnitState.Used
+                    && unit.Fuel > 0
+                   )
+                {
+                    MoveToRandomReachable(unit, true);
+                }
+            }
+
+            foreach (Tile structure in FriendlyBuildings)
+            {
+                if (structure.Type == TileType.Factory
+                    || structure.Type == TileType.HQ
+                    && _inputController.GetTileUnit(structure) == null
+                   )
+                {
+                    int unitType = -1;
+                    if (Funds >= 7000)
+                    {
+                        Funds -= 7000;
+                        unitType = 3;
+
+                    }
+                    else if (Funds >= 5000)
+                    {
+                        continue;
+                    }
+                    else if (Funds >= 4000)
+                    {
+                        Funds -= 3000;
+                        unitType = 2;
+                    }
+                    else
+                    {
+                        unitType = 1;
+                    }
+
+                    if (unitType != -1)
+                    {
+                        Unit newUnit = new Unit(Texture, structure.Position, unitType, Team);
+                        newUnit.State = UnitState.Used;
+                        _unitManager.AddUnit(newUnit);
+                    }
                 }
             }
         }

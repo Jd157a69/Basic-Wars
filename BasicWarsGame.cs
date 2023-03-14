@@ -7,8 +7,10 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using System.Transactions;
 using System.Xml.Serialization;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -29,26 +31,13 @@ namespace Basic_Wars_V2
         private const int WINDOW_WIDTH = 1920;
         private const int WINDOW_HEIGHT = 1080;
 
-        private Dictionary<(UnitType, UnitType), int> baseDamageDictionary = new Dictionary<(UnitType, UnitType), int>()
-        { 
-                {(UnitType.Infantry, UnitType.Infantry), 55 },
-                {(UnitType.Infantry, UnitType.Mech), 45 },
-                {(UnitType.Infantry, UnitType.Tank), 5 },
-                {(UnitType.Infantry, UnitType.APC), 14 },
-                {(UnitType.Mech, UnitType.Infantry), 65 },
-                {(UnitType.Mech, UnitType.Mech), 55 },
-                {(UnitType.Mech, UnitType.Tank), 65 },
-                {(UnitType.Mech, UnitType.APC), 75 },
-                {(UnitType.Tank, UnitType.Infantry), 75 },
-                {(UnitType.Tank, UnitType.Mech), 70 },
-                {(UnitType.Tank, UnitType.Tank), 55 },
-                {(UnitType.Tank, UnitType.APC), 100 },
-        };
-
         private GameState gameState;
         private MenuState menuState;
 
         private List<Player> Players;
+
+        private AI Computer;
+        private bool AddAI;
 
         private Player CurrentPlayer;
         private int CurrentPlayerIndex;
@@ -170,6 +159,8 @@ namespace Basic_Wars_V2
 
             NextPlayer = true;
 
+            AddAI = true;
+
             TurnNumber = 0;
 
             _entityManager = new EntityManager();
@@ -201,7 +192,7 @@ namespace Basic_Wars_V2
                     menuState = _gameUI.Init(gameTime, PressedButton);
                     break;
 
-                case MenuState.NewGame:
+                case MenuState.NewGame: 
                     _unitManager.ClearUnits();
                     TurnNumber = 0;
                     _gameMap.DrawMap = true;
@@ -278,6 +269,12 @@ namespace Basic_Wars_V2
                 _unitManager.DrawUnits = true;
                 CurrentPlayerIndex = 0;
                 NextPlayer = true;
+
+                if (AddAI)
+                {
+                    Players[Players.Count - 1].IsAI = true;
+                    Computer = new AI(Players.Count - 1, 1000, _gameMap, _unitManager, _gameUI, _inputController, InGameAssets);
+                }
             }
 
             if (NextPlayer)
@@ -300,7 +297,15 @@ namespace Basic_Wars_V2
                 CurrentPlayer = Players[CurrentPlayerIndex];
                 Income(CurrentPlayer);
 
-                gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);       
+                if (CurrentPlayer.IsAI)
+                {
+                    Console.WriteLine($"AI Balance: {Computer.Funds}");
+                    gameState = GameState.AITurn;
+                }
+                else
+                {
+                    gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);
+                }  
             }
 
             switch (gameState)
@@ -347,6 +352,26 @@ namespace Basic_Wars_V2
                 case GameState.EnemyTurn:
                     NextPlayer = true;
                     CurrentPlayerIndex++;
+                    break;
+
+                case GameState.AITurn:
+                    foreach (Tile structure in _gameMap.structures)
+                    {
+                        if (structure.Team == Computer.Team)
+                        {
+                            Computer.Funds += 1000;
+                        }
+                    }
+                    Computer.RunAILogic();
+                    bool GameOver = CheckWinner(Computer.Team);
+                    if (GameOver)
+                    {
+                        menuState = MenuState.GameOver;
+                    }
+                    else
+                    {
+                        gameState = GameState.EnemyTurn;
+                    }
                     break;
             }
         }
@@ -543,10 +568,10 @@ namespace Basic_Wars_V2
                         {
                             Unit defendingUnit = _inputController.GetTileUnit(tile);        
 
-                            defendingUnit.Health -= CalculateDamage(SelectedUnit, defendingUnit);
+                            defendingUnit.Health -= _gameUI.CalculateDamage(SelectedUnit, defendingUnit);
                             if (defendingUnit.Health > 0)
                             {
-                                SelectedUnit.Health -= CalculateDamage(defendingUnit, SelectedUnit);
+                                SelectedUnit.Health -= _gameUI.CalculateDamage(defendingUnit, SelectedUnit);
                             }
 
                             SelectedUnit.State = UnitState.Used;
@@ -564,25 +589,12 @@ namespace Basic_Wars_V2
         private void PlayerCapture(GameTime gameTime)
         {
             CurrentUnitTile.Team = SelectedUnit.Team;
-
             SelectedUnit.State = UnitState.Used;
 
-            switch (CurrentUnitTile.Type)
-            {
-                case TileType.City:
-                    CurrentUnitTile.CreateTileSprite(-5 + SelectedUnit.Team);
-                    break;
+            CurrentUnitTile.CreateTileSpriteOnType();
 
-                case TileType.Factory:
-                    CurrentUnitTile.CreateTileSprite(-5 + SelectedUnit.Team, 1);
-                    break;
+            bool GameOver = CheckWinner(CurrentPlayer.Team);    //Player capture is not played when AI is playing
 
-                case TileType.HQ:
-                    CurrentUnitTile.CreateTileSprite(-5 + SelectedUnit.Team, 2);
-                    break;
-            }
-
-            bool GameOver = CheckWinner(CurrentPlayer.Team);
             CheckHQ();
 
             if (GameOver)
@@ -658,19 +670,6 @@ namespace Basic_Wars_V2
                     }
                 }
             }
-        }
-
-        private int CalculateDamage(Unit attackingUnit, Unit defendingUnit)
-        {
-            attackingUnit.Ammo--;
-
-            int baseDamage = baseDamageDictionary[(attackingUnit.Type, defendingUnit.Type)];
-
-            double defenceMultiplier = (double)_inputController.GetUnitTile(defendingUnit).DefenceBonus / 100;
-
-            double HealthMultiplier = (double)attackingUnit.Health / 100;
-
-            return (int)(HealthMultiplier * (baseDamage - (baseDamage * defenceMultiplier)));
         }
 
         private void UpdateUnitStats()
@@ -764,12 +763,20 @@ namespace Basic_Wars_V2
 
         private void SaveGame(GameTime gameTime)
         {
+            
             List<UnitData> unitData = new List<UnitData>();
             List<TileData> mapData = new List<TileData>();
             List<TileData> structuresData = new List<TileData>();
             List<PlayerData> playerData = new List<PlayerData>();
 
-            GameStateData gameStateData = new GameStateData(TurnNumber, CurrentPlayerIndex);
+            GameStateData gameStateData = new GameStateData(TurnNumber, CurrentPlayerIndex, AddAI);
+
+            AIData ComputerData = null;
+
+            if (AddAI)
+            {
+                ComputerData = new AIData(Computer);
+            }
 
             foreach (Unit unit in _unitManager.units)
             {
@@ -794,8 +801,16 @@ namespace Basic_Wars_V2
                 playerData.Add(new PlayerData(player));
             }
 
-            GameData gameData = new GameData(unitData, mapData, structuresData, playerData, gameStateData, _gameMap.MapWidth, _gameMap.MapHeight);
-
+            GameData gameData = null;
+            if (AddAI)
+            {
+                gameData = new GameData(unitData, mapData, structuresData, playerData, gameStateData, _gameMap.MapWidth, _gameMap.MapHeight, ComputerData);
+            }
+            else
+            {
+                gameData = new GameData(unitData, mapData, structuresData, playerData, gameStateData, _gameMap.MapWidth, _gameMap.MapHeight);
+            }
+            
             XmlSerializer serializer = new XmlSerializer(typeof(GameData));
             using (StreamWriter streamWriter = new StreamWriter(SAVE_GAME_PATH))
             {
@@ -879,6 +894,12 @@ namespace Basic_Wars_V2
                 TurnNumber = gameData.GameStateData.TurnNumber; 
 
                 CurrentPlayer = Players[CurrentPlayerIndex];
+
+                if (CurrentPlayer.IsAI)
+                {
+                    Computer = gameData.Computer.FromAIData(InGameAssets, _gameMap, _unitManager, _gameUI, _inputController);
+                    gameState = GameState.AITurn;
+                }
 
                 //DEBUG
                 Console.WriteLine("Game Loaded");

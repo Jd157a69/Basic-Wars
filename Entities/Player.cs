@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Basic_Wars_V2.System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,12 +13,15 @@ namespace Basic_Wars_V2.Entities
         public int Funds { get; set; }
         public bool HasHQ { get; set; }
         public string Colour { get; set; }
+        public bool IsAI { get; set; }
 
-        public Player(int team, int initialFunds)
+        public Player(int team, int initialFunds, bool isAI = false)
         {
             Team = team;
             Funds = initialFunds;
             HasHQ = true;
+
+            IsAI = isAI;
 
             GetTeamColour();
         }
