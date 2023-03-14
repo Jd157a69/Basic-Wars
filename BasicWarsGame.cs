@@ -795,6 +795,7 @@ namespace Basic_Wars_V2
                 serializer.Serialize(streamWriter, gameData);
             }
 
+            //DEBUG
             if (File.Exists(SAVE_GAME_PATH))
             {
                 Console.WriteLine("Game Saved");
@@ -841,7 +842,7 @@ namespace Basic_Wars_V2
 
                 foreach (Tile tile in Map)
                 {
-                    _gameMap.map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y] = tile;
+                    _gameMap.map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y] = tile;    //Issue here I assume
                 }
 
                 _gameMap.RegenerateHQandRoads();
@@ -854,10 +855,12 @@ namespace Basic_Wars_V2
                 _unitManager.DrawUnits = true;
                 _gameMap.DrawMap = true;
 
+                //DEBUG
                 Console.WriteLine("Game Loaded");
             }
             else
             {
+                //DEBUG
                 Console.WriteLine("Game not loaded - file does not exist");
             }
 
