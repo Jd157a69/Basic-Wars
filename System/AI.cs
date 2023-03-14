@@ -133,15 +133,15 @@ namespace Basic_Wars_V2.System
             ProduceUnits();
 
             //Setting State
-            if (EnemyCloseToHQ())
+            if (EnemyCloseToHQ())   //Prioritises its own HQ
             {
                 State = AIState.Defend;
             }
-            if (AIUnits.Count >= 8)
+            if (AIUnits.Count >= 8) //Attacks when it has a surplus of Units
             {
                 State = AIState.Attack;
             }
-            else if (CloseByStructure())
+            else if (CloseByStructure()) //Moves towards structures if in range of its units
             {
                 State = AIState.CaptureStructures;
             }
