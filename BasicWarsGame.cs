@@ -892,12 +892,14 @@ namespace Basic_Wars_V2
 
                 _gameMap.RegenerateMap();
 
+                AddAI = gameData.GameStateData.AddAI;
+
                 CurrentPlayerIndex = gameData.GameStateData.CurrentPlayerIndex;
                 TurnNumber = gameData.GameStateData.TurnNumber;
 
                 CurrentPlayer = Players[CurrentPlayerIndex];
 
-                if (CurrentPlayer.IsAI)
+                if (AddAI)
                 {
                     Computer = gameData.Computer.FromAIData(InGameAssets, _gameMap, _unitManager, _gameUI, _inputController);
                     gameState = GameState.AITurn;

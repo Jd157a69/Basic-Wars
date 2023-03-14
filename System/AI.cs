@@ -330,15 +330,13 @@ namespace Basic_Wars_V2.System
         private void GetEnemyHQs()
         {
             EnemyHQs.Clear();
-            foreach (Tile structure in _gameMap.Structures)
+            foreach (Tile structure in _gameMap.HQs)
             {
-                if (structure.Team != Team
-                    && structure.Type == TileType.HQ
-                   )
+                if (structure.Team != Team)
                 {
                     EnemyHQs.Add(structure);
                 }
-                else if (structure.Type == TileType.HQ)
+                else
                 {
                     HQ = structure;
                 }
