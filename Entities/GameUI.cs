@@ -367,7 +367,7 @@ namespace Basic_Wars_V2.Entities
                 switch (PressedButton.ID)
                 {
                     case 1:
-                        return MenuState.NewGame;
+                        return MenuState.RefreshMap;
 
                     case 2:
                         return MenuState.LoadGame;
