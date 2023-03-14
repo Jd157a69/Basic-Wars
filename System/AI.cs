@@ -80,7 +80,7 @@ namespace Basic_Wars_V2.System
                             }
                             else
                             {
-                                MoveToRandomReachable(unit, true);
+                                MoveToRandomReachable(unit);
                             }
                         }
                     }
