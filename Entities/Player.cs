@@ -43,7 +43,7 @@ namespace Basic_Wars_V2.Entities
                     break;
 
                 case 3:
-                    Colour = "Yello";
+                    Colour = "Yellow";
                     break;
             }
         }
