@@ -16,6 +16,22 @@ namespace Basic_Wars_V2.Entities
 {
     public class GameUI : IGameEntity
     {
+        private Dictionary<(UnitType, UnitType), int> baseDamageDictionary = new Dictionary<(UnitType, UnitType), int>()
+        {
+                {(UnitType.Infantry, UnitType.Infantry), 55 },
+                {(UnitType.Infantry, UnitType.Mech), 45 },
+                {(UnitType.Infantry, UnitType.Tank), 5 },
+                {(UnitType.Infantry, UnitType.APC), 14 },
+                {(UnitType.Mech, UnitType.Infantry), 65 },
+                {(UnitType.Mech, UnitType.Mech), 55 },
+                {(UnitType.Mech, UnitType.Tank), 65 },
+                {(UnitType.Mech, UnitType.APC), 75 },
+                {(UnitType.Tank, UnitType.Infantry), 75 },
+                {(UnitType.Tank, UnitType.Mech), 70 },
+                {(UnitType.Tank, UnitType.Tank), 55 },
+                {(UnitType.Tank, UnitType.APC), 100 },
+        };
+
         //Init
         private Button BasicWarsTitle;
         private Button NewGameButton;
@@ -639,6 +655,19 @@ namespace Basic_Wars_V2.Entities
         public void ClearMoveableOverlay()
         {
             moveableOverlay.Clear();
+        }
+
+        public int CalculateDamage(Unit attackingUnit, Unit defendingUnit)
+        {
+            attackingUnit.Ammo--;
+
+            int baseDamage = baseDamageDictionary[(attackingUnit.Type, defendingUnit.Type)];
+
+            double defenceMultiplier = (double)(defendingUnit.Defence) / 100;
+
+            double HealthMultiplier = (double)attackingUnit.Health / 100;
+
+            return (int)(HealthMultiplier * (baseDamage - (baseDamage * defenceMultiplier)));
         }
     }
 }
