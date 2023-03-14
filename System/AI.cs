@@ -277,7 +277,7 @@ namespace Basic_Wars_V2.System
                     {
                         unit.Health -= _gameUI.CalculateDamage(unit, neighbouringUnit);
                         unit.Ammo--;
-                        if (neighbouringUnit.Health > 0)
+                        if (neighbouringUnit.Health > 0 && neighbouringUnit.Ammo > 0)
                         {
                             neighbouringUnit.Health -= _gameUI.CalculateDamage(neighbouringUnit, unit);
                             neighbouringUnit.Ammo--;
