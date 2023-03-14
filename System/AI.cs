@@ -51,6 +51,7 @@ namespace Basic_Wars_V2.System
             GetEnemyHQs();
             GetAIUnits();
 
+            Console.WriteLine($"\nFunds Before Turn: {Funds}");
             switch (State)
             {
                 case AIState.Initial:
@@ -132,18 +133,20 @@ namespace Basic_Wars_V2.System
             ProduceUnits();
 
             //Setting State
+            if (EnemyCloseToHQ())
+            {
+                State = AIState.Defend;
+            }
             if (AIUnits.Count >= 8)
             {
                 State = AIState.Attack;
-            }
-            else if (EnemyCloseToHQ())
-            {
-                State = AIState.Defend;
             }
             else if (CloseByStructure())
             {
                 State = AIState.CaptureStructures;
             }
+
+            Console.WriteLine($"Funds After Turn: {Funds}");
         }
 
         private void CaptureStructures()
@@ -406,6 +409,7 @@ namespace Basic_Wars_V2.System
                     }
                     else
                     {
+                        Funds -= 1000;
                         unitType = 1;
                     }
 

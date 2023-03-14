@@ -272,7 +272,7 @@ namespace Basic_Wars_V2
                 if (AddAI)
                 {
                     Players[Players.Count - 1].IsAI = true;
-                    Computer = new AI(Players.Count - 1, 1000, _gameMap, _unitManager, _gameUI, _inputController, InGameAssets);
+                    Computer = new AI(Players.Count - 1, 0, _gameMap, _unitManager, _gameUI, _inputController, InGameAssets);
                 }
             }
 
@@ -298,7 +298,6 @@ namespace Basic_Wars_V2
 
                 if (CurrentPlayer.IsAI)
                 {
-                    Console.WriteLine($"AI Balance: {Computer.Funds}");
                     gameState = GameState.AITurn;
                 }
                 else
