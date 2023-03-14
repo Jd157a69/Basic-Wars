@@ -73,9 +73,14 @@ namespace Basic_Wars_V2.System
                             && unit.Fuel > 0
                            )
                         {
-                            foreach (Tile HQ in EnemyHQs)
+                            Tile enemyHQ = EnemyHQs[0];
+                            if (unit.Type != UnitType.Tank && unit.Type != UnitType.APC)
                             {
-                                MoveTowardsTile(unit, HQ);
+                                MoveTowardsTile(unit, enemyHQ);
+                            }
+                            else
+                            {
+                                MoveToRandomReachable(unit, true);
                             }
                         }
                     }
@@ -385,8 +390,8 @@ namespace Basic_Wars_V2.System
 
             foreach (Tile structure in FriendlyBuildings)
             {
-                if (structure.Type == TileType.Factory
-                    || structure.Type == TileType.HQ
+                if ((structure.Type == TileType.Factory
+                    || structure.Type == TileType.HQ)
                     && _inputController.GetTileUnit(structure) == null
                    )
                 {
