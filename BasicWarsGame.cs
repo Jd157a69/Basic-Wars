@@ -462,8 +462,6 @@ namespace Basic_Wars_V2
             //Repeated code
             if (SelectedUnit.State != UnitState.Moved
                 && SelectedUnit.State != UnitState.Used
-               //DEBUG
-               //|| DebugUnitFreeMove
                )
             {
                 reachableTiles = _gameUI.GetReachableTiles(SelectedUnit, _unitManager.GetUnitPositions(), CurrentUnitTile);
@@ -567,13 +565,19 @@ namespace Basic_Wars_V2
                             Unit defendingUnit = _inputController.GetTileUnit(tile);
 
                             defendingUnit.Health -= _gameUI.CalculateDamage(SelectedUnit, defendingUnit);
-                            if (defendingUnit.Health > 0)
+                            if (defendingUnit.Health > 0 && defendingUnit.Ammo > 0)
                             {
                                 SelectedUnit.Health -= _gameUI.CalculateDamage(defendingUnit, SelectedUnit);
+                                defendingUnit.Ammo--;
                             }
 
                             SelectedUnit.State = UnitState.Used;
                             gameState = GameState.PlayerSelect;
+                        }
+
+                        if (SelectedUnit.Ammo <= 0)
+                        {
+                            gameState = GameState.SelectAction;
                         }
                     }
                 }
