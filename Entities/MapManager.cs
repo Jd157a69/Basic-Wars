@@ -66,12 +66,21 @@ namespace Basic_Wars_V2.Entities
             GenerateStructure("Factory");
             GenerateRoads();
             GenerateHQs();
+            CreateTileSprites();
         }
 
-        public void RegenerateHQandRoads()
+        public void RegenerateMap()
         {
             GenerateRoads();
-            GenerateHQs();
+            CreateTileSprites();
+        }
+
+        private void CreateTileSprites()
+        {
+            foreach (Tile tile in map)
+            {
+                tile.CreateTileSpriteOnType();
+            }
         }
 
         private void GenerateBaseMap()
@@ -106,7 +115,6 @@ namespace Basic_Wars_V2.Entities
                     }
 
                     map[j, i] = newTile;
-                    map[j, i].CreateTileSprite(randomTile);
                     x += 56;
                 }
                 y += 56;
@@ -115,9 +123,6 @@ namespace Basic_Wars_V2.Entities
 
         private void GenerateStructure(string StructureType)
         {
-            int StructureColumnShift = 0;
-            int StructureRowShift = 0;
-
             TileType Type = TileType.None;
 
             List<Vector2> points = new List<Vector2>();
@@ -125,14 +130,11 @@ namespace Basic_Wars_V2.Entities
             if (StructureType == "City")
             {
                 Type = TileType.City;
-                StructureColumnShift = -6;
             }
             else if (StructureType == "Factory")
             {
                 Type = TileType.Factory;
                 StructureSparsity *= 3;
-                StructureColumnShift = -6;
-                StructureRowShift= 1;
             }
 
             PoissonDiscSampling sampler = new PoissonDiscSampling();
@@ -152,7 +154,6 @@ namespace Basic_Wars_V2.Entities
                     newStructure.MapGridPos = new Vector2(newGridX, newGridY);
                     map[newGridX, newGridY] = newStructure;
                     map[newGridX, newGridY].Type = Type;
-                    map[newGridX, newGridY].CreateTileSprite(StructureColumnShift, StructureRowShift);
 
                     structures.Add(newStructure);
                 }
@@ -261,7 +262,6 @@ namespace Basic_Wars_V2.Entities
             HQTile.Team = team;
 
             map[X, Y] = HQTile;
-            map[X, Y].CreateTileSprite(-6 + team + 1, 2);
 
             structures.Add(HQTile);
             HQs.Add(HQTile);
