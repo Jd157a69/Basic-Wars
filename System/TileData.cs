@@ -3,10 +3,6 @@ using Basic_Wars_V2.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.System
 {
@@ -20,7 +16,7 @@ namespace Basic_Wars_V2.System
 
         public int Team { get; set; }
 
-        public TileData() { }   
+        public TileData() { }
 
         public TileData(Tile tile)
         {

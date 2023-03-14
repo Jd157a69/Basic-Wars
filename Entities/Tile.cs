@@ -2,11 +2,6 @@
 using Basic_Wars_V2.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.Entities
 {
@@ -117,7 +112,7 @@ namespace Basic_Wars_V2.Entities
                     break;
 
                 case TileType.Factory:
-                    DefenceBonus= 20;
+                    DefenceBonus = 20;
                     break;
 
                 case TileType.HQ:

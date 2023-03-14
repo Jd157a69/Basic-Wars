@@ -3,16 +3,10 @@ using Basic_Wars_V2.Enums;
 using Basic_Wars_V2.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Numerics;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
-using System.Transactions;
 using System.Xml.Serialization;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Basic_Wars_V2
 {
@@ -66,7 +60,7 @@ namespace Basic_Wars_V2
         private bool DrawRan;
 
         //DEBUG
-        private bool DebugUnitFreeMove = true;
+        //private bool DebugUnitFreeMove = true;
 
         /*  TODO: Code optimisations
          *      - A lot of repeated code in places
@@ -111,13 +105,9 @@ namespace Basic_Wars_V2
          *  
          *  DONE: Fix memory leak
          *  
-         *  TODO: Code the AI
+         *  DONE: Code the AI
          *      - Use heuristics and weights to determine what is most important for the AI to do
          *      - Likely will be very simple
-         *  
-         *  TODO: Code A* for use with the AI
-         *      - Computerphile video on YouTube: https://www.youtube.com/watch?v=ySN5Wnu88nE
-         *      - Simple A* Path Finding in Monogame: https://youtu.be/FflEY83irJo
          *  
          *  DONE: JSON or XML read and write to files
          *      - Serialization and deserialization of files: 
@@ -125,7 +115,6 @@ namespace Basic_Wars_V2
          *          https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to?pivots=dotnet-7-0
          *          https://www.c-sharpcorner.com/article/working-with-json-in-C-Sharp/
          *      - Method in BasicWarsGame class to load and save data
-         *  
          */
 
         public BasicWarsGame()
@@ -192,7 +181,7 @@ namespace Basic_Wars_V2
                     menuState = _gameUI.Init(gameTime, PressedButton);
                     break;
 
-                case MenuState.NewGame: 
+                case MenuState.NewGame:
                     _unitManager.ClearUnits();
                     TurnNumber = 0;
                     _gameMap.DrawMap = true;
@@ -305,7 +294,7 @@ namespace Basic_Wars_V2
                 else
                 {
                     gameState = _gameUI.Turn(gameTime, CurrentPlayer, TurnNumber, PressedButton);
-                }  
+                }
             }
 
             switch (gameState)
@@ -443,7 +432,7 @@ namespace Basic_Wars_V2
 
                 _gameUI.DisplayAttributes(null, SelectedTile);
 
-                if ((SelectedTile.Type == TileType.Factory 
+                if ((SelectedTile.Type == TileType.Factory
                     || SelectedTile.Type == TileType.HQ)
                     && SelectedTile.Team == CurrentPlayer.Team
                    )
@@ -462,10 +451,10 @@ namespace Basic_Wars_V2
             _gameUI.DisplayAttributes(SelectedUnit);
 
             //Repeated code
-            if (SelectedUnit.State != UnitState.Moved 
+            if (SelectedUnit.State != UnitState.Moved
                 && SelectedUnit.State != UnitState.Used
-                //DEBUG
-                //|| DebugUnitFreeMove
+               //DEBUG
+               //|| DebugUnitFreeMove
                )
             {
                 reachableTiles = _gameUI.GetReachableTiles(SelectedUnit, _unitManager.GetUnitPositions(), CurrentUnitTile);
@@ -475,8 +464,8 @@ namespace Basic_Wars_V2
                 reachableTiles.Clear();
                 _gameUI.ClearMoveableOverlay();
             }
-            
-            attackableTiles = _gameUI.GetAttackableTiles(SelectedUnit, CurrentUnitTile);  
+
+            attackableTiles = _gameUI.GetAttackableTiles(SelectedUnit, CurrentUnitTile);
 
             bool displayCapture = false;
             bool displayResupply = false;
@@ -509,7 +498,7 @@ namespace Basic_Wars_V2
             gameState = _gameUI.DisplayPlayerActions(gameTime, PressedButton, displayCapture, displayResupply);
         }
 
-        private void PlayerMove(GameTime gameTime) 
+        private void PlayerMove(GameTime gameTime)
         {
             if (reachableTiles.Count != 0)
             {
@@ -532,7 +521,7 @@ namespace Basic_Wars_V2
                             _gameUI.ChangeSelectedPosition(SelectedUnit.Position);
 
                             gameState = GameState.SelectAction;
-                        }       
+                        }
                     }
 
                     if (SelectedUnit.Fuel <= 0)
@@ -549,8 +538,8 @@ namespace Basic_Wars_V2
 
         private void PlayerAttack(GameTime gameTime)
         {
-            if (SelectedUnit.State != UnitState.Used 
-                && SelectedUnit.Type != UnitType.APC 
+            if (SelectedUnit.State != UnitState.Used
+                && SelectedUnit.Type != UnitType.APC
                 && attackableTiles.Count != 0
                )
             {
@@ -561,12 +550,12 @@ namespace Basic_Wars_V2
                     foreach (Tile tile in attackableTiles)
                     {
                         if (
-                            _inputController.MouseCollider.Intersects(tile.Collider)        
+                            _inputController.MouseCollider.Intersects(tile.Collider)
                             && _inputController.LeftMouseClicked()
                             && SelectedUnit.Ammo > 0
                            )
                         {
-                            Unit defendingUnit = _inputController.GetTileUnit(tile);        
+                            Unit defendingUnit = _inputController.GetTileUnit(tile);
 
                             defendingUnit.Health -= _gameUI.CalculateDamage(SelectedUnit, defendingUnit);
                             if (defendingUnit.Health > 0)
@@ -584,7 +573,7 @@ namespace Basic_Wars_V2
             {
                 gameState = GameState.PlayerSelect;
             }
-            
+
         }
         private void PlayerCapture(GameTime gameTime)
         {
@@ -642,7 +631,7 @@ namespace Basic_Wars_V2
             }
         }
 
-        private void PlayerProduceUnit(GameTime gameTime)               
+        private void PlayerProduceUnit(GameTime gameTime)
         {
             while (gameState == GameState.PlayerProduceUnit && DrawRan)
             {
@@ -654,7 +643,7 @@ namespace Basic_Wars_V2
                 {
                     gameState = GameState.PlayerSelect;
                 }
-                
+
                 if (unitType != -1 && unitType != -2)
                 {
                     Unit newUnit = new Unit(InGameAssets, SelectedTile.Position, unitType, CurrentPlayer.Team);
@@ -733,7 +722,7 @@ namespace Basic_Wars_V2
                         }
                     }
 
-                    foreach (Tile structure  in _gameMap.structures)
+                    foreach (Tile structure in _gameMap.structures)
                     {
                         if (structure.Team == player.Team)
                         {
@@ -763,7 +752,7 @@ namespace Basic_Wars_V2
 
         private void SaveGame(GameTime gameTime)
         {
-            
+
             List<UnitData> unitData = new List<UnitData>();
             List<TileData> mapData = new List<TileData>();
             List<TileData> structuresData = new List<TileData>();
@@ -810,7 +799,7 @@ namespace Basic_Wars_V2
             {
                 gameData = new GameData(unitData, mapData, structuresData, playerData, gameStateData, _gameMap.MapWidth, _gameMap.MapHeight);
             }
-            
+
             XmlSerializer serializer = new XmlSerializer(typeof(GameData));
             using (StreamWriter streamWriter = new StreamWriter(SAVE_GAME_PATH))
             {
@@ -872,7 +861,7 @@ namespace Basic_Wars_V2
                 {
                     _gameMap.structures.Add(structure.FromTileData(InGameAssets));
                 }
-                
+
                 _gameMap.MapWidth = gameData.MapWidth;
                 _gameMap.MapHeight = gameData.MapHeight;
 
@@ -880,18 +869,18 @@ namespace Basic_Wars_V2
 
                 foreach (Tile tile in Map)
                 {
-                    _gameMap.map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y] = tile;    
+                    _gameMap.map[(int)tile.MapGridPos.X, (int)tile.MapGridPos.Y] = tile;
 
                     if (tile.Type == TileType.HQ)
                     {
                         _gameMap.HQs.Add(tile);
                     }
                 }
-                
-                _gameMap.RegenerateMap();   
+
+                _gameMap.RegenerateMap();
 
                 CurrentPlayerIndex = gameData.GameStateData.CurrentPlayerIndex;
-                TurnNumber = gameData.GameStateData.TurnNumber; 
+                TurnNumber = gameData.GameStateData.TurnNumber;
 
                 CurrentPlayer = Players[CurrentPlayerIndex];
 

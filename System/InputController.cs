@@ -1,17 +1,6 @@
-﻿using Basic_Wars.Graphics;
-using Basic_Wars_V2.Entities;
-using Basic_Wars_V2.Enums;
+﻿using Basic_Wars_V2.Entities;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
-using System.Dynamic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.System
 {
@@ -88,11 +77,11 @@ namespace Basic_Wars_V2.System
                     }
                 }
             }
-            
+
             foreach (Button button in _buttonManager.buttons)
             {
                 if (
-                    MouseCollider.Intersects(button.Collider) 
+                    MouseCollider.Intersects(button.Collider)
                     && LeftMouseClicked()
                    )
                 {

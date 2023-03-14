@@ -1,14 +1,7 @@
 ﻿using Basic_Wars.Graphics;
 using Basic_Wars_V2.Enums;
-using Basic_Wars_V2.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.Entities
 {
@@ -19,7 +12,7 @@ namespace Basic_Wars_V2.Entities
 
         private const int X_SPRITE_SHEET_START_POS = 0;
         private const int Y_SPRITE_SHEET_START_POS = 0;
-        
+
         //Animations not implemented
         //private const int ANIMATION_SHIFT = 56;
 
@@ -32,7 +25,7 @@ namespace Basic_Wars_V2.Entities
 
         public Vector2 Position { get; set; }
         public UnitState State { get; set; }
-      
+
         public int Team { get; set; }
         public UnitType Type { get; private set; }
         public int UnitTypeInt { get; set; }
@@ -92,7 +85,7 @@ namespace Basic_Wars_V2.Entities
             switch (UnitTypeInt - 1)
             {
                 case 0:
-                    Type = UnitType.Infantry;                   
+                    Type = UnitType.Infantry;
                     Ammo = 100;
                     Fuel = 50;
                     CostToProduce = 1000;

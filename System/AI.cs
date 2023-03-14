@@ -2,20 +2,13 @@
 using Basic_Wars_V2.Enums;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.System
 {
     public class AI : Player
     {
-        private Random random = new Random();   
+        private Random random = new Random();
 
         private Texture2D Texture { get; set; }
 
@@ -29,13 +22,13 @@ namespace Basic_Wars_V2.System
         private List<Tile> FriendlyBuildings = new List<Tile>();
         private List<Tile> EnemyHQs = new List<Tile>();
         private List<Unit> AIUnits = new List<Unit>();
-             
+
         private List<Tile> reachableTiles = new List<Tile>();
         private List<Tile> closeByStructures = new List<Tile>();
 
         private AIState State { get; set; }
 
-        public AI(int team, int initialFunds, MapManager map, UnitManager unitManager, GameUI gameUI, InputController inputController, Texture2D texture) : base(team, initialFunds) 
+        public AI(int team, int initialFunds, MapManager map, UnitManager unitManager, GameUI gameUI, InputController inputController, Texture2D texture) : base(team, initialFunds)
         {
             State = AIState.Initial;
 
@@ -225,14 +218,14 @@ namespace Basic_Wars_V2.System
 
         private bool EnemyCloseToHQ()
         {
-            foreach (Unit unit in _unitManager.units) 
+            foreach (Unit unit in _unitManager.units)
             {
                 reachableTiles = GetReachableTiles(unit);
 
                 if (unit.Team != Team && reachableTiles.Contains(HQ))
                 {
                     return true;
-                } 
+                }
             }
 
             return false;
@@ -292,7 +285,7 @@ namespace Basic_Wars_V2.System
             }
         }
 
-        private void MoveTowardsTile (Unit movingUnit, Tile destination)
+        private void MoveTowardsTile(Unit movingUnit, Tile destination)
         {
             reachableTiles.Clear();
             reachableTiles = _gameUI.GetReachableTiles(movingUnit, _unitManager.GetUnitPositions(), _inputController.GetUnitTile(movingUnit));
@@ -344,7 +337,7 @@ namespace Basic_Wars_V2.System
                 }
                 else if (structure.Type == TileType.HQ)
                 {
-                    HQ = structure; 
+                    HQ = structure;
                 }
             }
         }

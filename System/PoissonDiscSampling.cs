@@ -1,17 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.System
 {
     public class PoissonDiscSampling
     {
-        public List<Vector2> GetPoints (double radius, Vector2 mapSize, int k = 30)
+        public List<Vector2> GetPoints(double radius, Vector2 mapSize, int k = 30)
         {
             Random random = new Random();
 
@@ -64,7 +59,7 @@ namespace Basic_Wars_V2.System
 
         private bool isValid(Vector2 potentialPoint, Vector2 mapSize, double cellSize, List<Vector2> points, int[,] grid, double radius)
         {
-            if (potentialPoint.X >= 0 && potentialPoint.X < mapSize.X && potentialPoint.Y >= 0 && potentialPoint.Y < mapSize.Y) 
+            if (potentialPoint.X >= 0 && potentialPoint.X < mapSize.X && potentialPoint.Y >= 0 && potentialPoint.Y < mapSize.Y)
             {
                 Vector2 cell = new Vector2((float)(potentialPoint.X / cellSize), (float)(potentialPoint.Y / cellSize));
                 int startX = Math.Max(0, (int)cell.X - 2);

@@ -1,16 +1,8 @@
 ﻿using Basic_Wars_V2.Enums;
-using Basic_Wars_V2.Graphics;
 using Basic_Wars_V2.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.Entities
 {
@@ -262,7 +254,7 @@ namespace Basic_Wars_V2.Entities
 
             foreach (Vector2 position in UnitPositions)
             {
-                foreach (Tile tile in reachableTiles) 
+                foreach (Tile tile in reachableTiles)
                 {
                     if (position == tile.Position && position != unit.Position)
                     {
@@ -270,7 +262,7 @@ namespace Basic_Wars_V2.Entities
                     }
                 }
             }
-            
+
             foreach (Tile tile in tilesToBeRemoved)
             {
                 reachableTiles.Remove(tile);
@@ -345,7 +337,7 @@ namespace Basic_Wars_V2.Entities
 
         public void Update(GameTime gameTime)
         {
-            
+
         }
 
         public void Draw(SpriteBatch _spriteBatch, GameTime gameTime)
@@ -370,7 +362,7 @@ namespace Basic_Wars_V2.Entities
                     tile.Draw(_spriteBatch, gameTime);
                 }
             }
-            
+
             _buttonManager.Draw(_spriteBatch, gameTime);
         }
 
@@ -594,7 +586,7 @@ namespace Basic_Wars_V2.Entities
                     case 29:
                         return 3;
                     case 30:
-                        return 4;              
+                        return 4;
                 }
             }
 
@@ -671,4 +663,3 @@ namespace Basic_Wars_V2.Entities
         }
     }
 }
- 

@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.Entities
 {
@@ -15,7 +12,7 @@ namespace Basic_Wars_V2.Entities
 
         public void Update(GameTime gameTime)
         {
-            foreach (IGameEntity entity in entities) 
+            foreach (IGameEntity entity in entities)
             {
                 entity.Update(gameTime);
             }

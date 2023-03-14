@@ -2,15 +2,8 @@
 using Basic_Wars_V2.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Basic_Wars_V2.Entities
 {
@@ -20,7 +13,7 @@ namespace Basic_Wars_V2.Entities
         private const int WINDOW_HEIGHT = 1080;
 
         public Tile[,] map { get; set; }
-        public List<Tile> structures {get; private set; } = new List<Tile>();
+        public List<Tile> structures { get; private set; } = new List<Tile>();
         public List<Tile> HQs { get; private set; } = new List<Tile>();
 
         private List<Tile> tempTiles = new List<Tile>();
@@ -46,7 +39,7 @@ namespace Basic_Wars_V2.Entities
             MapWidth = mapWidth;
             MapHeight = mapHeight;
             Texture = texture;
-            NumOfPlayers= numOfPlayers;
+            NumOfPlayers = numOfPlayers;
 
             Position = new Vector2(WINDOW_WIDTH / 2 - (MapWidth * TILE_DIMENSIONS / 2), WINDOW_HEIGHT / 2 - (MapHeight * TILE_DIMENSIONS / 2));
             MapSize = new Vector2(mapWidth * TILE_DIMENSIONS, mapHeight * TILE_DIMENSIONS);
@@ -71,7 +64,7 @@ namespace Basic_Wars_V2.Entities
 
         public void RegenerateMap()
         {
-            GenerateRoads();  
+            GenerateRoads();
             CreateTileSprites();
         }
 
@@ -220,13 +213,13 @@ namespace Basic_Wars_V2.Entities
                 }
             }
 
-            
+
         }
 
         private void CreateRoadTile(int X, int Y, int direction)
         {
-            if (map[X, Y].Type != TileType.City 
-                && map[X, Y].Type != TileType.Factory 
+            if (map[X, Y].Type != TileType.City
+                && map[X, Y].Type != TileType.Factory
                 && map[X, Y].Type != TileType.Mountain
                 && map[X, Y].Type != TileType.HQ
                )
@@ -243,7 +236,7 @@ namespace Basic_Wars_V2.Entities
         public void GenerateHQs()
         {
             int mapWidth = MapWidth - 1;
-            int mapHeight = MapHeight - 1;  
+            int mapHeight = MapHeight - 1;
 
             switch (NumOfPlayers)
             {

@@ -1,11 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Basic_Wars_V2.Graphics
 {
@@ -19,7 +13,7 @@ namespace Basic_Wars_V2.Graphics
 
         public Color TintColour { get; set; } = Color.White;
 
-        public Font(SpriteFont font, string text) 
+        public Font(SpriteFont font, string text)
         {
             this.font = font;
             this.Text = text;

@@ -2,13 +2,6 @@
 using Basic_Wars_V2.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Basic_Wars_V2.Entities
 {
@@ -38,7 +31,7 @@ namespace Basic_Wars_V2.Entities
         private int ButtonShiftY { get; set; }
 
         public bool Pressed { get; set; }
-        public bool DrawButton { get; set;}
+        public bool DrawButton { get; set; }
 
         public Button(Texture2D texture, SpriteFont font, Vector2 position, int buttonType = -1, string Text = "")
         {

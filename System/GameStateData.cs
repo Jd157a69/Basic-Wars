@@ -1,9 +1,4 @@
-﻿using Basic_Wars_V2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace Basic_Wars_V2.System
 {
@@ -19,7 +14,7 @@ namespace Basic_Wars_V2.System
         public GameStateData(int turnNumber, int currentPlayerIndex, bool addAI)
         {
             TurnNumber = turnNumber;
-            CurrentPlayerIndex = currentPlayerIndex;    
+            CurrentPlayerIndex = currentPlayerIndex;
             AddAI = addAI;
         }
     }
