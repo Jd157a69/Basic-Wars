@@ -17,6 +17,7 @@ namespace Basic_Wars_V2.Enums
         PlayerResupply,
         PlayerProduceUnit,
         EnemyTurn,
+        AITurn,
         PauseGame,
     }
 }
