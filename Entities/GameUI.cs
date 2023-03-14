@@ -81,6 +81,10 @@ namespace Basic_Wars_V2.Entities
 
         private Button UnitResupplyButton;
 
+        private Button AddAIInfo;
+        private Button AIPlayerTrue;
+        private Button AIPlayerFalse;
+
         private readonly Tile SelectedUI;
 
         public bool DrawSelectedUI { get; set; }
@@ -137,55 +141,59 @@ namespace Basic_Wars_V2.Entities
         public void InitialiseButtons()
         {
 
-            BasicWarsTitle = new Button(Texture, Font, new Vector2(CentreButtonX, 90), 0, "Basic Wars");
-            NewGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 360), 0, "New Game");
-            LoadGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 540), 0, "Load Game");
-            QuitGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 720), 0, "Quit");
+            BasicWarsTitle = new(Texture, Font, new Vector2(CentreButtonX, 90), 0, "Basic Wars");
+            NewGameButton = new(Texture, Font, new Vector2(CentreButtonX, 360), 0, "New Game");
+            LoadGameButton = new(Texture, Font, new Vector2(CentreButtonX, 540), 0, "Load Game");
+            QuitGameButton = new(Texture, Font, new Vector2(CentreButtonX, 720), 0, "Quit");
 
-            NumOfPlayersInfo = new Button(Texture, Font, new Vector2(CentreButtonX + 615, 0), 0, $"Number of Players: {numOfplayers}");
-            Players2Button = new Button(Texture, Font, new Vector2(1600, 180), 1, "2");
-            Players3Button = new Button(Texture, Font, new Vector2(1600, 304), 1, "3");
-            Players4Button = new Button(Texture, Font, new Vector2(1600, 428), 1, "4");
-            RefreshMapButton = new Button(Texture, Font, new Vector2(0, 720), 1, "Refresh");
-            StartGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 900), 0, "Start Game");
-            MenuButton = new Button(Texture, Font, new Vector2(0, 0), 1, "Menu");
+            NumOfPlayersInfo = new(Texture, Font, new Vector2(CentreButtonX + 615, 0), 0, $"Number of Players: {numOfplayers}");
+            Players2Button = new(Texture, Font, new Vector2(1600, 180), 1, "2");
+            Players3Button = new(Texture, Font, new Vector2(1600, 304), 1, "3");
+            Players4Button = new(Texture, Font, new Vector2(1600, 428), 1, "4");
+            RefreshMapButton = new(Texture, Font, new Vector2(0, 720), 1, "Refresh");
+            StartGameButton = new(Texture, Font, new Vector2(CentreButtonX, 900), 0, "Start Game");
+            MenuButton = new(Texture, Font, new Vector2(0, 0), 1, "Menu");
 
-            EndTurnButton = new Button(Texture, Font, new Vector2(1600, 925), 1, $"End Turn");
+            EndTurnButton = new(Texture, Font, new Vector2(1600, 925), 1, $"End Turn");
 
-            TurnNumberInfo = new Button(Texture, Font, new Vector2(1600, 0), 1, $"Turn: 0");
-            CurrentPlayerTeamInfo = new Button(Texture, Font, new Vector2(131, 0), 1, $"Player: {CurrentPlayer.Team}");
-            CurrentPlayerFundsInfo = new Button(Texture, Font, new Vector2(0, 126), 1, $"{CurrentPlayer.Funds}");
-            PauseGameButton = new Button(Texture, Font, new Vector2(0, 0), 3);
+            TurnNumberInfo = new(Texture, Font, new Vector2(1600, 0), 1, $"Turn: 0");
+            CurrentPlayerTeamInfo = new(Texture, Font, new Vector2(131, 0), 1, $"Player: {CurrentPlayer.Team}");
+            CurrentPlayerFundsInfo = new(Texture, Font, new Vector2(0, 126), 1, $"{CurrentPlayer.Funds}");
+            PauseGameButton = new(Texture, Font, new Vector2(0, 0), 3);
 
-            PlayerIdleButton = new Button(Texture, Font, new Vector2(0, 300), 1, "Idle");
-            PlayerMoveButton = new Button(Texture, Font, new Vector2(0, 425), 1, "Move");
-            PlayerAttackButton = new Button(Texture, Font, new Vector2(0, 550), 1, "Attack");
-            ReturnButton = new Button(Texture, Font, new Vector2(0, 925), 1, "Return");
-            CaptureButton = new Button(Texture, Font, new Vector2(0, 675), 1, "Capture");
+            PlayerIdleButton = new(Texture, Font, new Vector2(0, 300), 1, "Idle");
+            PlayerMoveButton = new(Texture, Font, new Vector2(0, 425), 1, "Move");
+            PlayerAttackButton = new(Texture, Font, new Vector2(0, 550), 1, "Attack");
+            ReturnButton = new(Texture, Font, new Vector2(0, 925), 1, "Return");
+            CaptureButton = new(Texture, Font, new Vector2(0, 675), 1, "Capture");
 
-            AttributeDisplayInfo = new Button(Texture, Font, new Vector2(1600, 180), 2);
-            TypeInfo = new Button(Texture, Font, new Vector2(1600, 550), 1);
-            HealthInfo = new Button(Texture, Font, new Vector2(1625, 274.5f - 110));
-            AmmoInfo = new Button(Texture, Font, new Vector2(1625, 369 - 110));
-            FuelInfo = new Button(Texture, Font, new Vector2(1625, 463.5f - 110));
-            DefenceInfo = new Button(Texture, Font, new Vector2(1625, 558 - 110));
+            AttributeDisplayInfo = new(Texture, Font, new Vector2(1600, 180), 2);
+            TypeInfo = new(Texture, Font, new Vector2(1600, 550), 1);
+            HealthInfo = new(Texture, Font, new Vector2(1625, 274.5f - 110));
+            AmmoInfo = new(Texture, Font, new Vector2(1625, 369 - 110));
+            FuelInfo = new(Texture, Font, new Vector2(1625, 463.5f - 110));
+            DefenceInfo = new(Texture, Font, new Vector2(1625, 558 - 110));
 
-            UnitInfantryButton = new Button(Texture, Font, new Vector2(0, 300), 1, "Infantry\n1000");
-            UnitMechButton = new Button(Texture, Font, new Vector2(0, 425), 1, "Mech\n3000");
-            UnitTankButton = new Button(Texture, Font, new Vector2(0, 550), 1, "Tank\n7000");
-            UnitAPCButton = new Button(Texture, Font, new Vector2(0, 675), 1, "APC\n5000");
+            UnitInfantryButton = new(Texture, Font, new Vector2(0, 300), 1, "Infantry\n1000");
+            UnitMechButton = new(Texture, Font, new Vector2(0, 425), 1, "Mech\n3000");
+            UnitTankButton = new(Texture, Font, new Vector2(0, 550), 1, "Tank\n7000");
+            UnitAPCButton = new(Texture, Font, new Vector2(0, 675), 1, "APC\n5000");
 
-            ResumeGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 180), 0, "Resume");
-            SaveGameButton = new Button(Texture, Font, new Vector2(CentreButtonX, 305), 0, "Save");
-            MainMenuButton = new Button(Texture, Font, new Vector2(CentreButtonX, 430), 0, "Menu");
+            ResumeGameButton = new(Texture, Font, new Vector2(CentreButtonX, 180), 0, "Resume");
+            SaveGameButton = new(Texture, Font, new Vector2(CentreButtonX, 305), 0, "Save");
+            MainMenuButton = new(Texture, Font, new Vector2(CentreButtonX, 430), 0, "Menu");
 
-            GameOverInfo = new Button(Texture, Font, new Vector2(CentreButtonX, 90), 0, "Game Over");
-            WinnerInfo = new Button(Texture, Font, new Vector2(CentreButtonX, 215), 0);
+            GameOverInfo = new(Texture, Font, new Vector2(CentreButtonX, 90), 0, "Game Over");
+            WinnerInfo = new(Texture, Font, new Vector2(CentreButtonX, 215), 0);
 
-            IncreaseMapSizeButton = new Button(Texture, Font, new Vector2(1600, 600), 1, "+");
-            DecreaseMapSizeButton = new Button(Texture, Font, new Vector2(1600, 725), 1, "-");
+            IncreaseMapSizeButton = new(Texture, Font, new Vector2(1600, 600), 1, "+");
+            DecreaseMapSizeButton = new(Texture, Font, new Vector2(1600, 725), 1, "-");
 
-            UnitResupplyButton = new Button(Texture, Font, new Vector2(0, 800), 1, "Resupply");
+            UnitResupplyButton = new(Texture, Font, new Vector2(0, 800), 1, "Resupply");
+
+            AddAIInfo = new(Texture, Font, new Vector2(0, 300), 1, "AI Player:\nFalse");
+            AIPlayerTrue = new(Texture, Font, new Vector2(0, 425), 1, "True");
+            AIPlayerFalse = new(Texture, Font, new Vector2(0, 550), 1, "False");
 
             _buttonManager.AddButtons(new List<Button>()
             {
@@ -237,6 +245,10 @@ namespace Basic_Wars_V2.Entities
                 DecreaseMapSizeButton,
 
                 UnitResupplyButton,
+
+                AddAIInfo,
+                AIPlayerTrue,
+                AIPlayerFalse,
             });
         }
 
@@ -394,7 +406,7 @@ namespace Basic_Wars_V2.Entities
             _buttonManager.UpdateButtonText(CurrentPlayerFundsInfo, "");
             _buttonManager.UpdateButtonText(TurnNumberInfo, "");
 
-            _buttonManager.DrawButtonIDs(4, 10, 36, 37);
+            _buttonManager.DrawButtonIDs(4, 10, 36, 37, 39, 41);
 
             if (PressedButton != null)
             {
@@ -429,6 +441,14 @@ namespace Basic_Wars_V2.Entities
 
                     case 37:
                         return MenuState.DecreaseMapSize;
+
+                    case 40:
+                        _buttonManager.UpdateButtonText(AddAIInfo, "AI Player:\nTrue");
+                        return MenuState.AddAI;
+
+                    case 41:
+                        _buttonManager.UpdateButtonText(AddAIInfo, "AI Player:\nFalse");
+                        return MenuState.RemoveAI;
                 }
             }
 

@@ -4,6 +4,8 @@
     {
         Initial,
         NewGame,
+        AddAI,
+        RemoveAI,
         IncreaseMapSize,
         DecreaseMapSize,
         SaveGame,

@@ -148,7 +148,7 @@ namespace Basic_Wars_V2
 
             NextPlayer = true;
 
-            AddAI = true;
+            AddAI = false;
 
             TurnNumber = 0;
 
@@ -186,6 +186,16 @@ namespace Basic_Wars_V2
                     TurnNumber = 0;
                     _gameMap.DrawMap = true;
                     menuState = _gameUI.NewGame(gameTime, PressedButton);
+                    break;
+
+                case MenuState.AddAI:
+                    AddAI = true;
+                    menuState = MenuState.NewGame;
+                    break;
+
+                case MenuState.RemoveAI:
+                    AddAI = false;
+                    menuState = MenuState.NewGame;
                     break;
 
                 case MenuState.IncreaseMapSize:
