@@ -23,6 +23,8 @@ namespace Basic_Wars_V2.System
         private readonly List<Tile> EnemyHQs = new();
         private readonly List<Unit> AIUnits = new();
 
+        private Tile HQToAttack;
+
         private List<Tile> reachableTiles = new();
         private readonly List<Tile> closeByStructures = new();
 
@@ -51,7 +53,6 @@ namespace Basic_Wars_V2.System
             GetEnemyHQs();
             GetAIUnits();
 
-            Console.WriteLine($"\nFunds Before Turn: {Funds}");
             switch (State)
             {
                 case AIState.Initial:
@@ -67,14 +68,15 @@ namespace Basic_Wars_V2.System
                             && unit.Fuel > 0
                            )
                         {
-                            Tile enemyHQ = EnemyHQs[0];
-                            if (unit.Type != UnitType.Tank && unit.Type != UnitType.APC)
+                            if (unit.Type != UnitType.Tank 
+                                && unit.Type != UnitType.APC
+                               )
                             {
-                                MoveTowardsTile(unit, enemyHQ);
+                                MoveTowardsTile(unit, HQToAttack);
                             }
                             else
                             {
-                                MoveToRandomReachable(unit);
+                                MoveToRandomReachable(unit, true);
                             }
                         }
                     }
@@ -137,7 +139,7 @@ namespace Basic_Wars_V2.System
             {
                 State = AIState.Defend;
             }
-            if (AIUnits.Count >= 8) //Attacks when it has a surplus of Units
+            if (Winning()) //Attacks when in an advantageous position
             {
                 State = AIState.Attack;
             }
@@ -145,8 +147,6 @@ namespace Basic_Wars_V2.System
             {
                 State = AIState.CaptureStructures;
             }
-
-            Console.WriteLine($"Funds After Turn: {Funds}");
         }
 
         private void CaptureStructures()
@@ -170,7 +170,7 @@ namespace Basic_Wars_V2.System
             }
         }
 
-        private void MoveToRandomReachable(Unit unit, bool AwayFromHQ = false, int attempts = 5)
+        private void MoveToRandomReachable(Unit unit, bool AwayFromHQ = false, int attempts = 10)
         {
             reachableTiles = GetReachableTiles(unit);
             int randomTile;
@@ -227,6 +227,28 @@ namespace Basic_Wars_V2.System
 
                 if (unit.Team != Team && reachableTiles.Contains(HQ))
                 {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool Winning()
+        {
+            foreach (Tile EnemyHQ in EnemyHQs)
+            {
+                int numOfUnits = 0;
+                foreach (Unit unit in _unitManager.units)
+                {
+                    if (unit.Team == EnemyHQ.Team)
+                    {
+                        numOfUnits++;
+                    }
+                }
+                if (AIUnits.Count > numOfUnits)
+                {
+                    HQToAttack = EnemyHQ;
                     return true;
                 }
             }
