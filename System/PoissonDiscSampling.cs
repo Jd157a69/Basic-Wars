@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Basic_Wars_V2.System
 {
-    public class PoissonDiscSampling
+    public static class PoissonDiscSampling
     {
-        public List<Vector2> GetPoints(double radius, Vector2 mapSize, int k = 30)
+        public static List<Vector2> GetPoints(double radius, Vector2 mapSize, int k = 30)
         {
             Random random = new();
 

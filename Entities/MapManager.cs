@@ -140,8 +140,7 @@ namespace Basic_Wars_V2.Entities
                 StructureSparsity *= 3;
             }
 
-            PoissonDiscSampling sampler = new();
-            points = sampler.GetPoints(StructureSparsity, MapSize);
+            points = PoissonDiscSampling.GetPoints(StructureSparsity, MapSize);
 
             foreach (Vector2 point in points)
             {
