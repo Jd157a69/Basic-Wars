@@ -59,64 +59,6 @@ namespace Basic_Wars_V2
 
         private bool DrawRan;
 
-        //DEBUG
-        //private bool DebugUnitFreeMove = true;
-
-        /*  TODO: Code optimisations
-         *      - A lot of repeated code in places
-         *  
-         *  DONE: Create a main game loop
-         *      - Update method should loop through a list of players, going through each game state before moving onto the next player
-         *      - This will introduce the Player class: potential use of built in Enum PlayerIndex?
-         *      
-         *  DONE: PausedGame state
-         *      - Display options to user: Resume, Save, Menu, Quit
-         *      
-         *  DONE: GameOver condition and state
-         *      - GameOver screen
-         *      - Display Winner
-         *      - FIXED: Return to menu not working
-         *      - FIXED: Units are not removed after a team has lost
-         *  
-         *  DONE: Generate units using a factory tile
-         *      - Use console to specify type and team of unit for now and implement UI version in the future
-         *  
-         *  DONE: Implementation of the movement point system for each unit type and displaying it with GameUI
-         *  
-         *  DONE: Ability to distinguish what team a unit is on and only allowing the current player to select units on their team
-         *  
-         *  DONE: Attributes for both units and tiles should be displayed
-         *      - Use console for now and implement UI version in the future
-         *      
-         *  DONE: User should eneter the number of players in the game (Max 4) 
-         *      - Use console for this and implement the UI version in future
-         *      
-         *  DONE: Ability for units to attack each other 
-         *  
-         *  DONE: Universalise the UnitTeam, PlayerTeam, UnitType
-         *  
-         *  DONE: Resupply using APC
-         *      - Resupply surrounding units if they are from the same team
-         *      - Resupply APC itself if it is on a structure as well
-         *      
-         *  DONE: Adjustable map size
-         *  
-         *  DONE: Dead units are not removed from the game
-         *  
-         *  DONE: Fix memory leak
-         *  
-         *  DONE: Code the AI
-         *      - Use heuristics and weights to determine what is most important for the AI to do
-         *      - Likely will be very simple
-         *  
-         *  DONE: JSON or XML read and write to files
-         *      - Serialization and deserialization of files: 
-         *          https://learn.microsoft.com/en-us/dotnet/api/system.xml.serialization?view=net-7.0
-         *          https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/how-to?pivots=dotnet-7-0
-         *          https://www.c-sharpcorner.com/article/working-with-json-in-C-Sharp/
-         *      - Method in BasicWarsGame class to load and save data
-         */
-
         public BasicWarsGame()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -595,7 +537,7 @@ namespace Basic_Wars_V2
 
             CurrentUnitTile.CreateTileSpriteOnType();
 
-            bool GameOver = CheckWinner(CurrentPlayer.Team);    //Player capture is not played when AI is playing
+            bool GameOver = CheckWinner(CurrentPlayer.Team);
 
             CheckHQ();
 
@@ -819,16 +761,6 @@ namespace Basic_Wars_V2
                 serializer.Serialize(streamWriter, gameData);
             }
 
-            //DEBUG
-            if (File.Exists(SAVE_GAME_PATH))
-            {
-                Console.WriteLine("Game Saved");
-            }
-            else
-            {
-                Console.WriteLine("Game Save Failed");
-            }
-
             menuState = MenuState.PlayingGame;
         }
 
@@ -905,16 +837,12 @@ namespace Basic_Wars_V2
                     gameState = GameState.AITurn;
                 }
 
-                //DEBUG
-                Console.WriteLine("Game Loaded");
+                menuState = MenuState.PlayingGame;
             }
             else
             {
-                //DEBUG
-                Console.WriteLine("Game not loaded - file does not exist");
+                menuState = MenuState.Initial;
             }
-
-            menuState = MenuState.PlayingGame;
         }
     }
 }
