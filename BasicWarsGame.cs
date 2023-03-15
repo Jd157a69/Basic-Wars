@@ -828,7 +828,7 @@ namespace Basic_Wars_V2
 
                 CurrentPlayer = Players[CurrentPlayerIndex];
 
-                if (AddAI)
+                if (CurrentPlayer.IsAI)
                 {
                     Computer = gameData.Computer.FromAIData(InGameAssets, _gameMap, _unitManager, _gameUI, _inputController);
                     gameState = GameState.AITurn;

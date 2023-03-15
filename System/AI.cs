@@ -283,6 +283,7 @@ namespace Basic_Wars_V2.System
                             neighbouringUnit.Ammo--;
                         }
                         unit.State = UnitState.Used;
+                        break;
                     }
                 }
             }
