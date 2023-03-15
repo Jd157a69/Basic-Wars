@@ -9,6 +9,12 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <Title>Basic Wars</Title>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Authors>Robert Choi</Authors>
+    <Product>Basic Wars</Product>
+    <Description>A simple clone of Advance Wars</Description>
+    <RepositoryUrl>https://github.com/Jd157a69/Basic-Wars</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Content\GameUI.png" />
