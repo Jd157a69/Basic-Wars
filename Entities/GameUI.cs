@@ -500,7 +500,6 @@ namespace Basic_Wars_V2.Entities
             return GameState.PlayerSelect;
         }
 
-        //Maybe add unit as a parameter here to set the state when selecting idle?
         public GameState DisplayPlayerActions(GameTime gameTime, Button PressedButton, bool displayCapture = false, bool displayResupply = false)
         {
             if (displayCapture && displayResupply)
@@ -615,7 +614,7 @@ namespace Basic_Wars_V2.Entities
 
         public MenuState PausedGame(GameTime gameTime, Button PressedButton)
         {
-            _buttonManager.DrawButtonIDs(31, 33, 3, 3); //Paused game options: Resume, Save, Menu, Quit
+            _buttonManager.DrawButtonIDs(31, 33, 3, 3);
 
             if (PressedButton != null)
             {

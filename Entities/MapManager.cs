@@ -396,10 +396,7 @@ namespace Basic_Wars_V2.Entities
 
         public void Update(GameTime gameTime)
         {
-            //foreach (Tile tile in map)
-            //{
-            //    tile.Update(gameTime);
-            //}
+
         }
     }
 }
