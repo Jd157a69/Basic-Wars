@@ -3,7 +3,6 @@ using Basic_Wars_V2.Enums;
 using Basic_Wars_V2.System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
@@ -329,7 +328,6 @@ namespace Basic_Wars_V2
             menuState = MenuState.NewGame;
         }
 
-        //Player Select logic needs tidying up
         private void PlayerSelect(GameTime gameTime)
         {
             ProcessButtonsOnly = false;
@@ -401,7 +399,6 @@ namespace Basic_Wars_V2
             ProcessButtonsOnly = true;
             _gameUI.DisplayAttributes(SelectedUnit);
 
-            //Repeated code
             if (SelectedUnit.State != UnitState.Moved
                 && SelectedUnit.State != UnitState.Used
                )

@@ -155,10 +155,5 @@ namespace Basic_Wars_V2.System
             }
             return null;
         }
-
-        public void Update(UnitManager unitManager)
-        {
-            _unitManager = unitManager;
-        }
     }
 }
